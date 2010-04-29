@@ -12,22 +12,22 @@
  *
  * Release under de GNU Public License v3.0 or greater
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
+ * modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
  * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * General Public License for more details.
  * 
- * You should have received a copy of the GNU Lesser General Public
+ * You should have received a copy of the GNU General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
 
 
-/********* Class models *************/
+/********* Classes (models of fisical entities) *************/
 
 class front_gear {
 	int speed;							// could be the time per revolution (1)
@@ -50,8 +50,15 @@ class rear_gear {
 class rear_wheel {
 	int speed;							// idem comment (1)
 	public:
-		rear_whell();					// class constructor
+		rear_wheel();					// class constructor
 		int get_speed();
 };
 
+class derailleur {
+	int gear;
+	public:
+		derailleur(int slots);			// class constructor - # of gears
+		int get_gear();
+		void set_gear(int pos);
+};
 

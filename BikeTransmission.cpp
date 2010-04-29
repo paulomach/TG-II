@@ -28,6 +28,7 @@
 
 
 #include "BikeTransmission.h"
+#include <Servo>
 
 /********* Functions implementation ************
  * prototype:
