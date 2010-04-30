@@ -5,7 +5,7 @@
  * This is file is part of a my final graduation work.
  * This code is intended to be used with an arduino to 
  * automatically control gear changes of a commom 
- * bycicle derrailleur.
+ * bycicle derailleur.
  *
  * Author: Paulo S. Machado
  * Date: April 2010
@@ -27,38 +27,44 @@
  */ 
 
 
+#ifndef BikeTransmission_h
+#define BikeTransmission_h
+
+#endif
+
 /********* Classes (models of fisical entities) *************/
 
 class front_gear {
-	int speed;							// could be the time per revolution (1)
 	bool state;							// spinning or not
 	public:
-		front_gear();					// class constructor
-		int read_speed_sensor();		// function to read from sensor
-		bool get_state()
+		front_gear(int size);			// class constructor. i = # of teeth
+		int read_cadence_sensor();		// function to read from sensor
+		bool get_state();
+		int _size;
 };
 
 class rear_gear {
 	bool state;							// gear engadged or desengadged
-	int size;							// which gear I'am
+	int _size;							// which gear I'am
 	public:
-		rear_gear();					// class constructor
+		rear_gear(int size);			// class constructor
 		int get_state();
 		void set_state();
 };
 
 class rear_wheel {
-	int speed;							// idem comment (1)
 	public:
-		rear_wheel();					// class constructor
-		int get_speed();
+		int read_speed_sensor();
 };
 
 class derailleur {
 	int gear;
+	int _slots;
 	public:
 		derailleur(int slots);			// class constructor - # of gears
 		int get_gear();
 		void set_gear(int pos);
 };
+
+
 

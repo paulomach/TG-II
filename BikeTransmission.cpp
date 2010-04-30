@@ -5,7 +5,7 @@
  * This is file is part of a my final graduation work.
  * This code is intended to be used with an arduino to 
  * automatically control gear changes of a commom 
- * bycicle derrailleur.
+ * bycicle derailleur.
  *
  * Author: Paulo S. Machado
  * Date: April 2010
@@ -27,8 +27,25 @@
  */
 
 
+#include "WProgram.h"
 #include "BikeTransmission.h"
 #include <Servo>
+
+#define GEAR_MAX 7
+#define GEAR_MIN 1
+
+/********* Constructors implementation ************/
+front_gear::front_gear(int i){
+	_size = i;	
+}
+
+rear_gear::rear_gear(int i){
+	_size = i;
+}
+
+derailleur::derailleur(int slots){
+	_slots = slots;
+}
 
 /********* Functions implementation ************
  * prototype:
@@ -38,4 +55,40 @@
  * }
  */
 
-/* Per class */
+int front_gear::read_cadence_sensor(){
+	// FIXME actually reads sensor and
+	// and return a integer value
+	// return n;
+}
+
+bool front_gear::get_state(){ 
+	if (this->read_cadence_sensor() != 0) { // very poor approach. 
+		return true;
+	}
+	else { return false; }
+}
+
+int rear_gear::get_state(){ // is this really necessary?
+	return state;
+}
+
+
+int derailleur::get_gear(){
+	// FIXME This function must calculate the 
+	// speed ratio between cadence/wheel_speed
+	// and return the 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
