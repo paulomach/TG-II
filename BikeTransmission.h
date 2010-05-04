@@ -38,7 +38,7 @@ class front_gear {
 	bool state;					// spinning or not
 	public:
 		front_gear(int size);			// class constructor. i = # of teeth
-		int read_cadence_sensor();		// function to read from sensor
+		float read_cadence_sensor();		// function to read from sensor
 		bool get_state();
 		int _size;
 };
@@ -54,7 +54,7 @@ class rear_gear {
 
 class rear_wheel {					// doens't need a class constructor
 	public:
-		int read_speed_sensor();
+		float read_wspeed_sensor();
 };
 
 class derailleur {

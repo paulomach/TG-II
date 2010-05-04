@@ -38,7 +38,8 @@
 #define TOTAL_GEARS 6
 // definir limites mínimo e máximo
 // para velocidade de cadência
-#define CADENCE_MIN 
+#define CADENCE_MIN 100 
+#define CADENCE_MAX  10
 
 /********* Constructors implementation ************/
 front_gear::front_gear(int i){
@@ -91,9 +92,9 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 	// speed ratio between cadence/wheel_speed
 	// and return the
 	float ratio, rs, fs;
-	rs=wheel.read_wspeed_sensor();
 	fs=fgear.read_cadence_sensor();
 	if (fs != 0) {
+	  	rs=wheel.read_wspeed_sensor();
 		ratio=fs/rs;
 		//These are invariant relations between the bycicle
 		// teeth ratios. 
@@ -122,22 +123,20 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 	else { return 0; } // Return code when coasting
 }
 
-void derailleur::set_gear (Servo motor)
+void derailleur::set_gear (Servo motor, front_gear fgear)
 {
 	// TODO
 	// pwm write position motor.write(pos)
 	int gear;
+	float fs;
 	gear = this->get_gear();
-	
+	if ( gear != 0 ){
+		fs = fgear.read_cadence_sensor();
+		if (fs < CADENCE_MIN) {
+			motor.write( (FULLCURSO/TOTAL_GEARS)*(gear - 1))
+		}
+		else if (fs > CADENCE_MAX) {
+			motor.write( (FULLCURSO/TOTAL_GEARS)*(gear - 2))
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
