@@ -27,14 +27,14 @@
  */
 
 
-#include "WProgram.h"
+
 #include "BikeTransmission.h"
 #include <Servo.h>
 
 #define GEAR_MAX 7
 #define GEAR_MIN 1
 
-#define FULLCURSO 180
+#define TOTAL_PATH 180
 #define TOTAL_GEARS 6
 // definir limites mínimo e máximo
 // para velocidade de cadência
@@ -96,7 +96,7 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 	if (fs != 0) {
 	  	rs=wheel.read_wspeed_sensor();
 		ratio=fs/rs;
-		//These are invariant relations between the bycicle
+		// These are invariant relations between the bycicle
 		// teeth ratios. 
 		// TODO:
 		// * Find out the right relations
@@ -126,17 +126,17 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 void derailleur::set_gear (Servo motor, front_gear fgear)
 {
 	// TODO
-	// pwm write position motor.write(pos)
+	// Test this idea. look for failures
 	int gear;
 	float fs;
 	gear = this->get_gear();
 	if ( gear != 0 ){
 		fs = fgear.read_cadence_sensor();
 		if (fs < CADENCE_MIN) {
-			motor.write( (FULLCURSO/TOTAL_GEARS)*(gear - 1))
+			motor.write( (TOTAL_PATH/TOTAL_GEARS)*(gear - 1) );
 		}
 		else if (fs > CADENCE_MAX) {
-			motor.write( (FULLCURSO/TOTAL_GEARS)*(gear - 2))
+			motor.write( (TOTAL_PATH/TOTAL_GEARS)*(gear + 1) );
 		}
 	}
 }
