@@ -36,10 +36,15 @@
 
 #define TOTAL_PATH 180
 #define TOTAL_GEARS 6
+#define STEP TOTAL_PATH/TOTAL_GEARS
+
 // definir limites mínimo e máximo
 // para velocidade de cadência
 #define CADENCE_MIN 100 
 #define CADENCE_MAX  10
+
+#define UP_OFFSET 1.3
+#define DOWN_OFFSET 1.3
 
 /********* Constructors implementation ************/
 front_gear::front_gear(int i){
@@ -69,7 +74,7 @@ float front_gear::read_cadence_sensor(){
 }
 
 bool front_gear::get_state(){ 
-	if (this->read_cadence_sensor() != 0.0) { // very poor approach. 
+	if (this->read_cadence_sensor() != 0.0) { // very poor approach.
 		return true;
 	}
 	else { return false; }
@@ -132,11 +137,17 @@ void derailleur::set_gear (Servo motor, front_gear fgear)
 	gear = this->get_gear();
 	if ( gear != 0 ){
 		fs = fgear.read_cadence_sensor();
-		if (fs < CADENCE_MIN) {
-			motor.write( (TOTAL_PATH/TOTAL_GEARS)*(gear - 1) );
+		if (fs < CADENCE_MIN*K) {
+			motor.write( STEP*(gear + 1)*UP_OFFSET );
+			while (gear == this.get_gear()) {
+			}
+			motor.write( STEP*(gear + 1) );
 		}
-		else if (fs > CADENCE_MAX) {
-			motor.write( (TOTAL_PATH/TOTAL_GEARS)*(gear + 1) );
+		else if (fs > CADENCE_MAX*K) {
+			motor.write( STEP*(gear - 1)*DOWN_OFFSET );
+			while (gear == this.get_gear()) {
+			}
+			motor.write( STEP*(gear - 1) );
 		}
 	}
 }
