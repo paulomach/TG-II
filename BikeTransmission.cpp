@@ -59,14 +59,6 @@ derailleur::derailleur(int slots){
 	_slots = slots;
 }
 
-/********* Functions implementation ************
- * prototype:
- * type class_name::function_name(type parameters and parameters if any)
- * {
- * 		code;
- * }
- */
-
 float front_gear::read_cadence_sensor(){
 	// TODO actually reads sensor and
 	// and return a integer value
@@ -81,7 +73,7 @@ bool front_gear::get_state(){
 }
 
 int rear_gear::get_state(){ // is this really necessary?
-	return state;
+	return this->state;
 }
 
 float rear_wheel::read_wspeed_sensor()
@@ -95,7 +87,7 @@ float rear_wheel::read_wspeed_sensor()
 int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 	// FIXME This function must calculate the 
 	// speed ratio between cadence/wheel_speed
-	// and return the
+	// and return the time 
 	float ratio, rs, fs;
 	fs=fgear.read_cadence_sensor();
 	if (fs != 0) {
@@ -106,7 +98,7 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 		// TODO:
 		// * Find out the right relations
 		// * (beyond TG) configurable ratios
-		if (ratio < 1) {
+		if (ratio > 1) && ( ratio < 1.5 ) {
 			return(1);
 		}
 		else if (ratio < 2) {
@@ -131,11 +123,14 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 void derailleur::set_gear (Servo motor, front_gear fgear)
 {
 	// TODO
+	// Up and down limits.
 	// Test this idea. look for failures
+	// Testing 
 	int gear;
 	float fs;
 	gear = this->get_gear();
-	if ( gear != 0 ){
+	// Test if coasting. None change can be made when coasting
+	if ( gear != 0 ){ 
 		fs = fgear.read_cadence_sensor();
 		if (fs < CADENCE_MIN*K) {
 			motor.write( STEP*(gear + 1)*UP_OFFSET );
