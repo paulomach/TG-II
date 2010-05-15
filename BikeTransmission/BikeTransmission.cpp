@@ -31,7 +31,7 @@
 #include "BikeTransmission.h"
 #include <Servo.h>
 
-#define GEAR_MAX 7
+#define GEAR_MAX 6
 #define GEAR_MIN 1
 
 #define TOTAL_PATH 180
@@ -127,13 +127,13 @@ void derailleur::set_gear (Servo motor, int gear, long int fs)
 	// Testing 
 	// Test if coasting. None change can be made when coasting
 	if ( gear != 0 ){ 
-		if (fs < CADENCE_MIN*K) {
+		if ( (fs < CADENCE_MIN*K) && (gear != GEAR_MIN) ) {
 			motor.write( STEP*(gear + 1)*UP_OFFSET );
 			while (gear == this.get_gear()) {
 			}
 			motor.write( STEP*(gear + 1) );
 		}
-		else if (fs > CADENCE_MAX*K) {
+		else if ( (fs > CADENCE_MAX*K) && (gear != GEAR_MAX) ){
 			motor.write( STEP*(gear - 1)*DOWN_OFFSET );
 			while (gear == this.get_gear()) {
 			}
