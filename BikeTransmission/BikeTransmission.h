@@ -62,8 +62,8 @@ class derailleur {
 	int _slots;
 	public:
 		derailleur(int slots);			// class constructor - # of gears
-		int get_gear();
-		void set_gear(int pos);
+		int get_gear(long int fs, long int rs);
+		void set_gear(Servo motor, int gear, long int fs);
 };
 
 

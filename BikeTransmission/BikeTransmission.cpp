@@ -84,54 +84,49 @@ float rear_wheel::read_wspeed_sensor()
 
 
 
-int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
+int derailleur::get_gear(long int fs, long int rs){
 	// FIXME This function must calculate the 
 	// speed ratio between cadence/wheel_speed
-	// and return the time 
-	float ratio, rs, fs;
-	fs=fgear.read_cadence_sensor();
+	// and return the time
+	float ratio;
 	if (fs != 0) {
-	  	rs=wheel.read_wspeed_sensor();
 		ratio=fs/rs;
 		// These are invariant relations between the bycicle
-		// teeth ratios. 
+		// teeth ratios with 5 % tolerance
 		// TODO:
 		// * Find out the right relations
 		// * (beyond TG) configurable ratios
-		if ( (ratio > 1) && ( ratio < 1.5 ) )  {
+		if ( (ratio > 1.56) && ( ratio < 1.72 ) )  {
 			return(1);
 		}
-		else if (ratio < 2) {
+		else if ( (ratio > 1.82) && ( ratio < 2.01 ) )  {
 			return(2);
 		}
-		else if (ratio < 3) {
+		else if ( (ratio > 2.18) && ( ratio < 2.41 ) )  {
 			return(3);
 		}
-		else if (ratio < 4) {
+		else if ( (ratio > 2.43) && ( ratio < 2.68 ) )  {
 			return(4);
 		}
-		else if (ratio < 5) {
+		else if ( (ratio > 2.73) && ( ratio < 3.02 ) )  {
 			return(5);
 		}
-		else {
+		else if ( (ratio > 3.12) && ( ratio < 3.45 ) )  {
 			return(6);
 		}
+		else { return 0; } // Return code when coasting
 	}
 	else { return 0; } // Return code when coasting
 }
 
-void derailleur::set_gear (Servo motor, front_gear fgear)
+void derailleur::set_gear (Servo motor, int gear, long int fs)
 {
 	// TODO
 	// Up and down limits.
 	// Test this idea. look for failures
 	// Testing 
-	int gear;
-	float fs;
-	gear = this->get_gear();
 	// Test if coasting. None change can be made when coasting
 	if ( gear != 0 ){ 
-		fs = fgear.read_cadence_sensor();
 		if (fs < CADENCE_MIN*K) {
 			motor.write( STEP*(gear + 1)*UP_OFFSET );
 			while (gear == this.get_gear()) {

@@ -4,4 +4,4 @@ TODO
 methods to the main program loop. This is done to remove redundant IO calls,
 that can be very slow some times. The variables must be the methods arguments.
 * Implement method derailleur::get_gear based upon the sprocktes teeth numbers.
-
+* Treat higher and slower sprockets limits.
