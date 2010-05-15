@@ -29,7 +29,7 @@
 
 
 #include "BikeTransmission.h"
-#include <Servo.h>
+#include </home/paulo/tmp/arduino-0017/hardware/libraries/Servo/Servo.h>
 
 #define GEAR_MAX 6
 #define GEAR_MIN 1
@@ -47,17 +47,12 @@
 #define DOWN_OFFSET 1.3
 
 /********* Constructors implementation ************/
-front_gear::front_gear(int i){
-	_size = i;	
+rear_wheel::rear_wheel(float _diameter)
+{
+	this->diameter = _diameter;
 }
 
-rear_gear::rear_gear(int i){
-	_size = i;
-}
 
-derailleur::derailleur(int slots){
-	_slots = slots;
-}
 
 float front_gear::read_cadence_sensor(){
 	// TODO actually reads sensor and
@@ -72,11 +67,8 @@ bool front_gear::get_state(){
 	else { return false; }
 }
 
-int rear_gear::get_state(){ // is this really necessary?
-	return this->state;
-}
 
-float rear_wheel::read_wspeed_sensor()
+long int rear_wheel::read_wspeed_sensor()
 {
 	// TODO
 	// Implement read from sensor!
