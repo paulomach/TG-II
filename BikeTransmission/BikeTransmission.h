@@ -37,35 +37,25 @@
 class front_gear {
 	bool state;					// spinning or not
 	public:
-		front_gear(int size);			// class constructor. i = # of teeth
-		float read_cadence_sensor();		// function to read from sensor
+		front_gear();				// class constructor. i = # of teeth
+		long int read_cadence_sensor();		// function to read from sensor
 		bool get_state();
 		int _size;
 };
 
-class rear_gear {
-	bool state;					// gear engadged or desengadged
-	int _size;					// which gear I'am
-	public:
-		rear_gear(int size);			// class constructor
-		int get_state();
-		void set_state();
-};
+
 
 class rear_wheel {					// doens't need a class constructor
 	public:
-		float read_wspeed_sensor();
+		float diameter;				// wheel diameter
+		rear_wheel(float _diameter);
+		long int read_wspeed_sensor();
 };
 
 class derailleur {
-	int gear;
-	int _slots;
 	public:
-		derailleur(int slots);			// class constructor - # of gears
+		derailleur();			// class constructor - # of gears
 		int get_gear(long int fs, long int rs);
 		void set_gear(Servo motor, int gear, long int fs);
 };
 
-
-
-	
