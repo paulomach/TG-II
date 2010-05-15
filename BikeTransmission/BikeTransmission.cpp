@@ -98,7 +98,7 @@ int derailleur::get_gear(rear_wheel wheel, front_gear fgear){
 		// TODO:
 		// * Find out the right relations
 		// * (beyond TG) configurable ratios
-		if (ratio > 1) && ( ratio < 1.5 ) {
+		if ( (ratio > 1) && ( ratio < 1.5 ) )  {
 			return(1);
 		}
 		else if (ratio < 2) {
