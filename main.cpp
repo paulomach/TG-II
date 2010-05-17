@@ -40,6 +40,7 @@ front_gear pedivela;
 // Variables
 long int wheel_speed, cadencia;
 int marcha, speed;
+float K=1.00;
 
 void setup() {
 	motor.attach(9);
@@ -58,6 +59,7 @@ void loop() {
 	marcha = dera.get_gear(cadencia, wheel_speed);
 	dera.set_gear(motor, marcha, cadencia);
 	
+	// Linear speed. To show in display
 	speed = int((1.5708*roda.diameter^2)/wheel_speed);
 	lcd.setCursor(5,0);
 	lcd.print(speed);

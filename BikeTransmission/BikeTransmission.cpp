@@ -53,11 +53,11 @@ rear_wheel::rear_wheel(float _diameter)
 }
 
 
-
+/*********** Methods implementation **************/
 float front_gear::read_cadence_sensor(){
 	// TODO actually reads sensor and
-	// and return a integer value
-	// return n;
+	// and return a long integer value
+	// in miliseconds. Use ISR
 }
 
 bool front_gear::get_state(){ 
@@ -70,8 +70,9 @@ bool front_gear::get_state(){
 
 long int rear_wheel::read_wspeed_sensor()
 {
-	// TODO
-	// Implement read from sensor!
+	// TODO actually reads sensor and
+	// and return a long integer value
+	// in miliseconds. Use ISR
 }
 
 
@@ -111,7 +112,8 @@ int derailleur::get_gear(long int fs, long int rs){
 	else { return 0; } // Return code when coasting
 }
 
-void derailleur::set_gear (Servo motor, int gear, long int fs)
+void derailleur::set_gear (Servo motor, int gear, long int fs, float K
+)
 {
 	// TODO
 	// Up and down limits.

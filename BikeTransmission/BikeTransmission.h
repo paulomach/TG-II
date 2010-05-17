@@ -35,9 +35,8 @@
 /********* Classes (models of fisical entities) *************/
 
 class front_gear {
-	bool state;					// spinning or not
 	public:
-		front_gear();				// class constructor. i = # of teeth
+		bool state;				// spinning or not
 		long int read_cadence_sensor();		// function to read from sensor
 		bool get_state();
 		int _size;
@@ -54,8 +53,7 @@ class rear_wheel {					// doens't need a class constructor
 
 class derailleur {
 	public:
-		derailleur();			// class constructor - # of gears
 		int get_gear(long int fs, long int rs);
-		void set_gear(Servo motor, int gear, long int fs);
+		void set_gear(Servo motor, int gear, long int fs, float K);
 };
 
