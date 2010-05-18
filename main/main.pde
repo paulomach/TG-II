@@ -38,10 +38,14 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 rear_wheel roda(0.26);
 front_gear pedivela;
 
+// Constants
+
+
 // Variables
 long int wheel_speed, cadencia;
 int marcha, speed;
 float K=1.00;
+int buttonstate = 0;
 
 void setup() {
 	motor.attach(9);
@@ -51,6 +55,7 @@ void setup() {
 	lcd.print("kmph");
 	lcd.setCursor(0,1);
 	lcd.print("Marcha: ");
+        pinMode(1, INPUT);
 }
 
 
@@ -67,6 +72,17 @@ void loop() {
 	
 	lcd.setCursor(8,1);
 	lcd.print(marcha);
+
+        buttonstate = digitalRead(1);
+        if (buttonstate == HIGH) {
+          K=K+0.001;
+          if ( K >= 1.5 ) {K = 1.5;}
+        }
+        
+        lcd.setCursor(11,1);
+        lcd.print("K:");
+        lcd.setCursor(13,1);
+        lcd.print(K);
 }
 
 
