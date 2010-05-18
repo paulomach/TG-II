@@ -26,8 +26,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include </home/paulo/tmp/arduino-0017/hardware/libraries/LiquidCrystal/LiquidCrystal.h>
-#include "BikeTransmission/BikeTransmission.h"
+#include <LiquidCrystal.h>
+#include <BikeTransmission.h>
+#include <Servo.h>
 
 
 // Objects instatiation
@@ -44,7 +45,7 @@ float K=1.00;
 
 void setup() {
 	motor.attach(9);
-	lcd.begin(16.2);
+	lcd.begin(16,2);
 	lcd.print("Vel:");
 	lcd.setCursor(7,0);
 	lcd.print("kmph");
@@ -57,10 +58,10 @@ void loop() {
 	wheel_speed = roda.read_wspeed_sensor();
 	cadencia = pedivela.read_cadence_sensor();
 	marcha = dera.get_gear(cadencia, wheel_speed);
-	dera.set_gear(motor, marcha, cadencia);
+	dera.set_gear(motor, marcha, cadencia, wheel_speed, K);
 	
 	// Linear speed. To show in display
-	speed = int((1.5708*roda.diameter^2)/wheel_speed);
+	speed = roda.get_lspeed();
 	lcd.setCursor(5,0);
 	lcd.print(speed);
 	

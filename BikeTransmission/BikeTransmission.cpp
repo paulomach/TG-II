@@ -54,7 +54,7 @@ rear_wheel::rear_wheel(float _diameter)
 
 
 /*********** Methods implementation **************/
-float front_gear::read_cadence_sensor(){
+long int front_gear::read_cadence_sensor(){
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
@@ -73,6 +73,13 @@ long int rear_wheel::read_wspeed_sensor()
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
+}
+
+int rear_wheel::get_lspeed()
+{
+	int lspeed;
+	lspeed = int((1.5708*this->diameter*this->diameter)/this->read_wspeed_sensor());
+	return lspeed;
 }
 
 
@@ -112,9 +119,7 @@ int derailleur::get_gear(long int fs, long int rs){
 	else { return 0; } // Return code when coasting
 }
 
-void derailleur::set_gear (Servo motor, int gear, long int fs, float K
-)
-{
+void derailleur::set_gear (Servo motor, int gear, long int fs, long int rs, float K){
 	// TODO
 	// Up and down limits.
 	// Test this idea. look for failures
@@ -123,13 +128,13 @@ void derailleur::set_gear (Servo motor, int gear, long int fs, float K
 	if ( gear != 0 ){ 
 		if ( (fs < CADENCE_MIN*K) && (gear != GEAR_MIN) ) {
 			motor.write( STEP*(gear + 1)*UP_OFFSET );
-			while (gear == this.get_gear()) {
+			while (gear == this->get_gear(fs, rs)) {
 			}
 			motor.write( STEP*(gear + 1) );
 		}
 		else if ( (fs > CADENCE_MAX*K) && (gear != GEAR_MAX) ){
 			motor.write( STEP*(gear - 1)*DOWN_OFFSET );
-			while (gear == this.get_gear()) {
+			while (gear == this->get_gear(fs, rs)) {
 			}
 			motor.write( STEP*(gear - 1) );
 		}

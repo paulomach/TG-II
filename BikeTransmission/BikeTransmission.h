@@ -26,6 +26,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
 
+#include </home/paulo/tmp/arduino-0017/hardware/libraries/Servo/Servo.h>
+
 
 #ifndef BikeTransmission_h
 #define BikeTransmission_h
@@ -49,11 +51,12 @@ class rear_wheel {					// doens't need a class constructor
 		float diameter;				// wheel diameter
 		rear_wheel(float _diameter);
 		long int read_wspeed_sensor();
+		int get_lspeed();
 };
 
 class derailleur {
 	public:
 		int get_gear(long int fs, long int rs);
-		void set_gear(Servo motor, int gear, long int fs, float K);
+		void set_gear(Servo motor, int gear, long int fs, long int rs, float K);
 };
 
