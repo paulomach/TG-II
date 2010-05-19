@@ -26,7 +26,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
 
-#include </home/paulo/tmp/arduino-0017/hardware/libraries/Servo/Servo.h>
+#include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/libraries/Servo/Servo.h>
 
 
 #ifndef BikeTransmission_h
@@ -39,7 +39,7 @@
 class front_gear {
 	public:
 		bool state;				// spinning or not
-		long int read_cadence_sensor();		// function to read from sensor
+		unsigned long read_cadence_sensor();		// function to read from sensor
 		bool get_state();
 		int _size;
 };
@@ -50,7 +50,7 @@ class rear_wheel {					// doens't need a class constructor
 	public:
 		float diameter;				// wheel diameter
 		rear_wheel(float _diameter);
-		long int read_wspeed_sensor();
+		unsigned long read_wspeed_sensor();
 		int get_lspeed();
 };
 

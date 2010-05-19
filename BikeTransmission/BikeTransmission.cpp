@@ -29,7 +29,8 @@
 
 
 #include "BikeTransmission.h"
-#include </home/paulo/tmp/arduino-0017/hardware/libraries/Servo/Servo.h>
+#include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/libraries/Servo/Servo.h>
+#include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/cores/arduino/WProgram.h>
 
 #define GEAR_MAX 6
 #define GEAR_MIN 1
@@ -46,6 +47,7 @@
 #define UP_OFFSET 1.3
 #define DOWN_OFFSET 1.3
 
+
 /********* Constructors implementation ************/
 rear_wheel::rear_wheel(float _diameter)
 {
@@ -54,7 +56,7 @@ rear_wheel::rear_wheel(float _diameter)
 
 
 /*********** Methods implementation **************/
-long int front_gear::read_cadence_sensor(){
+unsigned long front_gear::read_cadence_sensor(){
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
@@ -68,11 +70,12 @@ bool front_gear::get_state(){
 }
 
 
-long int rear_wheel::read_wspeed_sensor()
+unsigned long rear_wheel::read_wspeed_sensor()
 {
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
+	unsigned long t1, t2;
 }
 
 int rear_wheel::get_lspeed()

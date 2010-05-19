@@ -39,7 +39,11 @@ rear_wheel roda(0.26);
 front_gear pedivela;
 
 // Constants
-
+int Bt0 = 6;
+int Bt1 = 7;
+int R0 = 8;
+int R1 = 10;
+int pwmPin = 9;
 
 // Variables
 long int wheel_speed, cadencia;
@@ -48,14 +52,17 @@ float K=1.00;
 int buttonstate = 0;
 
 void setup() {
-	motor.attach(9);
+	motor.attach(pwmPin);
 	lcd.begin(16,2);
 	lcd.print("Vel:");
 	lcd.setCursor(7,0);
 	lcd.print("kmph");
 	lcd.setCursor(0,1);
 	lcd.print("Marcha: ");
-        pinMode(1, INPUT);
+	pinMode(Bt0, INPUT);
+	pinMode(Bt1, INPUT);
+	pinMode(R0, INPUT);
+	pinMode(R1, INPUT);
 }
 
 
@@ -73,12 +80,16 @@ void loop() {
 	lcd.setCursor(8,1);
 	lcd.print(marcha);
 
-        buttonstate = digitalRead(1);
+        buttonstate = digitalRead(Bt1);
         if (buttonstate == HIGH) {
           K=K+0.001;
           if ( K >= 1.5 ) {K = 1.5;}
         }
-        
+        buttonstate = digitalRead(Bt0);
+        if (buttonstate == HIGH) {
+          K=K-0.001;
+          if ( K <= 0.5 ) {K = 0.5;}
+        }
         lcd.setCursor(11,1);
         lcd.print("K:");
         lcd.setCursor(13,1);
