@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map Servo
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+derailleur	KEYWORD1
+rear_wheel	KEYWORD1
+front_gear	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+get_gear	KEYWORD2
+set_gear	KEYWORD2
+get_lspeed	KEYWORD2
+read_wspeed_sensor	KEYWORD2
+get_state	KEYWORD2
+read_cadence_sensor	KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
