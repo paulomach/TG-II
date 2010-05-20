@@ -9,6 +9,7 @@
 derailleur	KEYWORD1
 rear_wheel	KEYWORD1
 front_gear	KEYWORD1
+BikeTransmission	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
