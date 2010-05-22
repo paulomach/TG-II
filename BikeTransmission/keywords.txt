@@ -6,9 +6,9 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-derailleur	KEYWORD1
-rear_wheel	KEYWORD1
-front_gear	KEYWORD1
+Derailleur	KEYWORD1
+RearWheel	KEYWORD1
+FrontGear	KEYWORD1
 BikeTransmission	KEYWORD1
 
 #######################################
