@@ -5,7 +5,7 @@
  * This is file is part of a my final graduation work.
  * This code is intended to be used with an arduino to 
  * automatically control gear changes of a commom 
- * bycicle derailleur.
+ * bycicle Derailleur.
  *
  * Author: Paulo S. Machado
  * Date: April 2010
