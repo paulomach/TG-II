@@ -39,61 +39,74 @@
 #define TOTAL_GEARS 6
 #define STEP TOTAL_PATH/TOTAL_GEARS
 
-// definir limites mínimo e máximo
-// para velocidade de cadência
+// TODO: define time limits
 #define CADENCE_MIN 100 
 #define CADENCE_MAX  10
 
 #define UP_OFFSET 1.3
 #define DOWN_OFFSET 1.3
 
+const int DEBOUNCE=70;
+
+
+// Time variables for speed reading:
+// c_t - cadence time
+// w_t - wheel time
+unsigned long c_t1, c_t2, w_t1, w_t2;
+
 
 /********* Constructors implementation ************/
-rear_wheel::rear_wheel(float _diameter)
+RearWheel::RearWheel(float _diameter)
 {
 	this->diameter = _diameter;
 }
 
 
 /*********** Methods implementation **************/
-unsigned long front_gear::read_cadence_sensor(){
+void FrontGear::read_cadence_sensor(int c_reedPin){
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
+	while ( digitalRead(c_reedPin) =! HIGH) ;
+	c_t1 = millis();
+	delay(DEBOUNCE);
+	while ( digitalRead(c_reedPin) =! HIGH) ;
+	c_t2 = millis() - DEBOUNCE - c_t1;
 }
 
-bool front_gear::get_state(){ 
-	if (this->read_cadence_sensor() != 0.0) { // very poor approach.
-		return true;
-	}
-	else { return false; }
-}
 
-
-unsigned long rear_wheel::read_wspeed_sensor()
+void RearWheel::read_wspeed_sensor()
 {
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
-	unsigned long t1, t2;
+	while ( digitalRead(c_reedPin) =! HIGH) ;
+	w_t1 = millis();
+	delay(DEBOUNCE);
+	while ( digitalRead(c_reedPin) =! HIGH) ;
+	w_t2 = millis() - DEBOUNCE - c_t1;
 }
 
-int rear_wheel::get_lspeed()
+int RearWheel::get_lspeed()
 {
+	// Linear wheel speed:
+	// V = w*r -> V = 2*pi*f*r
+	// V = pi*D/T [m/ms]
+	// V = 3.6*1000*pi*D/T [km/h]
 	int lspeed;
-	lspeed = int((1.5708*this->diameter*this->diameter)/this->read_wspeed_sensor());
+	lspeed = int((3600*3.1416*this->diameter)/w_t2);
 	return lspeed;
 }
 
 
 
-int derailleur::get_gear(long int fs, long int rs){
+int Derailleur::get_gear(long int c_t, long int w_t){
 	// FIXME This function must calculate the 
 	// speed ratio between cadence/wheel_speed
 	// and return the time
 	float ratio;
-	if (fs != 0) {
-		ratio=fs/rs;
+	if (c_t != 0) {
+		ratio=c_t/w_t;
 		// These are invariant relations between the bycicle
 		// teeth ratios with 5 % tolerance
 		// TODO:
@@ -122,22 +135,17 @@ int derailleur::get_gear(long int fs, long int rs){
 	else { return 0; } // Return code when coasting
 }
 
-void derailleur::set_gear (Servo motor, int gear, long int fs, long int rs, float K){
-	// TODO
-	// Up and down limits.
-	// Test this idea. look for failures
-	// Testing 
-	// Test if coasting. None change can be made when coasting
+void Derailleur::set_gear (Servo motor, int gear, long int c_t, long int w_t, float K){
 	if ( gear != 0 ){ 
-		if ( (fs < CADENCE_MIN*K) && (gear != GEAR_MIN) ) {
+		if ( (c_t < CADENCE_MIN*K) && (gear != GEAR_MIN) ) {
 			motor.write( STEP*(gear + 1)*UP_OFFSET );
-			while (gear == this->get_gear(fs, rs)) {
+			while (gear == this->get_gear(c_t, w_t)) {
 			}
 			motor.write( STEP*(gear + 1) );
 		}
-		else if ( (fs > CADENCE_MAX*K) && (gear != GEAR_MAX) ){
+		else if ( (c_t > CADENCE_MAX*K) && (gear != GEAR_MAX) ){
 			motor.write( STEP*(gear - 1)*DOWN_OFFSET );
-			while (gear == this->get_gear(fs, rs)) {
+			while (gear == this->get_gear(c_t, w_t)) {
 			}
 			motor.write( STEP*(gear - 1) );
 		}
