@@ -34,29 +34,44 @@
 
 #endif
 
-/********* Classes (models of fisical entities) *************/
 
-class front_gear {
+
+/* FrontGear - front sprocket model
+ * attributes:
+ *
+ * methods:
+ *	read_cadence_sensor - update period of sprocket cycle
+ */
+class FrontGear {
 	public:
-		bool state;				// spinning or not
-		unsigned long read_cadence_sensor();		// function to read from sensor
-		bool get_state();
-		int _size;
+		void read_cadence_sensor(int c_reedPin);
 };
 
-
-
-class rear_wheel {					// doens't need a class constructor
+/* RearWheel - rear wheel model
+ * attributes:
+ *	diameter - wheel diameter in meters
+ * methods:
+ *	read_wspeed_sensor - update period of wheel cycle
+ *	get_lspeed - calculate and return linear speed
+ */
+class RearWheel {
 	public:
-		float diameter;				// wheel diameter
-		rear_wheel(float _diameter);
-		unsigned long read_wspeed_sensor();
+		float diameter;
+		RearWheel(float _diameter);
+		void read_wspeed_sensor();
 		int get_lspeed();
 };
 
-class derailleur {
+/* Derailleur - derailleur model
+ * attributes:
+ *
+ * methods:
+ *	get_gear - calculate the engaged gear from cycle time ratio
+ *	set_gear - decide and move derailleur to appropriate gear
+ */
+class Derailleur {
 	public:
-		int get_gear(long int fs, long int rs);
-		void set_gear(Servo motor, int gear, long int fs, long int rs, float K);
+		int get_gear(long int c_t, long int w_t);
+		void set_gear(Servo motor, int gear, long int c_t, long int w_t, float K);
 };
 
