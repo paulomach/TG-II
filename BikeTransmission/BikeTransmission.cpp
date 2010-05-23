@@ -1,11 +1,11 @@
 /* 
- * BikeTransmission.cpp - Bycicle Modeling Classes for Arduino
+ * BikeTransmission.cpp - Bicycle Modeling Classes for Arduino
  * Version 0.1
  *
  * This is file is part of a my final graduation work.
  * This code is intended to be used with an arduino to 
  * automatically control gear changes of a commom 
- * bycicle Derailleur.
+ * bicycle Derailleur.
  *
  * Author: Paulo S. Machado
  * Date: April 2010
@@ -32,21 +32,28 @@
 #include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/libraries/Servo/Servo.h>
 #include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/cores/arduino/WProgram.h>
 
-#define GEAR_MAX 6
-#define GEAR_MIN 1
+const int GEAR_MAX=6;
+const int GEAR_MIN=1;
 
-#define TOTAL_PATH 180
-#define TOTAL_GEARS 6
-#define STEP TOTAL_PATH/TOTAL_GEARS
+const int TOTAL_PATH=180;
+const int TOTAL_GEARS=6;
+const int STEP=TOTAL_PATH/TOTAL_GEARS;
 
-// TODO: define time limits
-#define CADENCE_MIN 100 
-#define CADENCE_MAX  10
+// Time limits (milliseconds)
+// 30RPM
+const int CADENCE_MIN=2000;
+// 90RPM
+const int CADENCE_MAX=667;
 
-#define UP_OFFSET 1.3
-#define DOWN_OFFSET 1.3
+// Offset in the derailleur moviment to engage next gear
+const float UP_OFFSET=1.3;
+const float DOWN_OFFSET=1.3;
 
-const int DEBOUNCE=70;
+// Debounce time for reed switch.
+// This approach limits wheel speed 
+// to V = pi*D*3.6*1000/T (T stands for
+// period in milliseconds
+const int DEBOUNCE=70;	// 84 kmph
 
 
 // Time variables for speed reading:
