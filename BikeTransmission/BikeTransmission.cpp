@@ -117,7 +117,7 @@ int Derailleur::get_gear(long int c_t, long int w_t){
 	float ratio;
 	if (c_t != 0) {
 		ratio=c_t/w_t;
-		// These are invariant relations between the bycicle
+		// These are invariant relations between the bicycle
 		// teeth ratios with 5 % tolerance
 		// TODO:
 		// * Find out the right relations

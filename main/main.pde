@@ -1,11 +1,11 @@
 /* 
- * Main.pde
+ * Main.pde - Main file to control a bicycle derailleur
  * Version 0.1
  *
  * This is file is part of a my final graduation work.
  * This code is intended to be used with an arduino to 
  * automatically control gear changes of a commom 
- * bycicle derailleur.
+ * bicycle derailleur.
  *
  * Author: Paulo S. Machado
  * Date: April 2010

@@ -1,5 +1,5 @@
 /* 
- * BikeTransmission.h - Bycicle Modeling Classes for Arduino
+ * BikeTransmission.h - Bicycle Modeling Classes for Arduino
  * Version 0.1
  *
  * This is file is part of a my final graduation work.
@@ -44,7 +44,7 @@
  */
 class FrontGear {
 	public:
-		void read_cadence_sensor(int c_reedPin);
+		unsigned long read_cadence_sensor(int c_reedPin);
 };
 
 /* RearWheel - rear wheel model
@@ -58,7 +58,7 @@ class RearWheel {
 	public:
 		float diameter;
 		RearWheel(float _diameter);
-		void read_wspeed_sensor();
+		unsigned long read_wspeed_sensor(int w_reedPin);
 		int get_lspeed();
 };
 
