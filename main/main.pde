@@ -33,67 +33,82 @@
 
 // Objects instatiation
 Servo motor;
-derailleur dera;
+Derailleur trocador;
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-rear_wheel roda(0.26);
-front_gear pedivela;
+RearWheel roda(0.52);
+FrontGear pedivela;
 
 // Constants
-int Bt0 = 6;
-int Bt1 = 7;
-int R0 = 8;
-int R1 = 10;
-int pwmPin = 9;
+const int b0Pin = 6;
+const int b1Pin = 7;
+const int r0Pin = 8;
+const int r1Pin = 10;
+const int pwmPin = 9;
+const int CADENCE_MIN = 2000;
 
 // Variables
-long int wheel_speed, cadencia;
-int marcha, speed;
+int marcha, wspeed, state=1;
 float K=1.00;
-int buttonstate = 0;
+unsigned long c_t, w_t;
 
 void setup() {
-	motor.attach(pwmPin);
 	lcd.begin(16,2);
 	lcd.print("Vel:");
 	lcd.setCursor(7,0);
 	lcd.print("kmph");
 	lcd.setCursor(0,1);
-	lcd.print("Marcha: ");
-	pinMode(Bt0, INPUT);
-	pinMode(Bt1, INPUT);
-	pinMode(R0, INPUT);
-	pinMode(R1, INPUT);
+	lcd.print("Marcha:");
+        lcd.setCursor(11,1);
+        lcd.print("K:");
+        motor.attach(pwmPin);
+	pinMode(b0Pin, INPUT);
+	pinMode(b1Pin, INPUT);
+	pinMode(r0Pin, INPUT);
+	pinMode(r1Pin, INPUT);
 }
 
-
-void loop() {
-	wheel_speed = roda.read_wspeed_sensor();
-	cadencia = pedivela.read_cadence_sensor();
-	marcha = dera.get_gear(cadencia, wheel_speed);
-	dera.set_gear(motor, marcha, cadencia, wheel_speed, K);
-	
-	// Linear speed. To show in display
-	speed = roda.get_lspeed();
-	lcd.setCursor(5,0);
-	lcd.print(speed);
-	
+void update_lcd(){
+        lcd.setCursor(5,0);
+	lcd.print(wspeed);
 	lcd.setCursor(8,1);
 	lcd.print(marcha);
+        lcd.setCursor(13,1);
+        lcd.print(K);
+}
 
-        buttonstate = digitalRead(Bt1);
-        if (buttonstate == HIGH) {
+void loop() {
+  
+        switch(state){
+          case 1:
+            update_lcd();
+            state++;
+            break;
+          case 2:
+            w_t = roda.read_wspeed_sensor(r1Pin);
+            c_t = pedivela.read_cadence_sensor(r0Pin);
+            if (c_t > CADENCE_MIN) {
+               state = 1;
+            }
+            else { state++; }
+            break;
+          case 3:
+            marcha=trocador.get_gear(c_t, w_t);
+            trocador.set_gear(motor, marcha, c_t, w_t, K);
+            state=1;
+            break;
+        }
+
+
+	wspeed = roda.get_lspeed();	
+        if (digitalRead(b1Pin) == HIGH) {
           K=K+0.001;
           if ( K >= 1.5 ) {K = 1.5;}
-        }
-        buttonstate = digitalRead(Bt0);
-        if (buttonstate == HIGH) {
+        }        
+        if (digitalRead(b0Pin) == HIGH) {
           K=K-0.001;
           if ( K <= 0.5 ) {K = 0.5;}
         }
-        lcd.setCursor(11,1);
-        lcd.print("K:");
-        lcd.setCursor(13,1);
-        lcd.print(K);
+        
 }
 
 
