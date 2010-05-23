@@ -70,28 +70,31 @@ RearWheel::RearWheel(float _diameter)
 
 
 /*********** Methods implementation **************/
-void FrontGear::read_cadence_sensor(int c_reedPin){
-	// TODO actually reads sensor and
-	// and return a long integer value
-	// in miliseconds. Use ISR
-	while ( digitalRead(c_reedPin) =! HIGH) ;
-	c_t1 = millis();
-	delay(DEBOUNCE);
-	while ( digitalRead(c_reedPin) =! HIGH) ;
-	c_t2 = millis() - DEBOUNCE - c_t1;
-}
-
-
-void RearWheel::read_wspeed_sensor()
+unsigned long FrontGear::read_cadence_sensor(int c_reedPin)
 {
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
-	while ( digitalRead(c_reedPin) =! HIGH) ;
+	while ( digitalRead(c_reedPin) != HIGH) ;
+	c_t1 = millis();
+	delay(DEBOUNCE);
+	while ( digitalRead(c_reedPin) != HIGH) ;
+	c_t2 = millis() - DEBOUNCE - c_t1;
+	return(c_t2);
+}
+
+
+unsigned long RearWheel::read_wspeed_sensor(int w_reedPin)
+{
+	// TODO actually reads sensor and
+	// and return a long integer value
+	// in miliseconds. Use ISR
+	while ( digitalRead(w_reedPin) != HIGH) ;
 	w_t1 = millis();
 	delay(DEBOUNCE);
-	while ( digitalRead(c_reedPin) =! HIGH) ;
+	while ( digitalRead(w_reedPin) != HIGH) ;
 	w_t2 = millis() - DEBOUNCE - c_t1;
+	return(w_t2);
 }
 
 int RearWheel::get_lspeed()
