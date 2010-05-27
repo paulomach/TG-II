@@ -75,10 +75,10 @@ unsigned long FrontGear::read_cadence_sensor(int c_reedPin)
 	// TODO actually reads sensor and
 	// and return a long integer value
 	// in miliseconds. Use ISR
-	while ( digitalRead(c_reedPin) != HIGH) ;
+	while ( digitalRead(c_reedPin) != HIGH ) ;
 	c_t1 = millis();
 	delay(DEBOUNCE);
-	while ( digitalRead(c_reedPin) != HIGH) ;
+	while ( digitalRead(c_reedPin) != HIGH ) ;
 	c_t2 = millis() - DEBOUNCE - c_t1;
 	return(c_t2);
 }
@@ -93,16 +93,17 @@ unsigned long RearWheel::read_wspeed_sensor(int w_reedPin)
 	w_t1 = millis();
 	delay(DEBOUNCE);
 	while ( digitalRead(w_reedPin) != HIGH) ;
-	w_t2 = millis() - DEBOUNCE - c_t1;
+	w_t2 = millis() - DEBOUNCE - w_t1;
+	if (w_t2 > 5000) {w_t2 = 0;}
 	return(w_t2);
 }
 
+// Linear wheel speed:
+// V = w*r -> V = 2*pi*f*r
+// V = pi*D/T [m/ms]
+// V = 3.6*1000*pi*D/T [km/h]
 int RearWheel::get_lspeed()
 {
-	// Linear wheel speed:
-	// V = w*r -> V = 2*pi*f*r
-	// V = pi*D/T [m/ms]
-	// V = 3.6*1000*pi*D/T [km/h]
 	int lspeed;
 	lspeed = int((3600*3.1416*this->diameter)/w_t2);
 	return lspeed;
@@ -115,7 +116,7 @@ int Derailleur::get_gear(long int c_t, long int w_t){
 	// speed ratio between cadence/wheel_speed
 	// and return the time
 	float ratio;
-	if (c_t != 0) {
+	if ((c_t != 0) || (c_t > CADENCE_MIN)) {
 		ratio=c_t/w_t;
 		// These are invariant relations between the bicycle
 		// teeth ratios with 5 % tolerance

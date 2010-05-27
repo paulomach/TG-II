@@ -34,24 +34,29 @@
 // Objects instatiation
 Servo motor;
 Derailleur trocador;
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd(12, 11, 5, 4, 1, 0);
 RearWheel roda(0.52);
 FrontGear pedivela;
 
 // Constants
 const int b0Pin = 6;
 const int b1Pin = 7;
-const int r0Pin = 8;
-const int r1Pin = 10;
+const int r0Pin = 3;
+const int r1Pin = 2;
 const int pwmPin = 9;
 const int CADENCE_MIN = 2000;
 
 // Variables
-int marcha, wspeed, state=1;
+unsigned int marcha, wspeed, state=1;
 float K=1.00;
 unsigned long c_t, w_t;
 
+
+
+
+
 void setup() {
+        Serial.begin(9600);
 	lcd.begin(16,2);
 	lcd.print("Vel:");
 	lcd.setCursor(7,0);
@@ -60,6 +65,8 @@ void setup() {
 	lcd.print("Marcha:");
         lcd.setCursor(11,1);
         lcd.print("K:");
+        lcd.setCursor(14,0);
+        lcd.print("S");
         motor.attach(pwmPin);
 	pinMode(b0Pin, INPUT);
 	pinMode(b1Pin, INPUT);
@@ -80,32 +87,42 @@ void loop() {
   
         switch(state){
           case 1:
-            update_lcd();
+            //update_lcd();
+            Serial.print("Estado 1");
+            Serial.println(" ");
             state++;
             break;
           case 2:
-            w_t = roda.read_wspeed_sensor(r1Pin);
-            c_t = pedivela.read_cadence_sensor(r0Pin);
+            Serial.print("Estado 2");
+            Serial.println(" ");
+            //w_t = roda.read_wspeed_sensor(r1Pin);
+            //c_t = pedivela.read_cadence_sensor(r0Pin);
             if (c_t > CADENCE_MIN) {
                state = 1;
             }
             else { state++; }
             break;
           case 3:
+            Serial.print("Estado 1");
+            Serial.println(" ");
             marcha=trocador.get_gear(c_t, w_t);
             trocador.set_gear(motor, marcha, c_t, w_t, K);
             state=1;
             break;
         }
 
-
+        //update_lcd();
 	wspeed = roda.get_lspeed();	
         if (digitalRead(b1Pin) == HIGH) {
-          K=K+0.001;
+          Serial.print("B1");
+          Serial.println(" ");
+          K=K+0.01;
           if ( K >= 1.5 ) {K = 1.5;}
         }        
         if (digitalRead(b0Pin) == HIGH) {
-          K=K-0.001;
+          Serial.print("B0");
+          Serial.println(" ");
+          K=K-0.01;
           if ( K <= 0.5 ) {K = 0.5;}
         }
         
