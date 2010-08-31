@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# ratios.py - Interactive script to calculate gear time/teeth ratios
+# capacitence_n_resistance_calc.py - Interactive script to calculate
+# values to a low pass passive filter
 # Version 0.1
 #
 # This is file is part of a my final graduation work.
