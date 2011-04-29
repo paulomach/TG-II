@@ -63,7 +63,8 @@ volatile unsigned long wtimeLog[2];
 
 void setup() {
     //Serial.begin ( 9600 );
-    lcd.begin ( 16,2 ); lcd.print ( "Vel:" );
+    lcd.begin ( 16,2 ); lcd.print( "start up..." );
+    delay(2000); lcd.clear(); lcd.print ( "Vel:" );
     lcd.setCursor ( 8,0 ); lcd.print ( "kmph" );
     lcd.setCursor ( 0,1 ); lcd.print ( "Marcha:" );
     lcd.setCursor ( 10,1 ); lcd.print ( "K:" );
@@ -89,7 +90,7 @@ void update_lcd() {
     lcd.print ( K );
 }
 
-/*void update_serial() {
+void update_serial() {
     Serial.print ( "Velocidade: " ); Serial.print ( wspeed );
     Serial.print ("kmph"); Serial.println ( " " );
     Serial.print ( "Marcha: " ); Serial.print ( marcha ); Serial.println ( " " );
@@ -100,7 +101,7 @@ void update_lcd() {
     Serial.print (K); Serial.println ( " " );
     Serial.print (state); Serial.println ( " " );
     Serial.println ( " " );
-}*/
+}
 
 void loop() {
     switch ( state ) {

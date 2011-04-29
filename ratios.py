@@ -48,9 +48,13 @@ for i in l:
 	l1.append(min/i)
 	l2.append(max/i)
 
-print "Ratios ranges:"
-for i in range(0,gears):
-	print "%sst sprocket:" % int(i+1)
-	print "(ratio > %s ) && (ratio < %s)\n" % (l1[i], l2[i])
+if tol != 0:
+	print "\nRatios range:"
+	for i in range(0,gears):
+		print "%sst sprocket:" % int(i+1)
+		print "(ratio > %s ) && (ratio < %s)\n" % (l1[i], l2[i])
+else:
+	print "\nRatios vector:"
+	print l1
 
-print "DON'T FORGET TO APPLY CHANGES TO C++ CODE!"
+print "\nDON'T FORGET TO APPLY CHANGES TO C++ CODE!"
