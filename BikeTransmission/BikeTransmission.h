@@ -26,7 +26,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/libraries/Servo/Servo.h>
+#include <Servo.h>
 
 
 #ifndef BikeTransmission_h

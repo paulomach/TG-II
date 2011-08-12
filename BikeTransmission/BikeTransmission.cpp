@@ -29,8 +29,8 @@
 
 
 #include "BikeTransmission.h"
-#include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/libraries/Servo/Servo.h>
-#include </home/paulo/tmp/arduino-0017/build/linux/work/hardware/cores/arduino/WProgram.h>
+#include <Servo.h>
+#include <WProgram.h>
 
 const int GEAR_MAX=6;
 const int GEAR_MIN=1;
