@@ -37,7 +37,7 @@ print "in a simple RC low pass filter. Choose:"
 print "1 - Capacitor (resistence input value)"
 print "2 - Resistor (capacitance input value)"
 
-i = int(raw_input("Choice [1/2]: "))
+i = int(raw_input("Choose [1/2]: "))
 
 if i in [1,2]:
 	if i == 1:
