@@ -1,0 +1,110 @@
+%
+% preamble.tex - tex model of graduation work
+% Version 0.1
+%
+% Author: Paulo S. Machado
+% Date: June 2010
+%
+% Release under de GNU Public License v3.0 or greater
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public
+% License as published by the Free Software Foundation; either
+% version 3.0 of the License, or (at your option) any later version.
+% 
+% This template is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this template; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+%
+% Language
+\usepackage[portuges,brazil]{babel}
+\usepackage[top=3cm,bottom=3cm,left=3.0cm,right=3cm]{geometry}
+\usepackage{graphics}
+\usepackage{listings}
+\usepackage{textcomp}
+% Encoding
+\usepackage[utf8]{inputenc}
+
+%\usepackage{wrapfig}
+%\usepackage{hyperref}
+
+% This will commands into the pdf to create a linked table of contents, as well as links for 
+% the cross-references such as calls to figure and page numbers 
+\usepackage[a4paper=true,ps2pdf=true,pagebackref=true]{hyperref}  
+\hypersetup{
+  pdftitle 	= Trabalho de Graduação,
+  pdfauthor 	= Paulo Silveira Machado,
+  colorlinks	= true,
+  linkcolor	= black,
+  anchorcolor	= red,
+  citecolor	= blue,
+  filecolor	= red,  
+  urlcolor	= red
+}
+
+
+% Heading foot
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\headheight 15pt
+
+
+
+%\renewcommand{\chaptermark}[1]{\markboth{Chap. \thechapter:\ #1}{}} % Remember chapter title
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}} % section number and title
+
+\rhead[\fancyplain{}{\bfseries\thepage}] %
+    {\fancyplain{}{\bfseries\rightmark}}
+
+\lhead{}
+%\lhead[\fancyplain{}{\scshape\leftmark}] %
+%    {\fancyplain{}{\bfseries\thepage}}
+
+\cfoot{--~\thepage~--}
+
+
+% Figures with captions on the side
+\usepackage{sidecap}
+
+%\usepackage{times}
+
+\usepackage{graphicx}
+
+%% Control the fonts and formatting used in the table of contents.
+%\usepackage{tocloft}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % used to tittle page
+
+
+
+
+%% Aesthetic spacing redefines that look nicer to me than the defaults.
+%% \setlength{\cftbeforechapskip}{2ex}
+%% \setlength{\cftbeforesecskip}{0.5ex}
+%% Use Helvetica-Narrow Bold for Chapter entries
+%%\renewcommand{\cftchapfont}{%
+%%  \fontsize{11}{13}\usefont{OT1}{phv}{bc}{n}\selectfont
+%%}
+
+% More space for figure numbers
+%\setlength{\cftfignumwidth}{3.0em}
+% Space between elements of the list
+%\setlength{\cftbeforefigskip}{0.1cm}
+% Space before chapter entries in the TOC
+%\setlength{\cftbeforechapskip}{0.2cm}
+% Space before parts in the TOC
+%\setlength{\cftbeforepartskip}{0.7cm} 
+
+
+%% Because of the font change, the page number becomes too large for the
+%% horizontal space LaTeX reserves for it by default. Without the following
+%% redefines to fix it, this would cause the Chapter entry page numbers
+%% to extend a few points into the right margin. The horror!
+
+%% \makeatletter
+%% \renewcommand{\@pnumwidth}{1.75em}
+%% \renewcommand{\@tocrmarg}{2.75em}
+%% \makeatother

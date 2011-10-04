@@ -1,0 +1,10 @@
+*.aux
+*.dvi
+*.eps
+*.jpeg
+*.jpg
+*.log
+*.pdf
+*.png
+figures
+applet*
