@@ -116,7 +116,8 @@ boolean closeto(float param, float reference, float tolerance) {
 int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
 	int maxratioindex=5;
     float ratio;
-	float validratios[]={ 1.6428571428571428, 1.9166666666666667, 2.2999999999999998, 2.5555555555555554, 2.875, 3.2857142857142856 };
+	float validratios[]={ 1.6428571428571428, 1.9166666666666667,
+		2.2999999999999998, 2.5555555555555554, 2.875, 3.2857142857142856 };
 	int gearsforratios[]={ 1,2,3,4,5,6 };
 	
     if ( ( c_t != 0 ) || ( c_t > CADENCE_MIN ) ) {

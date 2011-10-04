@@ -44,11 +44,13 @@ if i in [1,2]:
 		fc = float(raw_input("Cutoff frequency[Hz]: "))
 		r = float(raw_input("Resistance [ohm]: "))
 		
-		print "You need a", Decimal(str(1/(2*3.1416*fc*r))).to_eng_string() ,"F capacitor"
+		print "You need a", Decimal(str(1/(2*3.1416*fc*r))).to_eng_string(), \
+			"F capacitor"
 	else:
 		fc = float(raw_input("Cutoff frequency[Hz]: "))
 		c = float(raw_input("Capacitance [F]: "))
-		print "You need a", Decimal(str(1/(2*3.1416*fc*c))).to_eng_string() ,"ohm resistor"
+		print "You need a", Decimal(str(1/(2*3.1416*fc*c))).to_eng_string(), \
+			"ohm resistor"
 else:
 	print "Invalid option", i, ". Exiting...\n"
 

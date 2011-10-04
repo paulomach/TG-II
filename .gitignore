@@ -1,4 +1,8 @@
 *.aux
+*.backup
+*.bbl
+*.blg
+*.brf
 *.cookie
 *.d
 *.dvi
