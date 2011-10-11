@@ -7,6 +7,9 @@
  * automatically control gear changes of a commom
  * bicycle derailleur.
  *
+ * Variables prefixed with "w" are referenced to wheel
+ * Variables prefixed with "c" are referenced to the cadence
+ *
  * Author: Paulo S. Machado
  * Date: October 2011
  *
@@ -42,8 +45,8 @@ RearWheel roda ( 0.65 );
 // Constants
 const int b0Pin = 11; // K-
 const int b1Pin = 12; // K+
-const int r0Pin = 3; //Roda
-const int r1Pin = 2; //Cadencia
+const int r0Pin = 3; // Wheel
+const int r1Pin = 2; // Cadence
 const int pwmPin = 9;
 const unsigned int CADENCE_MIN = 2000; // MIN SPEED = MAX TIME
 
@@ -59,9 +62,9 @@ volatile unsigned long wtime=0;
 volatile unsigned long ctimeLog[2];
 volatile unsigned long wtimeLog[2];
 
-
-
-
+/*
+ * General pins and startup routine
+ */
 void setup() {
     Serial.begin ( 9600 );
     lcd.begin ( 16,2 ); lcd.print( "start up..." );
@@ -69,8 +72,6 @@ void setup() {
     lcd.setCursor ( 8,0 ); lcd.print ( "kmph" );
     lcd.setCursor ( 0,1 ); lcd.print ( "Marcha:" );
     lcd.setCursor ( 10,1 ); lcd.print ( "K:" );
-    //lcd.setCursor ( 14,0 );
-    //lcd.print ( "S" );
     motor.attach ( pwmPin );
     pinMode ( b0Pin, INPUT );
     pinMode ( b1Pin, INPUT );
@@ -80,6 +81,9 @@ void setup() {
     attachInterrupt ( 0, cadence_monitor, FALLING );
 }
 
+/*
+ * Display refresh routine
+ */
 void update_lcd() {
     lcd.setCursor ( 4,0 );
     lcd.print("    ");
@@ -91,6 +95,9 @@ void update_lcd() {
     lcd.print ( K );
 }
 
+/*
+ * Serial debug output routine
+ */
 void update_serial() {
     Serial.print ( "Velocidade: " ); Serial.print ( wspeed );
     Serial.print ("kmph"); Serial.println ( " " );
@@ -104,14 +111,19 @@ void update_serial() {
     Serial.println ( " " );
 }
 
+/*
+ * Main loop - state machine
+ */
 void loop() {
     switch ( state ) {
     case 1:
+        // State 1 - just refresh display
         update_lcd();
         update_serial();
         state++;
         break;
-    case 2:      
+    case 2:
+        // check cadence time
         if (( ctime > CADENCE_MIN ) || ( ctime == 0)) {
             state = 1;
         } else {
@@ -119,10 +131,8 @@ void loop() {
         }
         break;
     case 3:
-        //noInterrupts();
         marcha=trocador.get_gear ( ctime, wtime );
         trocador.set_gear ( motor, marcha, ctime, wtime, K );
-        //interrupts();
         state=1;
         break;
     }
