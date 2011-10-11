@@ -8,7 +8,7 @@
  * bicycle derailleur.
  *
  * Author: Paulo S. Machado
- * Date: April 2010
+ * Date: October 2011
  *
  * Release under de GNU Public License v3.0 or greater
  * This library is free software; you can redistribute it and/or
@@ -31,10 +31,11 @@
 #include <Servo.h>
 
 
+
 // Objects instatiation
 Servo motor;
 Derailleur trocador;
-LiquidCrystal lcd ( 7, 6, 5, 4, 1, 0 );
+LiquidCrystal lcd ( 7, 6, 5, 4, 8, 10 );
 RearWheel roda ( 0.65 );
 //FrontGear pedivela;
 
@@ -62,7 +63,7 @@ volatile unsigned long wtimeLog[2];
 
 
 void setup() {
-    //Serial.begin ( 9600 );
+    Serial.begin ( 9600 );
     lcd.begin ( 16,2 ); lcd.print( "start up..." );
     delay(2000); lcd.clear(); lcd.print ( "Vel:" );
     lcd.setCursor ( 8,0 ); lcd.print ( "kmph" );
@@ -107,7 +108,7 @@ void loop() {
     switch ( state ) {
     case 1:
         update_lcd();
-        //update_serial();
+        update_serial();
         state++;
         break;
     case 2:      
@@ -129,16 +130,16 @@ void loop() {
     //wspeed = roda.get_lspeed ( wtime );
     wspeed = int( (3.6*3.1416*0.65)/(wtime*0.001) );
     if ( digitalRead ( b1Pin ) == HIGH ) {
-        //Serial.print ( "B1" );
-        //Serial.println ( " " );
+        Serial.print ( "B1" );
+        Serial.println ( " " );
         K=K+0.01;
         if ( K >= 1.5 ) {
             K = 1.5;
         }
     }
     if ( digitalRead ( b0Pin ) == HIGH ) {
-        //Serial.print ( "B0" );
-        //Serial.println ( " " );
+        Serial.print ( "B0" );
+        Serial.println ( " " );
         K=K-0.01;
         if ( K <= 0.5 ) {
             K = 0.5;
