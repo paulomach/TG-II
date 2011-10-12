@@ -22,7 +22,7 @@
 %
 \documentclass[a4paper,11pt]{article}
 
-\input{preamble/preamble.tex}
+\input{preamble.tex}
 
 
 \begin{document}
@@ -128,14 +128,17 @@ circuito do pwm \\
 \subsection{Software de controle}
 \label{sec:software}
 No início do projeto houve a intenção de usar técnicas de controle discreto no algoritmo de controle.
-Porém a grande dificuldade de modelar o problema físico levou a uma mudança de abordagem, do problema de controle para o problema de automação. Assim, baseado nas entradas e saídas do sistema a lógica apresentada na Figura \ref{fig: fluxograma1} foi elaborada, ainda na primeira parte deste trabalho. 
+Porém a grande dificuldade de modelar o problema físico levou a uma mudança de
+abordagem, do problema de controle para o problema de automação. Assim, baseado
+nas entradas e saídas do sistema a lógica apresentada na Figura
+\ref{fig:fluxograma1} foi elaborada, ainda na primeira parte deste trabalho.
 % Fluxograma
 \begin{figure}[ht]
  \begin{center}
   \includegraphics[width=0.80\textwidth]{fluxograma1}
  \end{center}
  \caption{Lógica de controle inicial}
- \label{fig: fluxograma1}
+ \label{fig:fluxograma1}
 \end{figure}
 Após o início da codificação, algumas 
 % evolução da lógica
@@ -181,9 +184,17 @@ A definição e uso de elementos sensores foi um dos grandes obstáculos deste p
  \item \textit{Reed switch}
  \item Sensor de efeito HALL
 \end{itemize}
-Os principais critérios de escolha, que permearam o projeto desde sua concepção, foram simplicidade e custo.
-Logo, foi feita a escolha óbvia pelo reed switch, o mais simples e barato entre todos. \\
-Porém, os \textit{reed switch} são chaves que geram muito ruído (\textit{bounce}) o sinal gerado precisa de um tratamento para que possa ser aproveitado. Foi considerado realizar o \textit{debounce} do sinal de duas formas: via software; ou via hardware. A primeira foi logo descartada pois as funções do programa responsáveis pelo cálculo de velocidade seriam rotinas de interrupção, ou seja, eles devem ter uma execução muito breve, caso contrário podem afetar a contagem de tempo do sistema. Uma função de \textit{debounce} em software envolve, inerentemente algum \textit{delay}.\\
+Os principais critérios de escolha, que permearam o projeto desde sua concepção,
+foram simplicidade e custo. Logo, foi feita a escolha óbvia pelo reed switch, o
+mais simples e barato entre todos. \\
+Porém, os \textit{reed switch} são chaves que geram muito ruído
+(\textit{bounce}) o sinal gerado precisa de um tratamento para que possa ser
+aproveitado. Foi considerado realizar o \textit{debounce} do sinal de duas
+formas: via software; ou via hardware. A primeira foi logo descartada pois as
+funções do programa responsáveis pelo cálculo de velocidade seriam rotinas de
+interrupção, ou seja, eles devem ter uma execução muito breve, caso contrário
+podem afetar a contagem de tempo do sistema. Uma função de \textit{debounce} em
+software envolve, inerentemente algum \textit{delay}.\\
 
 \begin{figure}[ht]
  \begin{center}
@@ -193,7 +204,12 @@ Porém, os \textit{reed switch} são chaves que geram muito ruído (\textit{boun
  \label{fig:lowpass}
 \end{figure}
 
-A única saída foi mesmo implementar o \textit{debounce} em hardware, utilizando um filtro passa-baixa passivo, que usa apenas um resistor e um capacitor, de acordo com o esquema da Figura \ref{fig: lowpass}. O ruído de um \textit{reed switch} comum está na faixa de 1500Hz a 2000Hz\cite{reed}. É possível estimar a frequência máxima ($f_{max}$) de ativação dos \textit{reeds} a partir de um limite de velocidade da roda ($v_{max} = 90 km/h = 25 m/s$):
+A única saída foi mesmo implementar o \textit{debounce} em hardware, utilizando
+um filtro passa-baixa passivo, que usa apenas um resistor e um capacitor, de
+acordo com o esquema da Figura \ref{fig:lowpass}. O ruído de um \textit{reed
+switch} comum está na faixa de 1500Hz a 2000Hz\cite{reed}. É possível estimar a
+frequência máxima ($f_{max}$) de ativação dos \textit{reeds} a partir de um
+limite de velocidade da roda ($v_{max} = 90 km/h = 25 m/s$):
 \begin{equation}
   v = \omega r = 2\pi f r \Rightarrow v_{max} = 2\pi f_{max} r
 \end{equation}
@@ -207,7 +223,11 @@ Tomando a frequência de corte ($f_{c}$) dada pela relação,
   f_{c} = \frac{\displaystyle 1}{\displaystyle 2\pi\tau} \text{, onde } \tau =
 RC
 \end{equation}
-igual a frequência máxima ($f_{max}$), diversas combinações de resistores e capacitores são possíveis. Logo, um pequeno script escrito em pyhton\cite{python} foi usado para ajudar a dimensionar os componentes, de acordo com o que foi adquirido (Sec. \ref{custos}) e o que foi obtido\footnote{Para este trabalho diversos aparelhos - placas mãe, caixas de som, entre outros -  foram canibalizados}.
+igual a frequência máxima ($f_{max}$), diversas combinações de resistores e
+capacitores são possíveis. Logo, o script \ref{code:lowpass} escrito em
+pyhton\cite{python} foi usado para ajudar a dimensionar os componentes, de
+acordo com o que foi adquirido (Sec. \ref{custos}) e o que foi
+obtido.
 
 
 %%%
@@ -247,7 +267,10 @@ Para a bancada de testes, n=6 e p=%TODO passo do cabo bancada.
 %
 \subsection{Custos do Projeto}
 \label{custos}
-Os custos dos materiais utilizados foram relativamente baixos. O reaproveitamento de componentes previamente adquiridos, e principalmente, o baixo custo dos componentes envolvidos possibilitaram minimizar esta soma. A Tabela \ref{tab: custos} a seguir computa os componentes e ferramentas.
+Os custos dos materiais utilizados foram relativamente baixos. O
+reaproveitamento de componentes previamente adquiridos, e principalmente, o
+baixo custo dos componentes envolvidos possibilitaram minimizar esta soma. A
+Tabela \ref{tab:custos} a seguir computa os componentes e ferramentas.
 {
 \newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
 \begin{table}[ht]
@@ -277,17 +300,18 @@ Resistores 10k (6x) & R\$ 0,78\\\hline
 
 \subsubsection{API da Biblioteca \textit{BikeTransmission}}
 \label{code:api}
-Arquivo de cabeçalhos \textit{BikeTransmission.h}:
+\textit{BikeTransmission.h}:
 \lstinputlisting{../BikeTransmission/BikeTransmission.h}
 
 \subsubsection{Implementação da Biblioteca \textit{BikeTransmission}}
 \label{code:impl}
-Implementação da biblioteca \textit{BikeTransmission.cpp}:
+\textit{BikeTransmission.cpp}:
 \lstinputlisting{../BikeTransmission/BikeTransmission.cpp}
 
 \subsubsection{Programa principal}
 \label{code:main}
-\lstinputlisting{../main/main.pde}
+\textit{principal.pde}
+\lstinputlisting{../principal/principal.pde}
 
 \subsubsection{\textit{Scripts} auxiliares}
 \label{code:helper_scripts}
@@ -318,6 +342,7 @@ Arquivo ratios.py - Calculo das relações entre marchas, em função do número
 
 Arquivo capacitance\_n\_resistance.py - calcula ora capacitância, ora resistência necessária para projeto de filtro passa-baixa passivo, a partir de um valor de entrada para a frequência de corte.
 \lstinputlisting{../capacitance_n_resistance_calc.py}
+\label{code:lowpass}
 
 
 
