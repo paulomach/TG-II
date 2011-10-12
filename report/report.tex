@@ -53,54 +53,66 @@
 % Estrutura do documento
 % Do que se trata
 % Estrutura do texto
-A idéia deste projeto surgiu das observações diárias de ciclistas e uso da bicicleta, onde pude perceber
-que a maioria das pessoas não sabe utilizar de forma eficiente as marchas de suas bicicletas. Assim como
-em uma transmissão automotiva, maus hábitos no seu manejo - esticar marchas, manter a mão apoiada sobre a 
-alavanca, entre outros - causam desgaste precoce dos componentes, esforços desnecessários (neste caso para
-ciclista) e até risco de segurança. Logo, porque não automatizar este mecanismo de troca de marcha, muito 
-mais simples que uma transmissão automotiva?
+A ideia deste projeto surgiu das observações diárias de ciclistas e do uso
+da bicicleta, onde grande parte das pessoas não sabe utilizar de
+forma eficiente as marchas de suas bicicletas. Estas parecem ser
+complicadas (\textit{mountain bikes} simples possuem pelo menos 18 marchas) e de
+difícil manejo e configuração. Assim como em uma transmissão automotiva, maus
+hábitos no seu manejo -- esticar marchas, manter a mão apoiada sobre a alavanca,
+entre outros -- causam desgaste precoce dos componentes, esforços desnecessários
+(neste caso para ciclista) e até risco de segurança.
 \\
-Este relatório apresenta o desenvolvimento e resultados do trabalho proposto e estudado na primeira 
-disciplina de Trabalho de Graduação, onde foram construídas as base teóricas e ferramentais para a construção 
-de um protótipo funcional: construção da bancada experimental; desenvolvimento da lógica; e estudo de soluções 
-existentes. Ou seja, dados os objetivos do projeto - software de controle, circuito de controle, atuados mecânico 
-e a junção destes no protótipo - apresenta-se o caminho percorrido até o objetivo e os resultados alcançados.
+O benefício primordial de qualquer automação (i.e. retirar do usuário o
+controle ou parte do controle sobre o sistema que interage) é a melhora no
+fluxo do processo devido ao grande controle que tem se sobre o sistema. Os
+resultados deste benefício são, em alto nível, o aumento da qualidade,
+repetibilidade e uniformidade, aplicação de estratégias ótimas de controle e
+simplicidade na interação com utilizador.
 \\
-O documento foi estruturado de forma a descrever as alternativas, escolhas e desenvolvimento de cada parte funcional
-do protótipo final.
-% explanação do mecanismo
-% partes funcionais
-%       microcontrolador
-%       cicuito
-%       bancada
-% inteligência
-%       software
-% protótipo
-% testes
-% resultados
-% Conclusão
-% bibliography
-% anexos
-%   atuador
-%   sensores
+Este relatório apresenta o desenvolvimento e resultados do trabalho proposto e
+estudado na primeira disciplina de Trabalho de Graduação: a construção de um
+protótipo funcional de um sistema de troca de marchas automatizados para
+bicicletas convencionais. Neste primeiro trabalho foram construídas as base
+teóricas e ferramentais para a construção de um protótipo funcional: construção
+da bancada experimental; desenvolvimento da lógica; e estudo de soluções 
+existentes. Ou seja, dados os objetivos do projeto -- software de controle,
+circuito de controle, atuados mecânico e a junção destes no protótipo --
+apresenta-se o caminho percorrido até o objetivo e os resultados alcançados.
+\\
+O documento foi estruturado de forma a descrever o problema de engenharia, as
+alternativas consideradas, escolhas e desenvolvimento de cada parte funcional do
+protótipo final.
+
 
 \pagebreak
 %%%
 %
 \section{Introdução}
 \label{sec:intro}
-Problema de engenharia.
+Automação ou Controle? Esta foi a tônica do início do projeto. A solução de
+controle, mais elegante, mostrou-se pouco tangível devido a dificuldade de
+modelar o sistema mecânico completo e logo foi abandonada.
 
 \pagebreak
 %%%
 %
 \section{Desenvolvimento das partes}
 \label{sec:partes}
-O projeto foi dividido em partes, com desenvolvimento em paralelo, para agilizar o processo e para que mudanças no projeto de alguma das partes refletissem imediatamente nas outras. Esta sinergia foi mais forte entre o Circuito de controle (Sec. \ref{sec:arduino}) e o Software de controle (Sec. \ref{sec:software}).
+O projeto foi dividido em partes, com desenvolvimento em paralelo, para agilizar
+o processo e para que mudanças no projeto de alguma das partes refletissem
+imediatamente nas outras. Esta sinergia foi mais forte entre o Circuito de
+controle (Sec. \ref{sec:arduino}) e o Software de controle (Sec.
+\ref{sec:software}).
 
 \subsection{Bancada experimental}
 \label{sec:bancada}
-Criar uma bancada para este projeto sempre foi uma das premissas básicas, tanto que constituia um dos objetivos da primeira parte deste trabalho de graduação. Simular os sinais do sistema via algum tipo de software ou kit não foi considerada como opção, pois nenhuma nuance de um sistema real deveria ser perdida. Logo a solução elaborada no primeiro trabalho foi usar uma bicicleta convencional e transformá-la adequadamente. O resultado é apresentado na Figura \ref{fig:bancada}.
+Criar uma bancada para este projeto sempre foi uma das premissas básicas, tanto
+que constituía um dos objetivos da primeira parte deste trabalho de graduação.
+Simular os sinais do sistema via algum tipo de software ou kit não foi
+considerada como opção, pois nenhuma nuance de um sistema real deveria ser
+perdida. Logo a solução elaborada no primeiro trabalho foi usar uma bicicleta
+convencional e transformá-la adequadamente. O resultado é apresentado na Figura
+\ref{fig:bancada}.
 \begin{figure}[ht]
  \begin{center}
   \includegraphics[width=4in]{bancada_tratada}
@@ -108,8 +120,13 @@ Criar uma bancada para este projeto sempre foi uma das premissas básicas, tanto
  \caption{Bancada experimental - TG I}
  \label{fig:bancada}
 \end{figure}
-Ou seja, a bancada é uma meia bicicleta - com a parte traseira, onde estão os elementos da transmissão - onde foram soldados apoios, possibilitando ``pedalar no vazio'' e realizar os testes do projeto, fiel a um cenário real. \\
-Os problemas relativos a bancada foram muitos e surgiram no momento prévio aos testes, quando os componentes da transmissão foram montados. As peças disponíveis não foram escolhidas corretamente (corrente curta, coroa dianteira não casou com o corrente), o que causou novos custos e atraso nos testes.
+Ou seja, a bancada é uma meia bicicleta - com a parte traseira, onde estão os
+elementos da transmissão  -- onde foram soldados apoios, possibilitando
+``pedalar no vazio'' e realizar os testes do projeto, fiel a um cenário real. \\
+Os problemas relativos a bancada foram muitos e surgiram no momento prévio aos
+testes, quando os componentes da transmissão foram montados. As peças
+disponíveis não foram escolhidas corretamente (corrente curta, coroa dianteira
+não casou com o corrente), o que causou novos custos e atraso nos testes.
 
 %%%
 %
@@ -177,7 +194,10 @@ Após o início da codificação, algumas
 %
 \subsection{Elementos sensores}
 \label{sensores}
-A definição e uso de elementos sensores foi um dos grandes obstáculos deste projeto. Estes deveriam ser usados para a leitura de pulsos a cada revolução da roda e do pedivela, gerando a informação de velocidade básica ao algoritmo de controle. As soluções analisadas foram:
+A definição e uso de elementos sensores foi um dos grandes obstáculos deste
+projeto. Estes deveriam ser usados para a leitura de pulsos a cada revolução da
+roda e do pedivela, gerando a informação de velocidade básica ao algoritmo de
+controle. As soluções analisadas foram:
 \begin{itemize}
  \item Sensor capacitivo
  \item Sensor indutivo
@@ -185,7 +205,7 @@ A definição e uso de elementos sensores foi um dos grandes obstáculos deste p
  \item Sensor de efeito HALL
 \end{itemize}
 Os principais critérios de escolha, que permearam o projeto desde sua concepção,
-foram simplicidade e custo. Logo, foi feita a escolha óbvia pelo reed switch, o
+foram simplicidade e custo. Logo, foi feita a escolha pelo reed switch, o
 mais simples e barato entre todos. \\
 Porém, os \textit{reed switch} são chaves que geram muito ruído
 (\textit{bounce}) o sinal gerado precisa de um tratamento para que possa ser
