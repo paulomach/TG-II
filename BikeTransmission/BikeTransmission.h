@@ -28,24 +28,9 @@
 
 #include <Servo.h>
 
-
 #ifndef BikeTransmission_h
 #define BikeTransmission_h
-
 #endif
-
-
-
-/* FrontGear - front sprocket model
- * attributes:
- *
- * methods:
- *	read_cadence_sensor - update period of sprocket cycle
- */
-class FrontGear {
-public:
-    //unsigned long read_cadence_sensor ( int c_reedPin );
-};
 
 /* RearWheel - rear wheel model
  * attributes:

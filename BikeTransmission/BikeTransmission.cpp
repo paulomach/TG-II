@@ -49,16 +49,20 @@ const int CADENCE_MAX=100;
 const float UP_OFFSET=1.3;
 const float DOWN_OFFSET=1.3;
 
-// Debounce time for reed switch.
-// This approach limits wheel speed
-// to V = pi*D*3.6*1000/T (T stands for
-// period in milliseconds
-const int DEBOUNCE=70;	// 84 kmph
+/*
+ * Debounce time for reed switch.
+ * This approach limits wheel speed
+ * to V = pi*D*3.6*1000/T (T stands for
+ * period in milliseconds
+ */ 
+const int DEBOUNCE=70;// 84 kmph
 
 
-// Time variables for speed reading:
-// c_t - cadence time
-// w_t - wheel time
+/*
+ * Time variables for speed reading:
+ * c_t - cadence time
+ * w_t - wheel time
+ */
 unsigned long c_t1, c_t2, w_t1, w_t2;
 
 
@@ -79,7 +83,6 @@ RearWheel::RearWheel ( float _diameter ) {
  */
 int RearWheel::get_lspeed ( unsigned long T ) {
     int lspeed;
-    Serial.print("RearWheel get_lspeed ");
     // condition to speed less than 1km/h
     if ( ( T > 7350 ) || ( T == 0 ) ) return 0;
     lspeed = round( (1000*3.6*3.1416*(this->diameter))/T );
@@ -116,6 +119,11 @@ int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
     else return 0; // Return code when coasting
 }
 
+/*
+ * Core method of the library. responsable
+ * for choosing and setting a new gear
+ * position
+ */
 void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t, float K ) {
     if ( gear != 0 ) {
         if ( ( c_t < CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
