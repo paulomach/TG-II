@@ -1,0 +1,67 @@
+%
+% preamble.tex - tex model of graduation work
+% Version 0.1
+%
+% Author: Paulo S. Machado
+% Date: June 2010
+%
+% Release under de GNU Public License v3.0 or greater
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public
+% License as published by the Free Software Foundation; either
+% version 3.0 of the License, or (at your option) any later version.
+% 
+% This template is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this template; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+%
+% Language
+\usepackage[portuges,brazil]{babel}
+\usepackage[top=3cm,bottom=3cm,left=3.0cm,right=3cm]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+% Encoding
+\usepackage[utf8]{inputenc}
+
+%\usepackage{wrapfig}
+%\usepackage{hyperref}
+
+% This will commands into the pdf to create a linked table of contents, as well
+%as links for 
+% the cross-references such as calls to figure and page numbers 
+\usepackage[pagebackref=true]{hyperref}  
+\hypersetup{
+  pdftitle     = Trabalho de Graduação,
+  pdfauthor    = Paulo Silveira Machado,
+  colorlinks   = true,
+  linkcolor    = black,
+  anchorcolor  = red,
+  citecolor    = blue,
+  filecolor    = red,  
+  urlcolor     = red
+}
+
+
+
+\DeclareGraphicsExtensions{.jpg,.jpeg,.png}
+\graphicspath{{../../imagens/}}
+% Heading foot
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\headheight 15pt
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\rhead[\fancyplain{}{\bfseries\thepage}] %
+    {\fancyplain{}{\bfseries\rightmark}}
+\lhead{}
+%\lhead[\fancyplain{}{\scshape\leftmark}] %
+%    {\fancyplain{}{\bfseries\thepage}}
+\cfoot{--~\thepage~--}
