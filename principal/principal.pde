@@ -49,6 +49,7 @@ const int r0Pin = 3; // Wheel
 const int r1Pin = 2; // Cadence
 const int pwmPin = 9;
 const unsigned int CADENCE_MIN = 2000; // MIN SPEED = MAX TIME
+const unsigned long RESET_TIMEOUT = 1500; // Timeout for reset timers
 
 // Variables
 unsigned int marcha, wspeed, state=1;
@@ -118,6 +119,7 @@ void loop() {
     switch ( state ) {
     case 1:
         // State 1 - just refresh display
+        wspeed = roda.get_lspeed ( wtime );
         update_lcd();
         update_serial();
         state++;
@@ -137,8 +139,9 @@ void loop() {
         break;
     }
 
-    //wspeed = roda.get_lspeed ( wtime );
-    wspeed = int( (3.6*3.1416*0.65)/(wtime*0.001) );
+    /*
+     * Button 1 read, k++
+     */
     if ( digitalRead ( b1Pin ) == HIGH ) {
         Serial.print ( "B1" );
         Serial.println ( " " );
@@ -147,6 +150,9 @@ void loop() {
             K = 1.5;
         }
     }
+    /*
+     * Button 0 read, k--
+     */
     if ( digitalRead ( b0Pin ) == HIGH ) {
         Serial.print ( "B0" );
         Serial.println ( " " );
@@ -156,10 +162,15 @@ void loop() {
         }
     }
     delay ( 500 );
-
+    reset_timers();
 }
 
+/*
+ * wheel time interrupt
+ * routine
+ */
 void wheel_monitor() {
+    // first time log
     if ( w == false ) {
         wtimeLog[0] = millis();
         w=true;
@@ -171,7 +182,12 @@ void wheel_monitor() {
     }
 }
 
+/*
+ * cadence time interrupt
+ * routine
+ */
 void cadence_monitor() {
+    // first time log
     if ( c == false ) {
         ctimeLog[0] = millis();
         c=true;
@@ -181,4 +197,17 @@ void cadence_monitor() {
         ctime = ctimeLog[1] - ctimeLog[0];
         ctimeLog[0] = ctimeLog[1];
     }
+}
+
+/*
+ * timers reset routine
+ */
+void reset_timers() {
+  unsigned long now = millis();
+  if (now - wtimeLog[0] > RESET_TIMEOUT) {
+    wtime = 0;
+  }
+  if (now - ctimeLog[0] > RESET_TIMEOUT) {
+    ctime = 0;
+  }
 }
