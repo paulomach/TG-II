@@ -8,7 +8,7 @@
  * bycicle derailleur.
  *
  * Author: Paulo S. Machado
- * Date: April 2010
+ * Date: October 2011
  *
  * Release under de GNU Public License v3.0 or greater
  * This library is free software; you can redistribute it and/or

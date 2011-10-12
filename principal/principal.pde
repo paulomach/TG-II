@@ -121,14 +121,14 @@ void update_serial() {
 void loop() {
   switch ( state ) {
   case 1:
-    // State 1 - just refresh display
+    // just refresh display
     wspeed = roda.get_lspeed ( wtime );
     update_lcd();
     update_serial();
     state++;
     break;
   case 2:
-    // check cadence time
+    // check if coasting
     if (( ctime > CADENCE_MIN ) || ( ctime == 0)) {
       state = 1;
     } 
@@ -137,6 +137,7 @@ void loop() {
     }
     break;
   case 3:
+    // act over transmission
     marcha=trocador.get_gear ( ctime, wtime );
     trocador.set_gear ( motor, marcha, ctime, wtime, K );
     state=1;
@@ -144,18 +145,16 @@ void loop() {
   }
 
   /*
-     * Button 1 read, k++
+   * Button 1 read, k++
    */
   if ( digitalRead ( b1Pin ) == HIGH ) {
-    Serial.print ( "B1" );
-    Serial.println ( " " );
     K=K+0.01;
     if ( K >= 1.5 ) {
       K = 1.5;
     }
   }
   /*
-     * Button 0 read, k--
+   * Button 0 read, k--
    */
   if ( digitalRead ( b0Pin ) == HIGH ) {
     Serial.print ( "B0" );

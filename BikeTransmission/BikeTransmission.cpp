@@ -8,7 +8,7 @@
  * bicycle Derailleur.
  *
  * Author: Paulo S. Machado
- * Date: April 2010
+ * Date: October 2011
  *
  * Release under de GNU Public License v3.0 or greater
  * This library is free software; you can redistribute it and/or
@@ -94,7 +94,8 @@ int RearWheel::get_lspeed ( unsigned long T ) {
  * tolerance [%] of reference:
  */
 boolean closeto(float param, float reference, float tolerance) {
-    return ( param >= (reference*(100-tolerance)/100) ) && ( param <= (reference*(100+tolerance)/100) );
+    return ( param >= (reference*(100-tolerance)/100) ) &&
+      ( param <= (reference*(100+tolerance)/100) );
 }
 
 int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
