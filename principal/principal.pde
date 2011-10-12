@@ -39,17 +39,17 @@
 Servo motor;
 Derailleur trocador;
 LiquidCrystal lcd ( 7, 6, 5, 4, 8, 10 );
-RearWheel roda ( 0.65 );
+RearWheel roda ( 0.65 );  
 
 // Constants
-const int b0Pin = 11; // K-
-const int b1Pin = 12; // K+
-const int r0Pin = 3; // Wheel
-const int r1Pin = 2; // Cadence
-const int pwmPin = 9;
-const unsigned int CADENCE_MIN = 2000; // MIN SPEED = MAX TIME
-const unsigned long RESET_TIMEOUT = 1500; // Timeout for reset timers
-const int debugLevel = 1; // Set debug verbosity in serial
+const int b0Pin = 11;   // K-
+const int b1Pin = 12;   // K+
+const int r0Pin = 3;    // Wheel
+const int r1Pin = 2;    // Cadence
+const int pwmPin = 9;   // PWM pin
+const unsigned int CADENCE_MIN = 2000;  // MIN SPEED = MAX TIME coasting
+const unsigned long RESET_TIMEOUT = 2000; // Timeout for reset timers
+const int debugLevel = 2; // Set debug verbosity in serial
 
 // Variables
 unsigned int marcha, wspeed, state=1;
