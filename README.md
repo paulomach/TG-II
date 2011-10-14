@@ -15,5 +15,5 @@ In the current stage I'm not open to external contribution, mainly because now m
 
 Tips
 ----
-Nice svg repository with circuit components here[http://www.nemsim.com/ece395blimp/fritzing/parts/svg/core/breadboard/]
+Nice svg repository with circuit components [here](http://www.nemsim.com/ece395blimp/fritzing/parts/svg/core/breadboard/)
 
