@@ -97,7 +97,7 @@ obrigatoriamente pela análise do problema físico.
 A transmissão ciclística é tal qual mostrado na figura \ref{fig:transmissao}.
 \begin{figure}[ht]
 \begin{center}
- \includegraphics[width=6in]{transmissao}
+ \includegraphics[width=5.5in]{transmissao}
 \end{center}
   \caption{Componentes de uma transmissão ciclística}
   \label{fig:transmissao}
@@ -187,6 +187,7 @@ Após o estabelecimento
   \item Baixo custo
   \item Adaptabilidade ao sistema existente
   \item Possibilidade de configuração de parâmetros
+  \item Interface com usuário
 \end{itemize}
 
 
@@ -229,26 +230,9 @@ não casou com o corrente), o que causou novos custos e atraso nos testes.
 %%%
 %
 \subsection{Circuito de controle}
-\label{sec:arduino}
+\label{sec:montagem}
 O circuito de controle foi montado sobre uma placa de prototipação (protoboard)
-e, contêm:
-\begin{itemize}
-  \item Dois filtros RC passa-baixa ligados aos \textit{reed switch}
-  \item Dois botões
-  \item Montagem de display LCD 16x2
-  \item Kit Arduino
-\end{itemize}
-
-
-Arduino\\
-botões da constante K \\
-Display LCD \\
-debounce em hardware e software \\
-comunicação serial \\
-foto da montagem \\
-circuito do pwm \\
-
-O esquema geral dos componentes do circuito está na figura \ref{fig:montagem}.
+e seu esquema geral é apresentado na figura \ref{fig:montagem}.
 Os componentes podem ser separados em três grupos funcionais: saídas, controle
 e entradas.
 \begin{figure}[ht]
@@ -259,72 +243,88 @@ e entradas.
   \label{fig:montagem}
 \end{figure}
 Nessa classificação são: saídas, servo motor e LCD (\textit{Liquid
-Crystal Display}; controle, MCU (\textit{Micro Controler Unit}); e entradas os
+Crystal Display}; controle, MCU (\textit{MicroControler Unit}); e entradas os
 \textit{push buttons} e \textit{reed switch}. Os componentes utilizados e
 detalhes da integração são descritos a seguir.
 
 \subsubsection{Servo Motor}
 \label{sec:servo}
-Servo motores são 
+O servo motor é o único atuador deste projeto, sendo responsável pela atuação
+sobre o cabo do \textit{derailleur} e consequente troca de marchas. Duas
+perguntas foram elaboradas para ajudar na definição de um atuador: Qual a
+forma mais simples de atuar sobre um cabo utilizando um motor rotativo? Qual
+tipo de motor é confiável de controle simples? A reposta, encontrada a partir
+do estudo realizado na primeira parte do trabalho de graduação é, uma polia
+acoplada a um servo motor.
 
-%%%
-%
-\subsection{Software de controle}
-\label{sec:software}
-No início do projeto houve a intenção de usar técnicas de controle discreto no algoritmo de controle.
-Porém a grande dificuldade de modelar o problema físico levou a uma mudança de
-abordagem, do problema de controle para o problema de automação. Assim, baseado
-nas entradas e saídas do sistema a lógica apresentada na Figura
-\ref{fig:fluxograma1} foi elaborada, ainda na primeira parte deste trabalho.
-% Fluxograma
+O raio da polia foi dimensionado de tal forma que, dado que um servo motor
+rotaciona 180\textdegree, meia circunferência da polia seja deslocamento
+suficiente para movimentar o \textit{derailleur} da menor a maior marcha.
+Assim, definimos o raio da polia ($r_{polia}$), o número de marchas (n) e o
+passo (p) como o deslocamento necessário do cabo de comando para a mudança de
+uma marcha consecutiva, de tal forma que:
+\begin{equation*}
+  \frac{\displaystyle 2\pi r_{polia} }{\displaystyle 2} = (n-1)p
+\end{equation*}
+\begin{equation}
+  r_{polia} = \frac{\displaystyle (n-1)p}{\displaystyle \pi}s
+\end{equation}
+Para a bancada de testes, n=6 e p=%TODO passo do cabo bancada.
+
+Pequenos servos RC (motores destinados ao mercado de hobbistas) são baratos,
+fáceis de encontrar, robustos e seu controle é feito por um sinal PWM. O
+servo motor escolhido foi um Futaba S3004, visto na figura \ref{fig:
+servo}. O S3004 possui rolamentos de esferas no eixo de saída, e torque de
+4.1kg-cm a 6 volts.
+
 \begin{figure}[ht]
  \begin{center}
-  \includegraphics[width=4in]{fluxograma1}
+  \includegraphics[width=3in]{S3004}
  \end{center}
- \caption{Fluxo lógico do processo de automático}
- \label{fig:fluxograma1}
+ \caption{Servo Futaba S3004}
+ \label{fig: servo}
 \end{figure}
-Após o início da codificação, algumas 
-% evolução da lógica
-%TODO fluxograma da máquina de estado
 
-%estrutura do código biblioteca e codigo
- 
-%%%
-%
-\subsection{Protótipo}
-\label{sec:prototipo}
+Dois complicadores existem na utilização de servos motores\cite{servo}, em
+relação a seu comportamento elétrico. O primeiro, como todo componente indutivo,
+são os picos de corrente a cada mudança de posição, que podem drenar toda
+corrente destinada ao controlador. O segundo complicador é o ruído, tanto gerado
+pelo servo, quanto captado pelo cabo de sinal -- é comum ver um servo "tremendo"
+quando em repouso, pois o cabo do sinal atua como uma antena. Para mitigar estes
+efeitos a alimentação do servo foi isolada da alimentação do resto do
+protótipo. O único cuidado adicional é manter as referências no mesmo
+potencial, ou seja, manter o terra dos dois circuitos no mesmo potencial.
 
+\subsubsection{Display LCD 16x2}
+\label{sec:lcd}
 
-\pagebreak
-%%%
-%
-\section{Testes e Resultados}
-\label{sec:resultados}
+Como o sistema propõe uma interface com o usuário, um display LCD foi escolhido
+para executar este papel. A principal vantagem deste tipo de display é o baixo
+consumo de energia, essencial em sistemas embarcados, devido a independência de
+uma fonte de luz própria. O tamanho de 16 caracteres e duas linhas é suficiente
+para mostrar as informações de velocidade imediata, a marcha engatada e o valor
+da constante de ajuste, planejadas para esta interface.
 
-\pagebreak
-%%%
-%
-\section{Conclusões}
-\label{sec:conclusoes}
-% dificuldades
-% trabalhos futuros (dinamo e gerenciamento de energia, memoria persistente, ajuste das relações)
+O display utilizado é um JHD-162a\cite{lcd} de fabricante desconhecido e
+facilmente encontrado no mercado, visto na figura \ref{fig:lcd}.
+\begin{figure}[ht]
+\begin{center}
+ \includegraphics[width=3in]{jhd162a}
+\end{center}
+  \caption{Display LCD 16x2}
+  \label{fig:lcd}
+\end{figure}
 
+A montagem do display não ofereceu nenhum problema, funcionando \textit{out of
+the box}, o que é creditado a fartura de boa documentação encontrada na
+Internet.
 
-\pagebreak
-%%%
-%
-\section{Anexos}
-\label{sec:anexos}
-
-%%%
-%
-\subsection{Elementos sensores}
-\label{sensores}
+\subsubsection{Reed Switch}
+\label{sec:reed}
 A definição e uso de elementos sensores foi um dos grandes obstáculos deste
 projeto. Estes deveriam ser usados para a leitura de pulsos a cada revolução da
-roda e do pedivela, gerando a informação de velocidade básica ao algoritmo de
-controle. As soluções analisadas foram:
+roda e do pedivela, gerando as informações de velocidades, básica ao algoritmo
+de controle. As soluções analisadas foram:
 \begin{itemize}
  \item Sensor capacitivo
  \item Sensor indutivo
@@ -332,20 +332,22 @@ controle. As soluções analisadas foram:
  \item Sensor de efeito HALL
 \end{itemize}
 Os principais critérios de escolha, que permearam o projeto desde sua concepção,
-foram simplicidade e custo. Logo, foi feita a escolha pelo reed switch, o
-mais simples e barato entre todos. \\
-Porém, os \textit{reed switch} são chaves que geram muito ruído
-(\textit{bounce}) o sinal gerado precisa de um tratamento para que possa ser
-aproveitado. Foi considerado realizar o \textit{debounce} do sinal de duas
-formas: via software; ou via hardware. A primeira foi logo descartada pois as
-funções do programa responsáveis pelo cálculo de velocidade seriam rotinas de
-interrupção, ou seja, eles devem ter uma execução muito breve, caso contrário
-podem afetar a contagem de tempo do sistema. Uma função de \textit{debounce} em
-software envolve, inerentemente algum \textit{delay}.\\
+foram simplicidade e custo. O escolhido foi o  \textit{reed switch}, que
+oferece uma enorme margem de vantagem nos critérios escolhidos.
+
+Um problema grave dos \textit{reed switch} é o ruído gerado na
+sua operação. Devido ao \textit{bounce}\cite{reed} o sinal gerado precisa de um
+tratamento para que possa ser aproveitado. Foi considerado realizar o
+\textit{debounce} do sinal de duas formas: via software; ou via hardware. A
+primeira foi descartada pois as funções do programa responsáveis pelo
+cálculo de velocidade seriam rotinas de interrupção, ou seja, eles devem ter uma
+execução muito breve, caso contrário podem afetar a contagem de tempo do
+sistema. Uma função de \textit{debounce} em software envolve, inerentemente
+algum \textit{delay}.
 
 \begin{figure}[ht]
  \begin{center}
-  \includegraphics[width=1.8in]{lowpass}
+  \includegraphics[width=1.5in]{lowpass}
  \end{center}
  \caption{Filtro passa-baixa passivo}
  \label{fig:lowpass}
@@ -360,7 +362,8 @@ limite de velocidade da roda ($v_{max} = 90 km/h = 25 m/s$):
 \begin{equation}
   v = \omega r = 2\pi f r \Rightarrow v_{max} = 2\pi f_{max} r
 \end{equation}
-O diâmetro da roda com pneu foi medido em d =65cm = 0.65m. Portanto, para velocidade máxima de 90 km/h:
+O diâmetro da roda com pneu foi medido em d=65cm = 0.65m. Portanto, para
+velocidade máxima de 90 km/h:
 \begin{equation}
   f_{max} = \frac{\displaystyle v_{max}}{\displaystyle \pi d} =
 \frac{\displaystyle 25}{\displaystyle \pi 0.65} = 12.243 Hz
@@ -371,44 +374,86 @@ Tomando a frequência de corte ($f_{c}$) dada pela relação,
 RC
 \end{equation}
 igual a frequência máxima ($f_{max}$), diversas combinações de resistores e
-capacitores são possíveis. Logo, o script \ref{code:lowpass} escrito em
-pyhton\cite{python} foi usado para ajudar a dimensionar os componentes, de
-acordo com o que foi adquirido (Sec. \ref{custos}) e o que foi
+capacitores são possíveis. Logo, o script \ref{code:filter} escrito em
+linguagem pyhton\cite{python} foi usado para ajudar a dimensionar os
+componentes, de acordo com o que foi adquirido (Sec. \ref{custos}) e o que foi
 obtido.
 
+\subsubsection{Push buttons}
+\label{sec:buttons}
+Os \textit{push buttons} têm a função de modificação da constante de ajuste do
+sistema, incrementado ou decrementando seu valor. São elementos bastante
+simples, que como os \textit{reed switch}, produzem ruído pelo fenômeno de
+\textit{bouncing}. Porém como a sua aplicação não é crítica, não houve a
+preocupação em tratar o sinal, pois o funcionamento do sistema praticamente não
+é prejudicado por estas falhas.
+
+A única observação feita em relação a montagem dos \textit{push buttons} é a
+topologia \textit{pull down}.
+%TODO explicar pull down.
+
+
+\subsubsection{Microcontrolador}
+\label{sec:mcu}
+%TODO microcontrolador e arduino
+AVR Atmel Atmega168, por causa do arduino. PWM em hardware. uma pá de I/O.
+%%%
+%
+\subsection{Algoritmo de controle}
+\label{sec:software}
+Baseado nas entradas e saídas do sistema a lógica apresentada na Figura
+\ref{fig:fluxograma1} foi elaborada, ainda na primeira parte deste trabalho.
+% Fluxograma
+\begin{figure}[ht]
+ \begin{center}
+  \includegraphics[width=4in]{fluxograma1}
+ \end{center}
+ \caption{Fluxo lógico do processo de automático}
+ \label{fig:fluxograma1}
+\end{figure}
+Após o início da codificação, algumas 
+
+%TODO fluxograma da máquina de estado
+
+
+ 
+%%%
+%
+\subsection{Protótipo}
+\label{sec:prototipo}
+%TODO protótipo
+Montagem completa, fotos.
+
+\pagebreak
+%%%
+%
+\section{Testes e Resultados}
+\label{sec:resultados}
+%TODO teste
+Pegar o bixo, definir cenários de uso, fotos, resultados, ajustes, iteração...
+
+\pagebreak
+%%%
+%
+\section{Conclusões}
+\label{sec:conclusoes}
+%TODO concluir
+Dificuldades
+
+Trabalhos futuros (dínamo e gerenciamento de energia, memoria persistente,
+ajuste das relações)
+
+Ficar milionário
+
+
+\pagebreak
+%%%
+%
+\section{Anexos}
+\label{sec:anexos}
 
 %%%
 %
-\subsection{Elemento atuador}
-\label{atuador}
-Duas perguntas foram elaboradas para ajudar na definição de um atuador: Qual a
-forma mais simples de atuar sobre um cabo utilizando um motor rotativo? Qual
-tipo de motor é confiável e fácil de controlar? As repostas são,
-respectivamente, uma polia e servo motor. \\
-O raio da polia foi dimensionado de tal forma que, dado que um servo motor
-rotaciona 180\textdegree, meia circunferência da polia seja deslocamento
-suficiente para movimentar o derailleur da menor a maior marcha. Assim,
-definimos o raio da polia ($r_{polia}$), o número de marchas (n) e o passo (p)
-como o deslocamento necessário do cabo de comando para a mudança de uma marcha
-consecutiva, de tal forma que:
-\begin{equation*}
-  \frac{\displaystyle 2\pi r_{polia} }{\displaystyle 2} = (n-1)p
-\end{equation*}
-\begin{equation}
-  r_{polia} = \frac{\displaystyle (n-1)p}{\displaystyle \pi}s
-\end{equation} 
-Para a bancada de testes, n=6 e p=%TODO passo do cabo bancada.
-\\O servo motor escolhido foi um Futaba S3004, tal qual o da Figura \ref{fig: servo}. Este possui rolamentos de esferas no eixo de saída, e torque de 4.1kg-cm a 6 volts. O servo drena muita corrente e gera bastante ruído, e portanto teve sua alimentação isolada.
-
-\begin{figure}[ht]
- \begin{center}
-  \includegraphics[width=3in]{S3004}
- \end{center}
- \caption{Servo Futaba S3004}
- \label{fig: servo}
-\end{figure}
-
-
 
 %%%
 %
@@ -427,12 +472,13 @@ Tabela \ref{tab:custos} a seguir computa os componentes e ferramentas.
 \begin{tabular}{lc}
 \mc{1}{c}{\textbf{Material}} & \textbf{Preço (R\$)}\\\hline
 Movimento central & R\$ 12,00\\
+Display LCD 16x2 & R\$ 20,00\\
 Arduino Duemilenove & R\$ 40,00\\
 Servo Futaba s3004 & R\$ 12,00\\
 Ferro de solda 100W & R\$ 18,00\\
 \textit{Reed switch} (5x) & R\$ 3,45\\
 Resistores 10k (6x) & R\$ 0,78\\\hline
-\textbf{Total} & \textbf{R\$ 86,23}\\\hline
+\textbf{Total} & \textbf{R\$ 106,23}\\\hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -460,9 +506,8 @@ Resistores 10k (6x) & R\$ 0,78\\\hline
 \textit{principal.pde}
 \lstinputlisting{../principal/principal.pde}
 
-\subsubsection{\textit{Scripts} auxiliares}
-\label{code:helper_scripts}
-
+%%
+%
 \lstset{frame=single,
     language=Python,
     basicstyle=\ttfamily\small,
@@ -482,14 +527,16 @@ Resistores 10k (6x) & R\$ 0,78\\\hline
     commentstyle=\color[RGB]{105,105,105}\slshape,
     basicstyle=\tiny,
 }
-
-Escritos em python\cite{python} devido a facilidade e rapidez de desenvolvimento nesta linguagem, dois pequenos \textit{scripts} foram usados para: \\
-Arquivo ratios.py - Calculo das relações entre marchas, em função do número de dentes das coroas.
+\subsubsection{Cálculo de Relação entre marchas}
+\label{code:ratios}
+\textit{ratios.py}
 \lstinputlisting{../ratios.py}
 
-Arquivo capacitance\_n\_resistance.py - calcula ora capacitância, ora resistência necessária para projeto de filtro passa-baixa passivo, a partir de um valor de entrada para a frequência de corte.
+\subsubsection{Cálculo de Filtro RC}
+\label{code:filter}
+\textit{capacitance\_n\_resistance.py}
 \lstinputlisting{../capacitance_n_resistance_calc.py}
-\label{code:lowpass}
+
 
 
 
