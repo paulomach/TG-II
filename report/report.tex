@@ -396,6 +396,7 @@ topologia \textit{pull down}.
 \subsubsection{Microcontrolador}
 \label{sec:mcu}
 %TODO microcontrolador e arduino
+
 AVR Atmel Atmega168, por causa do arduino. PWM em hardware. uma pá de I/O.
 %%%
 %
@@ -438,13 +439,28 @@ Pegar o bixo, definir cenários de uso, fotos, resultados, ajustes, iteração..
 \section{Conclusões}
 \label{sec:conclusoes}
 %TODO concluir
+Redundância da introdução
+
 Dificuldades
 
-Trabalhos futuros (dínamo e gerenciamento de energia, memoria persistente,
-ajuste das relações)
+Muitas extensões podem ser feitas neste projeto, visto que como uma prova de
+conceito, é uma implementação muito simplificada. A primeira adição proposta
+é adicionar um segundo atuador para ser capaz de manipular o
+\textit{derailleur} das coroas dianteiras, podendo utilizar toda a extensão das
+marchas disponíveis. Uma forma de incluir esse atuador no algoritmo seria
+realizar as trocas nas coroas dianteiras quando a mudança de velocidade for
+mais brusca. Isso porque a relação entre as coroas dianteiras é tipicamente
+maior quando comparadas a relação entre as coroas do cassete.
 
-Ficar milionário
+Uma segunda sugestão é um sistema de gerenciamento de energia, com baterias e
+dínamos de roda, que seriam capazes de manter o sistema rodando apenas com a
+própria geração de energia.
 
+A terceira sugestão é a possibilidade de configuração de parâmetros em
+\textit{runtime}, além de apenas a constante de ajuste K.
+
+Como quarta e última sugestão, a adição de módulos de memória persistente para
+que configurações não sejam perdidas a cada desligamento do sistema.
 
 \pagebreak
 %%%
