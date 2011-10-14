@@ -24,6 +24,9 @@
 
 \input{preamble.tex}
 
+\parindent 1cm
+
+% \parskip 5pt
 
 \begin{document}
 
@@ -48,27 +51,22 @@
 %
 \section{Resumo}
 \label{sec:resumo}
-% Breve contexto, função
-% Pré requisitos
-% Estrutura do documento
-% Do que se trata
-% Estrutura do texto
-A ideia deste projeto surgiu das observações diárias de ciclistas e do uso
-da bicicleta, onde grande parte das pessoas não sabe utilizar de
+A ideia deste projeto surgiu das observações diárias de ciclistas e do
+uso da bicicleta, onde grande parte das pessoas não sabe utilizar de
 forma eficiente as marchas de suas bicicletas. Estas parecem ser
 complicadas (\textit{mountain bikes} simples possuem pelo menos 18 marchas) e de
 difícil manejo e configuração. Assim como em uma transmissão automotiva, maus
 hábitos no seu manejo -- esticar marchas, manter a mão apoiada sobre a alavanca,
 entre outros -- causam desgaste precoce dos componentes, esforços desnecessários
 (neste caso para ciclista) e até risco de segurança.
-\\
+
 O benefício primordial de qualquer automação (i.e. retirar do usuário o
 controle ou parte do controle sobre o sistema que interage) é a melhora no
 fluxo do processo devido ao grande controle que tem se sobre o sistema. Os
 resultados deste benefício são, em alto nível, o aumento da qualidade,
 repetibilidade e uniformidade, aplicação de estratégias ótimas de controle e
 simplicidade na interação com utilizador.
-\\
+
 Este relatório apresenta o desenvolvimento e resultados do trabalho proposto e
 estudado na primeira disciplina de Trabalho de Graduação: a construção de um
 protótipo funcional de um sistema de troca de marchas automatizados para
@@ -78,7 +76,7 @@ da bancada experimental; desenvolvimento da lógica; e estudo de soluções
 existentes. Ou seja, dados os objetivos do projeto -- software de controle,
 circuito de controle, atuados mecânico e a junção destes no protótipo --
 apresenta-se o caminho percorrido até o objetivo e os resultados alcançados.
-\\
+
 O documento foi estruturado de forma a descrever o problema de engenharia, as
 alternativas consideradas, escolhas e desenvolvimento de cada parte funcional do
 protótipo final.
@@ -89,9 +87,109 @@ protótipo final.
 %
 \section{Introdução}
 \label{sec:intro}
-Automação ou Controle? Esta foi a tônica do início do projeto. A solução de
-controle, mais elegante, mostrou-se pouco tangível devido a dificuldade de
-modelar o sistema mecânico completo e logo foi abandonada.
+Automação ou Controle? Esta foi a tônica no início do desenvolvimento
+deste projeto. A solução de controle é mais elegante, porém seu desenvolvimento
+é mais complexo. A automação não é tão elegante e eficiente, porém seu
+desenvolvimento muito mais simples. A resposta, seja ela qual for, passa
+obrigatoriamente pela análise do problema físico.
+
+\subsection{Análise do problema físico}
+A transmissão ciclística é tal qual mostrado na figura \ref{fig:transmissao}.
+\begin{figure}[ht]
+\begin{center}
+ \includegraphics[width=6in]{transmissao}
+\end{center}
+  \caption{Componentes de uma transmissão ciclística}
+  \label{fig:transmissao}
+\end{figure}
+Podemos observar os principais componentes da transmissão, sendo na ordem em que
+a energia é transmitida: o pedivela transmite o torque aplicado aos pedais pelo
+ciclista às coroas dianteiras, que movimentam a corrente, que por sua vez,
+transmite a energia às coroas traseiras (o conjunto destas é chamado de cassete,
+nome que será usado no documento), conectadas a roda traseira, gerando a
+movimento.
+
+A relação de transmissão é determinada pela quantidade de dentes da coroa
+traseira e dianteira de um engrenamento. Assim, a troca de marcha
+(i.e. da relação de transmissão) é realizada pela mudança no engrenamento da
+corrente com as coroas, tanto dianteiras  quanto traseiras. Portanto uma
+bicicleta possui tantas marchas quanto forem a multiplicação da quantidade de
+coroas no cassete pelas coroas dianteiras, por exemplo, quando há três coroas
+dianteiras e seis coroas no cassete, a transmissão possui 3x6=18 marchas.
+A mudança no engrenamento é realizado pelos
+\textit{derailleurs}\footnote{\textit{Derailleur} é um termo francês que pode
+ser traduzido como o ato do descarrilamento de um trem na ferrovia. O
+dispositivo ganhou esse nome devido à semelhança com o evento.}, que mediante ao
+deslocamento longitudinal ao eixo da roda força a corrente ser engrenada em
+outra coroa.
+
+O desenvolvimento do protótipo é tratado como uma prova de conceito, e por
+simplicidade, a atuação vai ser concentrada nos componentes da parte traseira
+da transmissão, ou seja, no \textit{derailleur}.
+O esquema da figura \ref{fig:derailleur} apresenta a visão traseira
+do \textit{derailleur} traseiro e três exemplos de engrenamento.
+\begin{figure}[ht]
+\begin{center}
+ \includegraphics[width=4in]{derailleur}
+\end{center}
+  \caption{Três engrenamentos}
+  \label{fig:derailleur}
+\end{figure}
+Na figura \ref{fig:derailleur} temos, respectivamente, engrenado uma marcha
+lenta (alto torque e baixa velocidade), uma marcha média e uma marcha rápida
+(baixo torque e alta velocidade). O movimento da gaiola (componente do
+\textit{derailleur}) se dá pela sua estrutura de braços paralelos do
+\textit{derailleur} e é acionado via cabo, com retorno por mola. O cabo é
+controlado pelo ciclista, geralmente por um sistema alavanca montado no guidão,
+mas que também assume diversas outras formas, sempre com o objetivo de puxar ou
+soltar o cabo, e genericamente chamado trocador (\textit{shifter}). O
+trocador movimenta o cabo em estágios discretos, sendo cada estágio desse
+correspondente ao engrenamento em uma coroa diferente.
+
+O ciclista controla a pedalada de acordo com seu gosto, terreno e
+velocidade. Logo, quando está em um aclive, procura puxar o cabo de forma a
+engrenar as marchas mais lentas, e o oposto quando enfrenta um declive ou um
+terreno que ofereça menos resistência, como por exemplo asfalto plano. O gosto e
+biótipo do ciclista determinam o ponto da troca de marcha pela velocidade da
+cadência (velocidade da pedalada). Por exemplo, o sete vezes campeão do
+\textit{Tour de France}, Lance Armstrong, prefere pedalar em alta velocidade
+(picos de 100-110 RPM), enquanto que outros ciclistas de sua categoria
+dificilmente alcançam 90 RPM de
+cadência\footnote{
+www.trifuel.com/training/bike/cycling-cadence-and-pedaling-economy}.
+Ciclistas amadores possuem limites bem inferiores. Portanto, uma premissa básica
+do projeto é a possibilidade do ajuste sobre os limites para a troca de marcha.
+
+O resultado da análise do problema físico levou a escolha pela solução de
+automação, preterindo o controle. A decisão baseou-se na observação de que o
+sistema de uma transmissão de bicicleta, considerando as possíveis alternativas
+para a forma de aquisição de dados de custo acessível, é orientado a
+eventos e baseado em estados discretos.
+
+\subsection{Revisão bibliográfica}
+Uma ampla revisão bibliográfica foi realizada na primeira parte deste Trabalho
+de Graduação, e não será repetida neste relatório. Vale ressaltar porém, que
+pouca bibliografia acadêmica é produzida sobre o assunto. Por outro lado, o
+desenvolvimento comercial é bastante prolífico, havendo em torno de quatro ou
+cinco companhias multinacionais liderando os mercados globais de componentes e
+diversos garagistas pensando e desenvolvendo soluções.
+
+O problema que surge é como localizar documentação sobre uma solução tão
+específica? A resposta foi a utilização de duas bases de patentes:
+USPTO\cite{uspto} e EPO\cite{epo}. O critério de escolha utilizado para
+selecionar apenas os dois escritórios foi o fato de constituírem os dois maiores
+mercados consumidores do mundo.
+
+
+\subsection{Premissas do projeto}
+Após o estabelecimento 
+\begin{itemize}
+  \item Baixo custo
+  \item Adaptabilidade ao sistema existente
+  \item Possibilidade de configuração de parâmetros
+\end{itemize}
+
+
 
 \pagebreak
 %%%
@@ -106,18 +204,18 @@ controle (Sec. \ref{sec:arduino}) e o Software de controle (Sec.
 
 \subsection{Bancada experimental}
 \label{sec:bancada}
-Criar uma bancada para este projeto sempre foi uma das premissas básicas, tanto
-que constituía um dos objetivos da primeira parte deste trabalho de graduação.
-Simular os sinais do sistema via algum tipo de software ou kit não foi
-considerada como opção, pois nenhuma nuance de um sistema real deveria ser
-perdida. Logo a solução elaborada no primeiro trabalho foi usar uma bicicleta
+A bancada experimental é um dos produtos principais da primeira parte deste
+trabalho de graduação. Simular os sinais do sistema via algum tipo de software
+ou kit não foi considerada como opção, pois a possibilidade real de
+desenvolvimento do projeto com base em um sistema real não era algo intangível.
+Logo a solução elaborada no primeiro trabalho foi usar uma bicicleta
 convencional e transformá-la adequadamente. O resultado é apresentado na Figura
 \ref{fig:bancada}.
 \begin{figure}[ht]
  \begin{center}
   \includegraphics[width=4in]{bancada_tratada}
  \end{center}
- \caption{Bancada experimental - TG I}
+ \caption{Bancada experimental construída para o TG I}
  \label{fig:bancada}
 \end{figure}
 Ou seja, a bancada é uma meia bicicleta - com a parte traseira, onde estão os
@@ -132,6 +230,16 @@ não casou com o corrente), o que causou novos custos e atraso nos testes.
 %
 \subsection{Circuito de controle}
 \label{sec:arduino}
+O circuito de controle foi montado sobre uma placa de prototipação (protoboard)
+e, contêm:
+\begin{itemize}
+  \item Dois filtros RC passa-baixa ligados aos \textit{reed switch}
+  \item Dois botões
+  \item Montagem de display LCD 16x2
+  \item Kit Arduino
+\end{itemize}
+
+
 Arduino\\
 botões da constante K \\
 Display LCD \\
@@ -173,7 +281,7 @@ nas entradas e saídas do sistema a lógica apresentada na Figura
  \begin{center}
   \includegraphics[width=4in]{fluxograma1}
  \end{center}
- \caption{Lógica de controle inicial}
+ \caption{Fluxo lógico do processo de automático}
  \label{fig:fluxograma1}
 \end{figure}
 Após o início da codificação, algumas 
