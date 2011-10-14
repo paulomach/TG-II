@@ -289,11 +289,12 @@ Dois complicadores existem na utilização de servos motores\cite{servo}, em
 relação a seu comportamento elétrico. O primeiro, como todo componente indutivo,
 são os picos de corrente a cada mudança de posição, que podem drenar toda
 corrente destinada ao controlador. O segundo complicador é o ruído, tanto gerado
-pelo servo, quanto captado pelo cabo de sinal -- é comum ver um servo "tremendo"
-quando em repouso, pois o cabo do sinal atua como uma antena. Para mitigar estes
-efeitos a alimentação do servo foi isolada da alimentação do resto do
-protótipo. O único cuidado adicional é manter as referências no mesmo
-potencial, ou seja, manter o terra dos dois circuitos no mesmo potencial.
+pelo servo nas escovas do motor DC, quanto captado pelo cabo de sinal -- é comum
+ver um servo "tremendo" quando em repouso, pois o cabo do sinal atua como uma
+antena. Para mitigar estes efeitos a alimentação do servo foi isolada da
+alimentação do resto do protótipo. O único cuidado adicional é manter as
+referências no mesmo potencial, ou seja, manter o terra dos dois circuitos no
+mesmo potencial.
 
 \subsubsection{Display LCD 16x2}
 \label{sec:lcd}
@@ -336,8 +337,8 @@ foram simplicidade e custo. O escolhido foi o  \textit{reed switch}, que
 oferece uma enorme margem de vantagem nos critérios escolhidos.
 
 Um problema grave dos \textit{reed switch} é o ruído gerado na
-sua operação. Devido ao \textit{bounce}\cite{reed} o sinal gerado precisa de um
-tratamento para que possa ser aproveitado. Foi considerado realizar o
+sua operação. Devido ao \textit{bouncing}\cite{reed} o sinal gerado precisa de
+um tratamento para que possa ser lido corretamente. Foi considerado realizar o
 \textit{debounce} do sinal de duas formas: via software; ou via hardware. A
 primeira foi descartada pois as funções do programa responsáveis pelo
 cálculo de velocidade seriam rotinas de interrupção, ou seja, eles devem ter uma
@@ -347,9 +348,9 @@ algum \textit{delay}.
 
 \begin{figure}[ht]
  \begin{center}
-  \includegraphics[width=1.5in]{lowpass}
+  \includegraphics[width=2.8in]{lowpass}
  \end{center}
- \caption{Filtro passa-baixa passivo}
+ \caption{Filtro passa-baixa passivo acoplado ao \textit{reed switch}}
  \label{fig:lowpass}
 \end{figure}
 
@@ -387,17 +388,46 @@ simples, que como os \textit{reed switch}, produzem ruído pelo fenômeno de
 \textit{bouncing}. Porém como a sua aplicação não é crítica, não houve a
 preocupação em tratar o sinal, pois o funcionamento do sistema praticamente não
 é prejudicado por estas falhas.
+\begin{figure}[ht]
+\begin{center}
+ \includegraphics[width=2.5in]{pulldown}
+\end{center}
+  \caption{Resistor \textit{pull-down}}
+  \label{fig:pulldown}
+\end{figure}
 
 A única observação feita em relação a montagem dos \textit{push buttons} é a
-topologia \textit{pull down}.
-%TODO explicar pull down.
+topologia \textit{pull-down} do resistor, mostrado na figura \ref{fig:pulldown}.
+Este dispositivo é usado para limitar a corrente que passa do $V_{cc}$ para o
+terra, e para garantir que o nível lógico seja coerente quando a chave conectada
+está inativa, ``puxando'' a corrente para o terra. Tipicamente utiliza-se valor
+de resistência de 10k$\Omega$, o que foi respeitado na montagem.
 
 
-\subsubsection{Microcontrolador}
+
+\subsubsection{Microcontrolador (MCU)}
 \label{sec:mcu}
 %TODO microcontrolador e arduino
 
-AVR Atmel Atmega168, por causa do arduino. PWM em hardware. uma pá de I/O.
+O Arduino é uma plataforma \textit{open-source} (hardware e software) que
+utiliza microcontroladores Atmel Mega328, Atmel Mega168 e Atmel Mega1280. São
+microcontroladores poderosos e modernos, com sistemas de economia de energia,
+PWM em hardware, conversor USB/Serial, ... O modelo de escolhido para este
+trabalho foi o \textit{Duemilanove}
+% FOTO Duemilenove
+\begin{figure}[h]
+\begin{center}
+ \includegraphics[width=3in]{duemilanove}
+\end{center}
+  \caption{Arduino Duemilanove}
+  \label{fig:duemilanove}
+\end{figure}
+
+
+A linguagem de programação utilizada é o C/C++, sendo que o compilador
+utilizado foi o GNU Compiler Collection, o GCC\cite{gcc}. Uma das grandes
+vantagem da utilização do GCC é ser multiplataforma, além do fato de ser
+software livre.
 %%%
 %
 \subsection{Algoritmo de controle}
@@ -405,14 +435,56 @@ AVR Atmel Atmega168, por causa do arduino. PWM em hardware. uma pá de I/O.
 Baseado nas entradas e saídas do sistema a lógica apresentada na Figura
 \ref{fig:fluxograma1} foi elaborada, ainda na primeira parte deste trabalho.
 % Fluxograma
-\begin{figure}[ht]
+\pagebreak
+\begin{figure}[h!]
  \begin{center}
-  \includegraphics[width=4in]{fluxograma1}
+  \includegraphics[width=4.65in]{fluxograma1}
  \end{center}
  \caption{Fluxo lógico do processo de automático}
  \label{fig:fluxograma1}
 \end{figure}
-Após o início da codificação, algumas 
+
+\begin{description}
+  \item[Inicio:] início do programa.
+  \item[Pedalando:] recebe informação da cadência e se nula, significa que o
+  ciclista não está pedalando. Nesse caso, o sistema passa para o teste de
+  bateria  e atualização do display. Caso contrário, segue para o passo
+  seguinte, de  leitura de velocidade.
+  \item[Leitura de velocidade:] armazena a leitura de velocidade instantânea do
+  sensor de velocidade da roda traseira.
+  \item[Calcula limites:] a partir de uma tabela de limites padrão e do valor da
+  constante de velocidade (variável que armazena o valor do multiplicador dos
+  limites, para adequação ao estilo de pedalada do ciclista), é calculado o
+  limite de velocidade inferior e superior para a marcha presente.
+  \item[Velocidade além do limite superior para a relação:] compara leitura de
+  velocidade da roda traseira com o calculo do limite superior de velocidade
+  para a marcha.
+  \item[Velocidade além do limite inferior para a relação:] compara leitura de
+  velocidade da roda traseira com o calculo do limite inferior de velocidade
+  para a marcha.
+  \item[Próxima coroa disponível:] checa se a coroa atual engrenada é a última
+  (coroa
+  com menos dentes, ou seja, de maior velocidade).
+  \item[Coroa anterior disponível:] checa se a coroa atual engrenada é a
+  primeira (coroa com mais dentes, ou seja, de maior torque).
+  \item[Movimenta \textit{derailleur} para próxima coroa:] caso a velocidade
+  seja  maior que o limite superior da coroa atual e exista a próxima coroa, o
+  \textit{derailleur}  é movimentado para engatar a coroa seguinte.
+  \item[Movimenta \textit{derailleur} para coroa anterior:] caso a velocidade
+  seja  menor que o limite inferior da coroa atual e exista a coroa anterior, o
+  \textit{derailleur}  é movimentado para engatar a coroa anterior.
+  \item[Checa bateria:] testa a carga da bateria e armazena informação. Esta é
+  uma etapa muito importante em qualquer dispositivo embarcado, pois é da
+  bateria que vem a energia necessária ao funcionamento do sistema.
+  \item[Atualiza display:] atualização da interface com informação de velocidade
+  instantânea, marcha engatada, e carga da bateria.
+\end{description}
+
+\subsubsection{Implementação}
+
+A implementação do algoritmo foi feita criando uma biblioteca para
+modelamento das partes físicas e através de uma máquina de  estados. O código
+está mostrado nas seções \ref{code:api}, \ref{code:impl} e \ref{code:main}.
 
 %TODO fluxograma da máquina de estado
 
