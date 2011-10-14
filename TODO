@@ -6,3 +6,5 @@ that can be very slow some times. The variables must be the methods arguments.
 * Implement method derailleur::get_gear based upon the sprocktes teeth numbers.
 * Treat higher and slower sprockets limits.
 * Clone git repo into arduino dir strutcture to have real autocompletion with kdevelop.
+
+http://www.nemsim.com/ece395blimp/fritzing/parts/svg/core/breadboard/
