@@ -89,9 +89,10 @@ protótipo final.
 \label{sec:intro}
 Automação ou Controle? Esta foi a tônica no início do desenvolvimento
 deste projeto. A solução de controle é mais elegante, porém seu desenvolvimento
-é mais complexo. A automação não é tão elegante e eficiente, porém seu
-desenvolvimento muito mais simples. A resposta, seja ela qual for, passa
-obrigatoriamente pela análise do problema físico.
+é mais complexo e depende de um sinal contínuo. A automação não é tão elegante e
+eficiente, porém seu desenvolvimento é mais simples e pode ser orientada a
+eventos. A resposta, seja ela qual for, passa obrigatoriamente pela análise do
+problema físico.
 
 \subsection{Análise do problema físico}
 A transmissão ciclística é tal qual mostrado na figura \ref{fig:transmissao}.
@@ -182,13 +183,14 @@ mercados consumidores do mundo.
 
 
 \subsection{Premissas do projeto}
-Após o estabelecimento 
-\begin{itemize}
+Após o estabelecimento do tipo de solução e de alguns requisitos mínimos, as
+premissas estabelecidas para o projeto são:
+\begin{itemize*}
   \item Baixo custo
   \item Adaptabilidade ao sistema existente
   \item Possibilidade de configuração de parâmetros
   \item Interface com usuário
-\end{itemize}
+\end{itemize*}
 
 
 
@@ -197,35 +199,44 @@ Após o estabelecimento
 %
 \section{Desenvolvimento das partes}
 \label{sec:partes}
-O projeto foi dividido em partes, com desenvolvimento em paralelo, para agilizar
-o processo e para que mudanças no projeto de alguma das partes refletissem
-imediatamente nas outras. Esta sinergia foi mais forte entre o Circuito de
-controle (Sec. \ref{sec:arduino}) e o Software de controle (Sec.
-\ref{sec:software}).
+Nesta seção são apresentadas as partes do projeto e como estas foram unidas. O
+desenvolvimento deste projeto foi modular, o que permitiu na maior parte do
+tempo trabalhar no hardware e no software de forma independente. As partes são:
+\begin{itemize*}
+  \item Bancada experimental
+  \item Circuito de controle
+  \item Protótipo Completo
+  \item Algoritmo de Controle
+\end{itemize*}
+
 
 \subsection{Bancada experimental}
 \label{sec:bancada}
 A bancada experimental é um dos produtos principais da primeira parte deste
 trabalho de graduação. Simular os sinais do sistema via algum tipo de software
-ou kit não foi considerada como opção, pois a possibilidade real de
-desenvolvimento do projeto com base em um sistema real não era algo intangível.
-Logo a solução elaborada no primeiro trabalho foi usar uma bicicleta
-convencional e transformá-la adequadamente. O resultado é apresentado na Figura
+ou kit é uma opção menos desejável, visto que o de desenvolvimento
+do projeto com base em um sistema real não se apresentou como uma proposta
+complicada ou muito cara. Desta forma, a solução elaborada no primeiro trabalho
+foi usar uma bicicleta convencional e adaptá-la de forma a criar uma bancada de
+testes. O resultado é apresentado na Figura
 \ref{fig:bancada}.
 \begin{figure}[ht]
  \begin{center}
-  \includegraphics[width=4in]{bancada_tratada}
+  \includegraphics[width=3.5in]{bancada_tratada}
  \end{center}
  \caption{Bancada experimental construída para o TG I}
  \label{fig:bancada}
 \end{figure}
-Ou seja, a bancada é uma meia bicicleta - com a parte traseira, onde estão os
+A bancada é uma meia bicicleta -- com a parte traseira, onde estão os
 elementos da transmissão  -- onde foram soldados apoios, possibilitando
-``pedalar no vazio'' e realizar os testes do projeto, fiel a um cenário real. \\
-Os problemas relativos a bancada foram muitos e surgiram no momento prévio aos
-testes, quando os componentes da transmissão foram montados. As peças
-disponíveis não foram escolhidas corretamente (corrente curta, coroa dianteira
+``pedalar no vazio'' e realizar os testes do projeto em um sistema real.
+
+Foram diversos os problemas relativos a bancada, e surgiram no
+momento prévio aos testes, quando os componentes da transmissão foram montados.
+As peças disponíveis não eram compatíveis (corrente curta, coroa dianteira
 não casou com o corrente), o que causou novos custos e atraso nos testes.
+Porém, nenhum deste problemas tirou o benefício da disponibilidade do
+equipamento.
 
 %%%
 %
@@ -310,7 +321,7 @@ O display utilizado é um JHD-162a\cite{lcd} de fabricante desconhecido e
 facilmente encontrado no mercado, visto na figura \ref{fig:lcd}.
 \begin{figure}[ht]
 \begin{center}
- \includegraphics[width=3in]{jhd162a}
+ \includegraphics[width=3in]{jhd162a2}
 \end{center}
   \caption{Display LCD 16x2}
   \label{fig:lcd}
@@ -407,13 +418,38 @@ de resistência de 10k$\Omega$, o que foi respeitado na montagem.
 
 \subsubsection{Microcontrolador (MCU)}
 \label{sec:mcu}
-%TODO microcontrolador e arduino
+O microcontrolador utilizado é um ATMega168 20PU do fabricante
+Atmel\textsuperscript{\textregistered}. O ATMega168\cite{atmega} é um
+microcontrolador de 8 bits com 16K bytes de memória de programa e clock de 20MHz
+e arquitetura RISC. O ATMega168 possui diversos periféricos dentre os quais são
+de interesse para o projeto:
+\begin{itemize}
+  \item 6 canais PWM
+  \item 23 I/O programáveis (digitais e analógicos)
+  \item Interrupção e \textit{wake-up} na borda de subida ou descida de sinal
+  \item Interface serial para programação
+\end{itemize}
 
-O Arduino é uma plataforma \textit{open-source} (hardware e software) que
-utiliza microcontroladores Atmel Mega328, Atmel Mega168 e Atmel Mega1280. São
-microcontroladores poderosos e modernos, com sistemas de economia de energia,
-PWM em hardware, conversor USB/Serial, ... O modelo de escolhido para este
-trabalho foi o \textit{Duemilanove}
+A utilização direta do microcontrolador requer diversos cuidados em relação a
+sua alimentação, configuração de pinagem e recursos. Qualquer desenvolvedor de
+sistemas embarcados sabe que este tipo de cuidado toma grande quantidade de
+tempo e pode ser fonte de infindáveis problemas. Como resolver problemas de
+natureza eletrônica e configuração de bits não é o propósito deste trabalho,
+foi feita a escolha por uma plataforma de prototipagem que resolve grande parte
+deste problemas: o Arduino\cite{arduino}\cite{oxer2009practical}.
+
+O Arduino é uma plataforma de prototipagem \textit{open-source} (hardware e
+software) que utiliza microcontroladores Atmel Mega168, Mega328 e Mega1280. Além
+dos recursos providos pelo microcontrolador, são embarcados conversor
+USB/Serial, tornando desnecessária uma porta serial no PC de desenvolvimento,
+\textit{bournes} para conexão dos pinos de I/O, botão de \textit{reset},
+cristal oscilador externo e entrada de alimentação. O circuito é capaz
+de selecionar automaticamente qual fonte de alimentação utilizar (USB ou fonte
+externa).
+
+O modelo de escolhido para este trabalho foi o \textit{Duemilanove}, que
+utiliza o microcontrolador ATMega168, e pode ser visto na figura
+\ref{fig:duemilanove}.
 % FOTO Duemilenove
 \begin{figure}[h]
 \begin{center}
@@ -427,24 +463,50 @@ trabalho foi o \textit{Duemilanove}
 A linguagem de programação utilizada é o C/C++, sendo que o compilador
 utilizado foi o GNU Compiler Collection, o GCC\cite{gcc}. Uma das grandes
 vantagem da utilização do GCC é ser multiplataforma, além do fato de ser
-software livre.
+software livre. O Arduino provêm uma IDE e bibliotecas para o desenvolvimento
+de aplicações, das quais foram utilizadas no projeto as bibliotecas
+\textit{Servo} e \textit{LiquidCrystal}, responsáveis pela manipulação de servo
+motores e display LCD, respectivamente.
+
+
 %%%
 %
+\subsection{Protótipo}
+\label{sec:prototipo}
+%TODO protótipo
+O circuito completo do projeto, conforme esquematizado na figura
+\ref{fig:montagem} é apresentado na figura \ref{fig:circuito}.
+\begin{figure}[h]
+\begin{center}
+ \includegraphics[width=5.5in]{circ_detail}
+\end{center}
+  \caption{Circuito completo do Projeto}
+  \label{fig:circuito}
+\end{figure}
+O único componente adicional é o potenciômetro, usado para regular o contraste
+do display LCD. Destaca-se na metade superior direita os circuitos para
+tratamento das entradas (dois filtros passa-baixa e duas montagens de resistor
+\textit{pull-down}).
+
+%%%
+%
+%\pagebreak
+
 \subsection{Algoritmo de controle}
 \label{sec:software}
-Baseado nas entradas e saídas do sistema a lógica apresentada na Figura
-\ref{fig:fluxograma1} foi elaborada, ainda na primeira parte deste trabalho.
-% Fluxograma
-\pagebreak
-\begin{figure}[h!]
+A lógica do programa, elaborada ainda na primeira parte deste trabalho e que se
+manteve fiel ao design original é apresentada na figura \ref{fig:fluxograma1} e
+descrita a seguir.
+
+\begin{figure}[hb!]
  \begin{center}
   \includegraphics[width=4.65in]{fluxograma1}
  \end{center}
- \caption{Fluxo lógico do processo de automático}
+ \caption{Lógica do programa de automação da transmissão}
  \label{fig:fluxograma1}
 \end{figure}
 
-\begin{description}
+\begin{description*}
   \item[Inicio:] início do programa.
   \item[Pedalando:] recebe informação da cadência e se nula, significa que o
   ciclista não está pedalando. Nesse caso, o sistema passa para o teste de
@@ -478,24 +540,17 @@ Baseado nas entradas e saídas do sistema a lógica apresentada na Figura
   bateria que vem a energia necessária ao funcionamento do sistema.
   \item[Atualiza display:] atualização da interface com informação de velocidade
   instantânea, marcha engatada, e carga da bateria.
-\end{description}
+\end{description*}
 
 \subsubsection{Implementação}
+\label{sec:implemt}
 
 A implementação do algoritmo foi feita criando uma biblioteca para
 modelamento das partes físicas e através de uma máquina de  estados. O código
-está mostrado nas seções \ref{code:api}, \ref{code:impl} e \ref{code:main}.
+está mostrado nas seções \ref{code:api}, \ref{code:impl} e \ref{code:main}. A
+seção \ref{sec:resultados} Teste e Resultados apresenta as adaptações e
+detalhes da implementação.
 
-%TODO fluxograma da máquina de estado
-
-
- 
-%%%
-%
-\subsection{Protótipo}
-\label{sec:prototipo}
-%TODO protótipo
-Montagem completa, fotos.
 
 \pagebreak
 %%%
@@ -503,17 +558,16 @@ Montagem completa, fotos.
 \section{Testes e Resultados}
 \label{sec:resultados}
 %TODO teste
-Pegar o bixo, definir cenários de uso, fotos, resultados, ajustes, iteração...
+definir cenários de uso, fotos, resultados, ajustes,
+detalhes da implementação, iteração...
 
 \pagebreak
 %%%
 %
 \section{Conclusões}
 \label{sec:conclusoes}
-%TODO concluir
-Redundância da introdução
-
-Dificuldades
+%TODO concluir Redundância da introdução Dificuldades
+\texttt{concluir}
 
 Muitas extensões podem ser feitas neste projeto, visto que como uma prova de
 conceito, é uma implementação muito simplificada. A primeira adição proposta
