@@ -47,13 +47,20 @@ const int b1Pin = 12;   // K+
 const int r0Pin = 3;    // Wheel
 const int r1Pin = 2;    // Cadence
 const int pwmPin = 9;   // PWM pin
-const unsigned int CADENCE_MIN = 2000;  // MIN SPEED = MAX TIME coasting
-const unsigned long RESET_TIMEOUT = 2000; // Timeout for reset timers
+const unsigned int CADENCE_MIN = 3000;  // MIN SPEED = MAX TIME coasting
+const unsigned long RESET_TIMEOUT = 3000; // Timeout for reset timers
 const int debugLevel = 2; // Set debug verbosity in serial
 
+const int TOTAL_GEARS=6;
+const int TOLERANCE=5;
+const float validratios[TOTAL_GEARS]={ 1.6428, 1.9166, 2.2999, 2.5555, 2.875, 3.2857 };
+
 // Variables
-unsigned int marcha, wspeed, state=1;
+unsigned int wspeed, state=1;
+int gear=1;
 float K=1.00;
+
+float ratio;
 
 // Interrupt used variables
 volatile boolean w=false;
@@ -97,7 +104,7 @@ void update_lcd() {
   lcd.setCursor ( 4,0 );
   lcd.print ( wspeed );
   lcd.setCursor ( 7,1 );
-  lcd.print ( marcha );
+  lcd.print ( gear );
   lcd.setCursor ( 12,1 );
   lcd.print ( K );
 }
@@ -108,7 +115,7 @@ void update_lcd() {
 void update_serial() {
   if (debugLevel == 2) {
     Serial.print ( "Velocidade: " );    Serial.print ( wspeed ); Serial.println (" kmph");
-    Serial.print ( "Marcha: " );        Serial.println ( marcha );
+    Serial.print ( "Marcha: " );        Serial.println ( gear );
     Serial.print ( "Tempo roda: " );    Serial.print ( wtime ); Serial.println ( " ms" );
     Serial.print ( "Tempo cadencia: " );Serial.print ( ctime ); Serial.println ( " ms" );
     Serial.print ("K: ");               Serial.println (K);     Serial.println ("");
@@ -138,8 +145,15 @@ void loop() {
     break;
   case 3:
     // act over transmission
-    marcha=trocador.get_gear ( ctime, wtime );
-    trocador.set_gear ( motor, marcha, ctime, wtime, K );
+    //gear=trocador.get_gear ( ctime, wtime );
+    ratio=float(ctime)/wtime;
+    Serial.println(ratio);
+    for (int i=0;i<6;i++) {
+        if (closeto(ratio,validratios[i],TOLERANCE)) {
+            gear = i+1;
+        }
+    }
+    trocador.set_gear ( motor, gear, ctime, wtime, K );
     state=1;
     break;
   }
@@ -213,5 +227,14 @@ void reset_timers() {
   if (now - ctimeLog[0] > RESET_TIMEOUT) {
     ctime = 0;
   }
+}
+
+/*
+ * Return true if param is within
+ * tolerance [%] of reference:
+ */
+boolean closeto(float param, float reference, float tolerance) {
+    return ( (param >= (reference*(100-tolerance)/100) ) &&
+      (param <= (reference*(100+tolerance)/100) ) );
 }
 
