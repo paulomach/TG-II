@@ -8,7 +8,7 @@
  * bicycle Derailleur.
  *
  * Author: Paulo S. Machado
- * Date: April 2010
+ * Date: October 2011
  *
  * Release under de GNU Public License v3.0 or greater
  * This library is free software; you can redistribute it and/or
@@ -31,13 +31,15 @@
 #include "BikeTransmission.h"
 #include <Servo.h>
 #include <WProgram.h>
+#include <math.h>
 
 const int GEAR_MAX=6;
 const int GEAR_MIN=1;
-
 const int TOTAL_PATH=180;
 const int TOTAL_GEARS=6;
 const int STEP=TOTAL_PATH/TOTAL_GEARS;
+const int TOLERANCE=0.05;
+const float validratios[TOTAL_GEARS]={ 1.6428, 1.9166, 2.2999, 2.5555, 2.875, 3.2857 };
 
 // Time limits (milliseconds)
 // 30RPM - 2000ms
@@ -49,17 +51,22 @@ const int CADENCE_MAX=100;
 const float UP_OFFSET=1.3;
 const float DOWN_OFFSET=1.3;
 
-// Debounce time for reed switch.
-// This approach limits wheel speed
-// to V = pi*D*3.6*1000/T (T stands for
-// period in milliseconds
-const int DEBOUNCE=70;	// 84 kmph
+/*
+ * Debounce time for reed switch.
+ * This approach limits wheel speed
+ * to V = pi*D*3.6*1000/T (T stands for
+ * period in milliseconds
+ */ 
+const int DEBOUNCE=70;// 84 kmph
 
 
-// Time variables for speed reading:
-// c_t - cadence time
-// w_t - wheel time
+/*
+ * Time variables for speed reading:
+ * c_t - cadence time
+ * w_t - wheel time
+ */
 unsigned long c_t1, c_t2, w_t1, w_t2;
+
 
 
 /********* Constructors implementation ************/
@@ -69,88 +76,64 @@ RearWheel::RearWheel ( float _diameter ) {
 
 
 /*********** Methods implementation **************/
-/*unsigned long FrontGear::read_cadence_sensor ( int c_reedPin ) {
-    // TODO actually reads sensor and
-    // and return a long integer value
-    // in miliseconds. Use ISR
-    while ( digitalRead ( c_reedPin ) != HIGH ) ;
-    c_t1 = millis();
-    delay ( DEBOUNCE );
-    while ( digitalRead ( c_reedPin ) != HIGH ) ;
-    c_t2 = millis() - DEBOUNCE - c_t1;
-    return ( c_t2 );
-}
 
 
-unsigned long RearWheel::read_wspeed_sensor ( int w_reedPin ) {
-    // TODO actually reads sensor and
-    // and return a long integer value
-    // in miliseconds. Use ISR
-    while ( digitalRead ( w_reedPin ) != HIGH ) ;
-    w_t1 = millis();
-    delay ( DEBOUNCE );
-    while ( digitalRead ( w_reedPin ) != HIGH ) ;
-    w_t2 = millis() - DEBOUNCE - w_t1;
-    if ( w_t2 > 5000 ) {
-        w_t2 = 0;
-    }
-    return ( w_t2 );
-}*/
-
-// Linear wheel speed:
-// V = w*r -> V = 2*pi*f*r
-// V = pi*D/T [m/ms]
-// V = 3.6*1000*pi*D/T [km/h]
+/*
+ * Linear wheel speed:
+ * V = w*r -> V = 2*pi*f*r
+ * V = pi*D/T [m/ms]
+ * V = (3.6*1000*pi*D)/T [km/h]
+ */
 int RearWheel::get_lspeed ( unsigned long T ) {
+    int lspeed;
     // condition to speed less than 1km/h
     if ( ( T > 7350 ) || ( T == 0 ) ) return 0;
-    // other condition
-    return( int( ( 3.6*3.1416*(this->diameter) )/T*0.001 ));
+    lspeed = round( (1000*3.6*3.1416*(this->diameter))/T );
+    return( lspeed );
 }
 
-//Return true if param is within tolerance [%] of reference:
-boolean closeto(float param, float reference, float tolerance) {
-    return ( param >= (reference*(100-tolerance)/100) ) && ( param <= (reference*(100+tolerance)/100) );
+/*
+ * Return true if param is within
+ * tolerance [%] of reference:
+ */
+boolean closeto2(float param, float reference, float tolerance) {
+    return (( param >= (reference*(1.00-tolerance)) ) &&
+      ( param <= (reference*(1.00+tolerance)) ));
 }
 
 int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
-	int maxratioindex=5;
     float ratio;
-	float validratios[]={ 1.6428571428571428, 1.9166666666666667,
-		2.2999999999999998, 2.5555555555555554, 2.875, 3.2857142857142856 };
-	int gearsforratios[]={ 1,2,3,4,5,6 };
-	
-    if ( ( c_t != 0 ) || ( c_t > CADENCE_MIN ) ) {
-        // These are invariant relations between the bicycle
-        // teeth ratios with 5 % tolerance
-        // TODO:
-        // * Find out the right relations
-        // * [beyond TG] configurable ratios
-		ratio=c_t/w_t;
-        for (int i=0;i<=maxratioindex;i++) {
-            if (closeto(ratio,validratios[i],5)) return gearsforratios[i];
+
+    // * Find out the right relations
+    // * [beyond TG] configurable ratios
+    ratio=float(c_t)/w_t;
+    Serial.println(ratio);
+    for (int i=0;i<TOTAL_GEARS;i++) {
+        if (closeto2(ratio,validratios[i],TOLERANCE)) {
+            return(i+1);
         }
-        return 0;
     }
-    else return 0; // Return code when coasting
 }
 
+/*
+ * Core method of the library. responsable
+ * for choosing and setting a new gear
+ * position
+ */
 void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t, float K ) {
-    if ( gear != 0 ) {
-        if ( ( c_t < CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
-            motor.write (int( STEP* ( gear + 1 ) *UP_OFFSET ));
-            //while ( gear == this->get_gear ( c_t, w_t ) ) {
-				//Serial.print("Subindo marcha...");
-				delay(1000);
-            //}
-            motor.write ( STEP* ( gear + 1 ) );
-        } else if ( ( c_t > CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
-            motor.write (int( STEP* ( gear - 1 ) *DOWN_OFFSET ));
-            //while ( gear == this->get_gear ( c_t, w_t ) ) {
-				//Serial.print("Descendo marcha...");
-				delay(1000);
-            //}
-            motor.write ( STEP* ( gear - 1 ) );
-        }
+    if ( ( c_t < CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
+        motor.write (int( STEP* ( gear + 1 ) *UP_OFFSET ));
+        //while ( gear == this->get_gear ( c_t, w_t ) ) {
+        //Serial.print("Subindo marcha...");
+        delay(1000);
+        //}
+        motor.write ( STEP* ( gear + 1 ) );
+    } else if ( ( c_t > CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
+        motor.write (int( STEP* ( gear - 1 ) *DOWN_OFFSET ));
+        //while ( gear == this->get_gear ( c_t, w_t ) ) {
+          //Serial.print("Descendo marcha...");
+        delay(1000);
+        //}
+        motor.write ( STEP* ( gear - 1 ) );
     }
 }

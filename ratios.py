@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # ratios.py - Interactive script to calculate gear time/teeth ratios
@@ -55,6 +55,7 @@ if tol != 0:
 		print "(ratio > %s ) && (ratio < %s)\n" % (l1[i], l2[i])
 else:
 	print "\nRatios vector:"
-	print l1
+	for i in l1:
+		print round(i,4)
 
 print "\nDON'T FORGET TO APPLY CHANGES TO C++ CODE!"

@@ -8,7 +8,7 @@
  * bycicle derailleur.
  *
  * Author: Paulo S. Machado
- * Date: April 2010
+ * Date: October 2011
  *
  * Release under de GNU Public License v3.0 or greater
  * This library is free software; you can redistribute it and/or
@@ -28,24 +28,9 @@
 
 #include <Servo.h>
 
-
 #ifndef BikeTransmission_h
 #define BikeTransmission_h
-
 #endif
-
-
-
-/* FrontGear - front sprocket model
- * attributes:
- *
- * methods:
- *	read_cadence_sensor - update period of sprocket cycle
- */
-class FrontGear {
-public:
-    //unsigned long read_cadence_sensor ( int c_reedPin );
-};
 
 /* RearWheel - rear wheel model
  * attributes:
