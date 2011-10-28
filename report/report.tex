@@ -51,6 +51,14 @@
 %
 \section{Resumo}
 \label{sec:resumo}
+Um trabalho de graduação em Engenharia de Controle e Automação deve,
+idealmente, abranger as três grandes áreas que originam essa
+formação\cite{enciclo}: Engenharia Elétrica (eletrônica, processamento de
+sinais, circuitos elétricos e teoria de controle, etc); Engenharia
+Mecânica (dinâmica, modelagem de sistemas, etc); e a Computação (automação,
+controle discreto, etc). Este trabalho tenta, modestamente, resvelar por cada
+uma destas áreas e honrar a formação recebida.
+
 A ideia deste projeto surgiu das observações diárias de ciclistas e do
 uso da bicicleta, onde grande parte das pessoas não sabe utilizar de
 forma eficiente as marchas de suas bicicletas. Estas parecem ser
@@ -231,12 +239,22 @@ A bancada é uma meia bicicleta -- com a parte traseira, onde estão os
 elementos da transmissão  -- onde foram soldados apoios, possibilitando
 ``pedalar no vazio'' e realizar os testes do projeto em um sistema real.
 
-Foram diversos os problemas relativos a bancada, e surgiram no
-momento prévio aos testes, quando os componentes da transmissão foram montados.
-As peças disponíveis não eram compatíveis (corrente curta, coroa dianteira
+Foram diversos os problemas relativos a bancada, e surgiram no momento prévio
+aos testes, quando os componentes da transmissão foram montados. As peças
+disponíveis não eram compatíveis (corrente curta, coroa dianteira
 não casou com o corrente), o que causou novos custos e atraso nos testes.
-Porém, nenhum deste problemas tirou o benefício da disponibilidade do
-equipamento.
+Superados os percalços, o resultado final é apresentado na figura
+\ref{fig:setup}. Nesta montagem estão presentes, além do sistema mecânico
+completo da bicicleta, a montagem do servo motor e os ímas acoplados ao
+pedivela e a roda.
+\begin{figure}[h!]
+\begin{center}
+ \includegraphics[width=5in]{setup}
+\end{center}
+  \caption{Bancada pronta para teste}
+  \label{fig:setup}
+\end{figure}
+
 
 %%%
 %
@@ -278,9 +296,26 @@ uma marcha consecutiva, de tal forma que:
   \frac{\displaystyle 2\pi r_{polia} }{\displaystyle 2} = (n-1)p
 \end{equation*}
 \begin{equation}
-  r_{polia} = \frac{\displaystyle (n-1)p}{\displaystyle \pi}s
+  r_{polia} = \frac{\displaystyle (n-1)p}{\displaystyle \pi}
 \end{equation}
-Para a bancada de testes, n=6 e p=%TODO passo do cabo bancada.
+Para a bancada de testes, n=6 e p=3 mm. O raio ideal para a polia é:
+\begin{equation}
+ r_{polia} = \frac{\displaystyle (6-1)\times 3}{\displaystyle \pi} = 4.77~mm
+\end{equation}
+Porém, este resultado não foi utilizado, pois a construção de uma polia foi
+preterida pela adaptação de um trocador manual (figura \ref{fig:shifter}).
+\begin{figure}[h!]
+\begin{center}
+ \includegraphics[width=4in]{shifter}
+\end{center}
+  \caption{Trocador manual antes da adaptação}
+  \label{fig:shifter}
+\end{figure}
+
+A polia interna deste trocador possui raio de 8.5 mm, o que por um lado aumenta
+o intervalo de marchas disponível e a velocidade da troca, por outro aumenta o
+requisito de torque no eixo.
+%TODO montagem polia
 
 Pequenos servos RC (motores destinados ao mercado de hobbistas) são baratos,
 fáceis de encontrar, robustos e seu controle é feito por um sinal PWM. O
@@ -290,7 +325,7 @@ servo}. O S3004 possui rolamentos de esferas no eixo de saída, e torque de
 
 \begin{figure}[ht]
  \begin{center}
-  \includegraphics[width=3in]{S3004}
+  \includegraphics[width=3.2in]{S3004}
  \end{center}
  \caption{Servo Futaba S3004}
  \label{fig: servo}
@@ -473,7 +508,6 @@ motores e display LCD, respectivamente.
 %
 \subsection{Protótipo}
 \label{sec:prototipo}
-%TODO protótipo
 O circuito completo do projeto, conforme esquematizado na figura
 \ref{fig:montagem} é apresentado na figura \ref{fig:circuito}.
 \begin{figure}[h]
@@ -558,6 +592,8 @@ detalhes da implementação.
 \section{Testes e Resultados}
 \label{sec:resultados}
 %TODO teste
+%TODO testador lego
+%TODO detalhes da implementação
 definir cenários de uso, fotos, resultados, ajustes,
 detalhes da implementação, iteração...
 
@@ -568,6 +604,14 @@ detalhes da implementação, iteração...
 \label{sec:conclusoes}
 %TODO concluir Redundância da introdução Dificuldades
 \texttt{concluir}
+
+Em tempos de aumento da preocupação com questões ambientais, emissão de
+poluentes, humanização das cidades, -- descaracterizadas e transformadas para
+servir aos veículos automotores -- a bicicleta aparece como um agente
+transformador. Seu apelo a saúde e a ecologia, baixo custo e facilidade de uso
+já a promovem ao veículo urbano do futuro, sendo que as diversas iniciativas de
+incentivo ao uso de bicicletas comunitárias e/ou públicas ao redor do mundo, e
+inclusive em nossa Universidade, estão aí para comprovar esta teoria. 
 
 Muitas extensões podem ser feitas neste projeto, visto que como uma prova de
 conceito, é uma implementação muito simplificada. A primeira adição proposta
@@ -585,8 +629,26 @@ própria geração de energia.
 A terceira sugestão é a possibilidade de configuração de parâmetros em
 \textit{runtime}, além de apenas a constante de ajuste K.
 
-Como quarta e última sugestão, a adição de módulos de memória persistente para
+Como quarta, a adição de módulos de memória persistente para
 que configurações não sejam perdidas a cada desligamento do sistema.
+
+Finalmente, a quinta e última sugestão é a integração de um acelerômetro
+eletrônico, de onde é possível ler a informação de inclinação do terreno. Como
+em um automóvel, por vezes é interessante adiar a troca de marcha em subidas (a
+"esticada") e postergar na descida.
+
+Por fim e ao cabo, apesar da conclusão sem sucesso, a oportunidade de aplicar a
+parte mais interessante de todo o conhecimento acumulado na graduação e bater
+de frente em dificuldades da engenharia real foi bastante satisfatória.
+Ressalto que o trabalho de graduação está finalizado, e que não pode se dizer o
+mesmo para o projeto do câmbio automático para bicicletas.
+
+\begin{figure}[h!]
+\begin{center}
+ \includegraphics[width=4in]{evo}
+\end{center}
+\end{figure}
+
 
 \pagebreak
 %%%
