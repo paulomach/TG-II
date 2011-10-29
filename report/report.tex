@@ -325,7 +325,6 @@ adaptação.
   \label{fig:atuador}
 \end{figure}
 
-
 Pequenos servos RC (motores destinados ao mercado de hobbistas) são baratos,
 fáceis de encontrar, robustos e seu controle é feito por um sinal PWM. O
 servo motor escolhido foi um Futaba S3004, visto na figura \ref{fig:
@@ -503,7 +502,6 @@ utiliza o microcontrolador ATMega168, e pode ser visto na figura
   \label{fig:duemilanove}
 \end{figure}
 
-
 A linguagem de programação utilizada é o C/C++, sendo que o compilador
 utilizado foi o GNU Compiler Collection, o GCC\cite{gcc}. Uma das grandes
 vantagem da utilização do GCC é ser multiplataforma, além do fato de ser
@@ -511,7 +509,6 @@ software livre. O Arduino provêm uma IDE e bibliotecas para o desenvolvimento
 de aplicações, das quais foram utilizadas no projeto as bibliotecas
 \textit{Servo} e \textit{LiquidCrystal}, responsáveis pela manipulação de servo
 motores e display LCD, respectivamente.
-
 
 %%%
 %
@@ -604,7 +601,94 @@ detalhes da implementação.
 %TODO testador lego
 %TODO detalhes da implementação
 definir cenários de uso, fotos, resultados, ajustes,
-detalhes da implementação, iteração...
+detalhes da implementação, iteração... prints da saída serial
+
+\subsection{Teste Preliminar}
+
+Para início dos testes, antes de finalizada a bancada, um esquema de testes
+físicos auxiliar era necessário. O objetivo é de alguma forma obter os sinais
+que seriam obtidos pelo sistema real, ou seja, gerar os acionamentos dos
+\textit{reed switch's} com as frequências esperadas para o sistema real.
+
+Para satisfazer esse requisito de teste, uma plataforma foi desenvolvida
+utilizando baterias, pequenos motores DC, potenciômetros (para regulação da
+tensão nos motores, e logo sua velocidade), algumas peças de
+LEGO\textsuperscript{\textregistered} para a montagem, e um par de ímas
+acoplados para o acionamento dos \textit{reed's}. A plataforma finalizada pode
+ser vista em ação na figura \ref{fig:test1}.
+
+\begin{figure}[h!]
+\begin{center}
+ \includegraphics[width=5.5in]{test1}
+\end{center}
+  \caption{Plataforma de testes}
+  \label{fig:test1}
+\end{figure}
+
+Na parte de trás, o par trançado vermelho e preto é o cabeamento de um
+\textit{reed}, enquanto que o \textit{protoboard} branco no centro à esquerda é
+o circuito de controle da velocidade do motor DC. Acoplado a polia de trás há
+um pequeno íma de neodímio (também conhecido como ímã de terras raras),
+extraído de um disco rígido. Este é um íma poderoso considerando seu tamanho, e
+gera o campo magnético necessário a ativação do \textit{reed} a até
+aproximadamente 5 mm de distância.
+
+Essa montagem permitiu a geração de um sinal em uma das duas entradas do
+sistema, sendo que a segunda entrada foi gerada manualmente com outro ímã de
+neodímio. Gerar o sinal manualmente se mostrou mais conveniente, pois a mudança
+da frequência de entrada fica mais fácil de manipular, visto que o
+potenciômetro disponível se apresentou pouco amigável, se comportando mais como
+um interruptor do que como uma resistência variável.
+
+Para visualizar o funcionamento e \textit{debug} do código, apenas observar a
+saída do sistema (movimentação do servo motor) não é suficiente. A primeira
+medida é a configuração do display LCD, mapeado como na figura
+\ref{fig:schemalcd}, contendo as informações mais básicas para a verificação do
+sistema. O resultado do mapeamento é verificado na figura \ref{fig:lcd}.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=5.5in]{lcd}
+\end{center}
+  \caption{Esquema de configuração do display LCD}
+  \label{fig:schemalcd}
+\end{figure}
+
+Este mapeamento é necessário para a codificação do display, como visto no
+trecho do código a seguir.
+\begin{lstlisting}
+  ...
+  // LCD initialization
+  LiquidCrystal lcd ( 7, 6, 5, 4, 8, 10 );
+  ...
+  // LCD static setup
+  lcd.begin ( 16,2 );
+  lcd.print( "start up..." );
+  delay(2000);
+  lcd.clear();
+  lcd.print ( "Vel:" );
+  lcd.setCursor ( 8,0 );
+  lcd.print ( "kmph" );
+  lcd.setCursor ( 0,1 );
+  lcd.print ( "Marcha:" );
+  lcd.setCursor ( 10,1 );
+  lcd.print ( "K:" );
+  ...
+  // Update LCD
+  void update_lcd() {
+    lcd.setCursor ( 4,0 );
+    lcd.print("    ");
+    lcd.setCursor ( 4,0 );
+    lcd.print ( wspeed );
+    lcd.setCursor ( 7,1 );
+    lcd.print ( gear );
+    lcd.setCursor ( 12,1 );
+    lcd.print ( K );
+  }
+\end{lstlisting}
+
+
+\subsection{Teste de Bancada}
 
 \pagebreak
 %%%
@@ -612,12 +696,11 @@ detalhes da implementação, iteração...
 \section{Conclusões}
 \label{sec:conclusoes}
 %TODO concluir Redundância da introdução Dificuldades
-\texttt{concluir}
 
 Em tempos de aumento da preocupação com questões ambientais, emissão de
 poluentes, humanização das cidades, -- descaracterizadas e transformadas para
 servir aos veículos automotores -- a bicicleta aparece como um agente
-transformador. Seu apelo a saúde e a ecologia, baixo custo e facilidade de uso
+transformador. Seu apelo à saúde e ecológico, baixo custo e facilidade de uso
 já a promovem ao veículo urbano do futuro, sendo que as diversas iniciativas de
 incentivo ao uso de bicicletas comunitárias e/ou públicas ao redor do mundo, e
 inclusive em nossa Universidade, estão aí para comprovar esta teoria. 
