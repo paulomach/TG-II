@@ -641,11 +641,14 @@ da frequência de entrada fica mais fácil de manipular, visto que o
 potenciômetro disponível se apresentou pouco amigável, se comportando mais como
 um interruptor do que como uma resistência variável.
 
+\subsubsection{Debugando o código}
+
 Para visualizar o funcionamento e \textit{debug} do código, apenas observar a
 saída do sistema (movimentação do servo motor) não é suficiente. A primeira
 medida é a configuração do display LCD, mapeado como na figura
 \ref{fig:schemalcd}, contendo as informações mais básicas para a verificação do
-sistema. O resultado do mapeamento é verificado na figura \ref{fig:lcd}.
+sistema. A numeração na figura é referente a posição de cada caractere do
+display. O resultado do mapeamento é verificado na figura \ref{fig:lcd}.
 
 \begin{figure}[h!]
 \begin{center}
@@ -720,7 +723,31 @@ void update_serial() {
 
 Em qualquer parte do código pode ser adicionado um comando de impressão serial.
 
+\subsubsection{Resultados Teste Preliminar}
+% histórico no git
+% resultado testes preliminares
+É necessário apresentar mais a fundo alguns detalhes da implementação para
+então compreender os resultados obtidos.
 
+A primeira observação feita é pela opção da estrutura do código, dividido entre
+uma biblioteca onde foram modeladas classes para a representação do
+\textit{derailleur} e da roda de bicicleta. Esta opção se pauta em dois
+princípios, um técnico e outro filosófico: utilizar a característica de
+representação do mundo físico oferecida pelo programação orientada a objetos; a
+posterior redistribuição do código como software livre, possibilitando a
+expansão e melhoria do projeto. Esta organização é representada por:
+
+\begin{verbatim}
+BikeTransmission/
+|-- BikeTransmission.cpp
+|-- BikeTransmission.h
+`-- keywords.txt
+principal/
+`-- principal.pde
+\end{verbatim}
+
+O arquivo $keywords.txt$ é o arquivo de configuração para o destaque das
+palavras chaves introduzidas pela biblioteca na IDE do Arduino.
 
 
 \subsection{Teste de Bancada}
@@ -804,8 +831,7 @@ necessário para a troca de marchas. O que significa ir ao mercado e pesquisar
 as opções disponíveis de servos de alto torque.
 
 Até o encerramento da escrita deste relatório, o servo encomendado não havia
-chegado migué migué migué migué migué migué migué migué migué migué migué migué
-migué migué migué migué.
+chegado. Ou seja, este trabalho não foi concluído.
 
 
 
