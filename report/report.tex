@@ -56,7 +56,7 @@ idealmente, abranger as três grandes áreas que originam essa
 formação\cite{enciclo}: Engenharia Elétrica (eletrônica, processamento de
 sinais, circuitos elétricos e teoria de controle, etc); Engenharia
 Mecânica (dinâmica, modelagem de sistemas, etc); e a Computação (automação,
-controle discreto, etc). Este trabalho tenta, modestamente, resvelar por cada
+controle discreto, etc). Este trabalho tenta, modestamente, resvalar por cada
 uma destas áreas e honrar a formação recebida.
 
 A ideia deste projeto surgiu das observações diárias de ciclistas e do
@@ -329,7 +329,8 @@ Pequenos servos RC (motores destinados ao mercado de hobbistas) são baratos,
 fáceis de encontrar, robustos e seu controle é feito por um sinal PWM. O
 servo motor escolhido foi um Futaba S3004, visto na figura \ref{fig:
 servo}. O S3004 possui rolamentos de esferas no eixo de saída, e torque de
-4.1kg-cm a 6 volts.
+4.1kg-cm a 6 volts, o que no SI equivale a $4.1 \times 9.81 \times 10^{-2} =
+0.4022$ Nm.
 
 \begin{figure}[ht]
  \begin{center}
@@ -654,7 +655,7 @@ sistema. O resultado do mapeamento é verificado na figura \ref{fig:lcd}.
   \label{fig:schemalcd}
 \end{figure}
 
-Este mapeamento é necessário para a codificação do display, como visto no
+Este mapeamento é necessário para a codificação do display, apresentado no
 trecho do código a seguir.
 \begin{lstlisting}
   ...
@@ -685,10 +686,128 @@ trecho do código a seguir.
     lcd.setCursor ( 12,1 );
     lcd.print ( K );
   }
+...
 \end{lstlisting}
+
+Ainda assim, para o \textit{debug} do sistema mais informação é necessária. A
+opção é a utilização dos recursos de comunicação serial do Arduino, que pode
+transmitir dados em formato texto pela mesma porta USB usada para carregar e
+alimentar o sistema. Para configurar e usar esta comunicação, o código:
+
+\begin{lstlisting}
+...
+// Config Serial baud rate
+Serial.begin ( 9600 );
+...
+/*
+ * Serial debug output routine
+ */
+void update_serial() {
+  if (debugLevel == 2) {
+    Serial.print ( "Velocidade: " );    Serial.print ( wspeed );
+    Serial.println(" kmph");
+    Serial.print ( "Marcha: " );        Serial.println ( gear );
+    Serial.print ( "Tempo roda: " );    Serial.print ( wtime );
+    Serial.println (" ms" );
+    Serial.print ( "Tempo cadencia: " );Serial.print ( ctime );
+    Serial.println (" ms" );
+    Serial.print ("K: ");               Serial.println (K);
+    Serial.println("");
+  }
+}
+...
+\end{lstlisting}
+
+Em qualquer parte do código pode ser adicionado um comando de impressão serial.
+
+
 
 
 \subsection{Teste de Bancada}
+
+A bancada da figura \ref{fig:setup} foi testada e após o primeiro
+\textit{startup}, os sinais de entrada foram adquiridos corretamente, e os
+sinais de saída apresentados no display e no monitor serial estavam coerentes.
+Porém um detalhe do mais importante falhou: mesmo com uma nova marcha engatada,
+nenhum movimento foi observado no \textit{derailleur}.
+
+A conclusão é que o servo motor usado simplesmente não possui torque suficiente
+para enrolar o cabo que movimenta o \textit{derailleur}, o que foi um grande
+equívoco no dimensionamento do mesmo.
+
+São duas fontes de resistência a este movimento, sendo a primeira o atrito do
+cabo no conduíte, e a segunda e principal, a mola de retorno do
+\textit{derailleur}. Três alternativas para contornar este problema foram
+estudadas, sendo:
+\begin{enumerate*}
+  \item Diminuir o raio da polia, minimizando o torque necessário no eixo do
+servo motor.
+  \item Redimensionar a mola de retorno do \textit{derailleur} para um valor
+menor da constante elástica.
+  \item Redimensionar o servo motor, ou seja, utilizar um que forneça maior
+valor de torque.
+\end{enumerate*}
+
+A primeira alternativa esbarrou em uma limitação ferramental, sendo bastante
+complicado aprofundar a ranhura (destacada na figura \ref{fig:ranhura}) da polia
+do trocador manual de forma uniforme.
+\begin{figure}[!h]
+\begin{center}
+  \includegraphics[width=5.5in]{ranhura}
+\end{center}
+  \caption{Ranhura da polia do cabo de acionamento}
+  \label{fig:ranhura}
+\end{figure}
+
+Manter o raio da polia uniforme é imprescindível pois o passo entre as coroas
+no cassete são constantes, ou seja, caso variável o engate das marchas fica
+comprometido. Sem uma forma de garantir a uniformidade, essa alternativa foi
+deixada de lado no curto prazo.
+
+Na consideração da segunda alternativa, foi questionado o porquê de um
+\textit{derailleur} possuir uma mola de retorno de constante elástica
+relativamente grande -- infelizmente não havia forma de medir seu valor, e não
+há especificação disponível pelo fabricante, visto que constitui um dos
+segredos do projeto. O valor é tal que possa garantir do \textit{derailleur} a
+posição mínima, não importando as condições e configurações. Isto é, o
+\textit{derailleur} é uma peça mecânica que fica completamente exposta aos
+elementos, sendo que seu funcionamento tem que ser garantido o mesmo estando
+este completamente limpo e lubrificado, ou cheio de barro. Há também o atrito no
+cabeamento, que está sujeito a mesma variação de resistência do
+\textit{derailleur}.
+
+A segunda consideração é que, decidindo por uma intervenção na mola de retorno,
+a construção da gaiola do \textit{derailleur} é projetada para não ser
+desmontável (detalhe da figura \ref{fig:derra}), com rebites e pinos
+fixados por interferência. Ou seja, não há uma maneira simples de reconfigurar
+este elemento, e caso houvesse, arrisca-se perder a robustez no seu
+funcionamento.
+
+Esta deixa de ser uma opção, e nesse sentido apenas uma completa
+reformulação do \textit{derailleur} -- talvez abandonando completamente o
+acionamento por cabo e a mola de retorno, acoplando um servo motor na sua
+construção\footnote{A fabricante japonesa Shimano possui uma série de
+\textit{derailleurs} eletrônicos de controle manual chamada Di2} -- pode vir a
+funcionar.
+
+\begin{figure}[ht!]
+\begin{center}
+ \includegraphics[width=5.5in]{derra}
+\end{center}
+  \caption{Detalhe da construção da gaiola do \textit{derailleur}.}
+  \label{fig:derra}
+\end{figure}
+
+A terceira opção é, entre todas, aquela que mais se aproxima da substituição de
+um agente humano no controle, ou seja, um atuador capaz de produzir o torque
+necessário para a troca de marchas. O que significa ir ao mercado e pesquisar
+as opções disponíveis de servos de alto torque.
+
+Até o encerramento da escrita deste relatório, o servo encomendado não havia
+chegado migué migué migué migué migué migué migué migué migué migué migué migué
+migué migué migué migué.
+
+
 
 \pagebreak
 %%%
