@@ -132,22 +132,18 @@ void loop() {
     wspeed = roda.get_lspeed ( wtime );
     update_lcd();
     update_serial();
-    state++;
-    break;
-  case 2:
     // check if coasting
     if (( ctime > CADENCE_MIN ) || ( ctime == 0)) {
       state = 1;
-    } 
+    }
     else {
       state++;
     }
     break;
-  case 3:
+  case 2:
     // act over transmission
     //gear=trocador.get_gear ( ctime, wtime );
     ratio=float(ctime)/wtime;
-    Serial.println(ratio);
     for (int i=0;i<6;i++) {
         if (closeto(ratio,validratios[i],TOLERANCE)) {
             gear = i+1;
