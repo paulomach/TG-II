@@ -45,6 +45,7 @@
     stringstyle=\color[rgb]{0.6,0.4,0.4},
     identifierstyle=\color[rgb]{0.0,0.0,0.5},
     basicstyle=\tiny,
+    numbers=left,
 }
 
 %%%
@@ -519,7 +520,7 @@ O circuito completo do projeto, conforme esquematizado na figura
 \ref{fig:montagem} é apresentado na figura \ref{fig:circuito}.
 \begin{figure}[h]
 \begin{center}
- \includegraphics[width=5.5in]{circ_detail}
+ \includegraphics[width=4.5in]{circ_detail}
 \end{center}
   \caption{Circuito completo do Projeto}
   \label{fig:circuito}
@@ -583,15 +584,41 @@ descrita a seguir.
   instantânea, marcha engatada, e carga da bateria.
 \end{description*}
 
-\subsubsection{Implementação}
+\subsubsection{Estrutura do Código}
 \label{sec:implemt}
 
-A implementação do algoritmo foi feita criando uma biblioteca para
-modelamento das partes físicas e através de uma máquina de  estados. O código
-está mostrado nas seções \ref{code:api}, \ref{code:impl} e \ref{code:main}. A
-seção \ref{sec:resultados} Teste e Resultados apresenta as adaptações e
-detalhes da implementação.
+A estrutura do código, dividido entre uma biblioteca onde foram modeladas
+classes para a representação do \textit{derailleur} e da roda de bicicleta. Esta
+opção se pauta em dois princípios, um técnico e outro filosófico,
+respectivamente: utilizar a característica de representação do mundo físico
+oferecida pelo programação orientada a objetos; a posterior redistribuição do
+código como software livre\footnote{Todo código fonte deste trabalho, inclusive
+este relatório, está disponível no site de hospedagem de código github
+(\url{https://github.com/paulomach/TG-II}) sob a licença GPL v3\cite{gpl}.},
+visando a expansão e melhoria do projeto.
 
+Fisicamente, os arquivos estão organizados:
+
+\begin{verbatim}
+BikeTransmission/
+|-- BikeTransmission.cpp
+|-- BikeTransmission.h
+`-- keywords.txt
+principal/
+`-- principal.pde
+\end{verbatim}
+
+Os arquivos $BikeTransmission$ são a interface e implementação da biblioteca
+que modela os elementos físicos do projeto. O arquivo $keywords.txt$ é o arquivo
+de configuração para o destaque das palavras chaves introduzidas pela biblioteca
+na IDE do Arduino. O arquivo $principal.pde$ é o programa principal onde a
+biblioteca do projeto é usada.
+
+O código integral é mostrado nas seções \ref{code:api}, \ref{code:impl} e
+\ref{code:main}. Os detalhes da implementação estão descritos na seção
+\ref{sec:resultados} Testes e Resultados e especialmente na seção
+\ref{sec:code_detail}, pois o desenvolvimento do projeto foi indissociável dos
+testes.
 
 \pagebreak
 %%%
@@ -648,7 +675,7 @@ saída do sistema (movimentação do servo motor) não é suficiente. A primeira
 medida é a configuração do display LCD, mapeado como na figura
 \ref{fig:schemalcd}, contendo as informações mais básicas para a verificação do
 sistema. A numeração na figura é referente a posição de cada caractere do
-display. O resultado do mapeamento é verificado na figura \ref{fig:lcd}.
+display. Um exemplo do mapeamento já foi dado na figura \ref{fig:lcd}.
 
 \begin{figure}[h!]
 \begin{center}
@@ -723,31 +750,104 @@ void update_serial() {
 
 Em qualquer parte do código pode ser adicionado um comando de impressão serial.
 
-\subsubsection{Resultados Teste Preliminar}
-% histórico no git
-% resultado testes preliminares
-É necessário apresentar mais a fundo alguns detalhes da implementação para
-então compreender os resultados obtidos.
+\subsubsection{Detalhamento da Implementação}
+\label{sec:code_detail}
+O primeiro detalhe em destaque é a aquisição dos tempos de revolução da roda e
+da cadência (rotação do pedivela). Houve a necessidade de usar rotinas de
+interrupção para tratar os eventos gerados pelos \textit{reed's} e poder contar
+o tempo entre cada evento. As interrupções, como dizem o nome, interrompem o
+fluxo de execução do programa, chamando a rotina de interrupção para processar
+o evento de forna aninhada. O requisito de qualquer rotina de interrupção é que
+seja breve para que o fluxo geral do sistema não fique prejudicado.
 
-A primeira observação feita é pela opção da estrutura do código, dividido entre
-uma biblioteca onde foram modeladas classes para a representação do
-\textit{derailleur} e da roda de bicicleta. Esta opção se pauta em dois
-princípios, um técnico e outro filosófico: utilizar a característica de
-representação do mundo físico oferecida pelo programação orientada a objetos; a
-posterior redistribuição do código como software livre, possibilitando a
-expansão e melhoria do projeto. Esta organização é representada por:
+Dois pinos de entrada digital 2 e 3 do Arduino foram associados às
+rotinas para contar o tempo da cadência e da roda, respectivamente. A
+associação é feita na borda de descida do sinal, tornando o sistema mais
+robusto aos efeitos do \textit{bouncing} nos \textit{reed switches}. O
+trecho de código a seguir é referente ao tempo da cadência apenas, pois não há
+necessidade de reproduzir o código do tempo da roda, visto que apenas alguns
+nomes são substituídos.
+\begin{lstlisting}
+// Pin config for interrupt routine
+attachInterrupt ( 0, cadence_monitor, FALLING );
+...
+/*
+ * cadence time interrupt
+ * routine
+ */
+void cadence_monitor() {
+  // first time log
+  if ( c == false ) {
+    ctimeLog[0] = millis();
+    c=true;
+  }
+  else {
+    ctimeLog[1] = millis();
+    ctime = ctimeLog[1] - ctimeLog[0];
+    ctimeLog[0] = ctimeLog[1];
+  }
+}
+...
+/*
+ * timers reset routine
+ */
+void reset_timers() {
+  unsigned long now = millis();
+  if (now - wtimeLog[0] > RESET_TIMEOUT) {
+    wtime = 0;
+  }
+  if (now - ctimeLog[0] > RESET_TIMEOUT) {
+    ctime = 0;
+  }
+}
+\end{lstlisting}
+Na linha 2, a configuração necessária para associar a interrupção à rotina
+$cadence_monitor$ na borda de descida. No linha 8, a rotina de interrupção
+propriamente dita, guarda na primeira execução um valor de tempo (função
+$millis()$ que retorna a contagem de tempo em milissegundos desde que o
+microcontrolador foi iniciado) inicial. Da segunda chamada em diante, a
+variável $ctime$ recebe o tempo da cadência através da subtração do registro
+atual do tempo de execução com o registro anterior anterior, armazenado no
+vetor $ctimeLog$.
 
-\begin{verbatim}
-BikeTransmission/
-|-- BikeTransmission.cpp
-|-- BikeTransmission.h
-`-- keywords.txt
-principal/
-`-- principal.pde
-\end{verbatim}
+Na linha 24, uma função é usada para zerar os contadores de tempo de cadência e
+roda para que, caso a interrupção não seja disparada por um tempo muito grande,
+o valor destes contadores não retornem valores absurdos.
 
-O arquivo $keywords.txt$ é o arquivo de configuração para o destaque das
-palavras chaves introduzidas pela biblioteca na IDE do Arduino.
+O segundo detalhe fica em conta do fluxo de execução do algoritmo apresentado
+na seção \ref{sec:software}. A implementação principal foi feita em um
+\textit{looping} infinito (função $loop()$). No detalhe
+
+\begin{lstlisting}
+void loop() {
+  // check if coasting
+  if (( ctime < CADENCE_MIN ) || ( ctime != 0)) {
+    // if not act over transmission
+    //gear=trocador.get_gear ( ctime, wtime );
+    ratio=float(ctime)/wtime;
+    for (int i=0;i<6;i++) {
+        if (closeto(ratio,validratios[i],TOLERANCE)) {
+            gear = i+1;
+        }
+    }
+    trocador.set_gear ( motor, gear, ctime, wtime, K );
+  }
+...
+}
+\end{lstlisting}
+A execução basicamente teste se o ciclista está "deslizando"
+(\textit{coasting}), ou seja, em movimento inercial sem movimentar os pedais.
+Caso não esteja, a execução segue apenas verificando os botões de configuração,
+lendo informação de velocidade, e atualizando o display. Caso o ciclista esteja
+pedalando, o sistema calcula a relação entre o tempo da cadência e tempo da
+roda, atualiza o valor da marcha atual e chama a função da biblioteca que se
+encarrega de testar e trocar a marcha, se necessário.
+
+
+\subsubsection{Resultados}
+
+De forma geral o sistema alcançou, neste esquema de simulação, o resultado
+satisfatório, reagindo de maneira esperada aos estímulos que foi projetado.
 
 
 \subsection{Teste de Bancada}
