@@ -126,22 +126,9 @@ void update_serial() {
  * Main loop - state machine
  */
 void loop() {
-  switch ( state ) {
-  case 1:
-    // just refresh display
-    wspeed = roda.get_lspeed ( wtime );
-    update_lcd();
-    update_serial();
-    // check if coasting
-    if (( ctime > CADENCE_MIN ) || ( ctime == 0)) {
-      state = 1;
-    }
-    else {
-      state++;
-    }
-    break;
-  case 2:
-    // act over transmission
+  // check if coasting
+  if (( ctime < CADENCE_MIN ) || ( ctime != 0)) {
+    // if not act over transmission
     //gear=trocador.get_gear ( ctime, wtime );
     ratio=float(ctime)/wtime;
     for (int i=0;i<6;i++) {
@@ -150,10 +137,13 @@ void loop() {
         }
     }
     trocador.set_gear ( motor, gear, ctime, wtime, K );
-    state=1;
-    break;
   }
-
+  /*
+   * Refresh displays
+   */ 
+  wspeed = roda.get_lspeed ( wtime );
+  update_lcd();
+  update_serial();
   /*
    * Button 1 read, k++
    */
@@ -174,7 +164,7 @@ void loop() {
       K = 0.5;
     }
   }
-  delay ( 500 );
+  delay ( 400 );
   reset_timers();
 }
 

@@ -1,10 +1,9 @@
 TODO
 
+* Completely remove switch case (just two states, and one should always be executed) 
 * Move most of query entries (i.e. gear calculations and ISRs) of classes
 methods to the main program loop. This is done to remove redundant IO calls,
 that can be very slow some times. The variables must be the methods arguments.
 * Implement method derailleur::get_gear based upon the sprocktes teeth numbers.
 * Treat higher and slower sprockets limits.
-* Clone git repo into arduino dir strutcture to have real autocompletion with kdevelop.
 
-http://www.nemsim.com/ece395blimp/fritzing/parts/svg/core/breadboard/
