@@ -142,7 +142,7 @@ do \textit{derailleur} traseiro e três exemplos de engrenamento.
 \begin{center}
  \includegraphics[width=4in]{derailleur}
 \end{center}
-  \caption{Três engrenamentos}
+  \caption{Visão traseira de engrenamentos de um \textit{derailleur}.}
   \label{fig:derailleur}
 \end{figure}
 Na figura \ref{fig:derailleur} temos, respectivamente, engrenado uma marcha
@@ -614,10 +614,27 @@ de configuração para o destaque das palavras chaves introduzidas pela bibliote
 na IDE do Arduino. O arquivo $principal.pde$ é o programa principal onde a
 biblioteca do projeto é usada.
 
+A biblioteca \textit{BikeTransmission} modela basicamente duas classes que
+representam a roda e o \textit{derailleur}. Um diagrama UML das classes está na
+figura \ref{fig:uml} a seguir.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=4in]{uml}
+\end{center}
+  \caption{Representação UML da biblioteca \textit{BikeTransmission}}
+  \label{fig:uml}
+\end{figure}
+
+A roda traseira ($RearWheel$) possui um atributo representando o diâmetro da
+roda, e um método para calcular a velocidade linear, além do construtor. O
+\textit{derailleur} possui dois métodos, para obter a marcha engatada
+($get\_gear$), e outro para selecionar uma nova marcha ($set\_gear$).
+
 O código integral é mostrado nas seções \ref{code:api}, \ref{code:impl} e
 \ref{code:main}. Os detalhes da implementação estão descritos na seção
 \ref{sec:resultados} Testes e Resultados e especialmente na seção
-\ref{sec:code_detail}, pois o desenvolvimento do projeto foi indissociável dos
+\ref{sec:code_detail}, pois o desenvolvimento do código foi indissociável dos
 testes.
 
 \pagebreak
@@ -628,8 +645,6 @@ testes.
 %TODO teste
 %TODO testador lego
 %TODO detalhes da implementação
-definir cenários de uso, fotos, resultados, ajustes,
-detalhes da implementação, iteração... prints da saída serial
 
 \subsection{Teste Preliminar}
 
@@ -748,7 +763,8 @@ void update_serial() {
 ...
 \end{lstlisting}
 
-Em qualquer parte do código pode ser adicionado um comando de impressão serial.
+Em qualquer parte do código pode ser adicionado um comando de impressão serial,
+contendo o valor de uma variável, uma informação textual ou ambos.
 
 \subsubsection{Detalhamento da Implementação}
 \label{sec:code_detail}
@@ -764,9 +780,9 @@ Dois pinos de entrada digital 2 e 3 do Arduino foram associados às
 rotinas para contar o tempo da cadência e da roda, respectivamente. A
 associação é feita na borda de descida do sinal, tornando o sistema mais
 robusto aos efeitos do \textit{bouncing} nos \textit{reed switches}. O
-trecho de código a seguir é referente ao tempo da cadência apenas, pois não há
-necessidade de reproduzir o código do tempo da roda, visto que apenas alguns
-nomes são substituídos.
+trecho de código a seguir, parte do arquivo $principal.pde$, é referente ao
+tempo da cadência apenas, pois não há necessidade de reproduzir o código do
+tempo da roda, visto que apenas alguns nomes são substituídos.
 \begin{lstlisting}
 // Pin config for interrupt routine
 attachInterrupt ( 0, cadence_monitor, FALLING );
@@ -810,13 +826,14 @@ variável $ctime$ recebe o tempo da cadência através da subtração do registr
 atual do tempo de execução com o registro anterior anterior, armazenado no
 vetor $ctimeLog$.
 
-Na linha 24, uma função é usada para zerar os contadores de tempo de cadência e
-roda para que, caso a interrupção não seja disparada por um tempo muito grande,
-o valor destes contadores não retornem valores absurdos.
+Na linha 24, a função $reset_timers$ é usada para zerar os contadores de tempo
+de cadência e roda para que, caso a interrupção não seja disparada por um tempo
+muito grande, o valor destes contadores não retornem valores absurdos.
 
 O segundo detalhe fica em conta do fluxo de execução do algoritmo apresentado
 na seção \ref{sec:software}. A implementação principal foi feita em um
-\textit{looping} infinito (função $loop()$). No detalhe
+\textit{looping} infinito (função $loop()$ na primeira linha). No trecho do
+código do arquivo $principal.pde$:
 
 \begin{lstlisting}
 void loop() {
@@ -834,21 +851,35 @@ void loop() {
   }
 ...
 }
+/*
+ * Return true if param is within
+ * tolerance [%] of reference:
+ */
+boolean closeto(float param, float reference, float tolerance) {
+    return ( (param >= (reference*(100-tolerance)/100) ) &&
+      (param <= (reference*(100+tolerance)/100) ) );
+}
 \end{lstlisting}
-A execução basicamente teste se o ciclista está "deslizando"
+A execução, na linha 3, testa se o ciclista está "deslizando"
 (\textit{coasting}), ou seja, em movimento inercial sem movimentar os pedais.
 Caso não esteja, a execução segue apenas verificando os botões de configuração,
 lendo informação de velocidade, e atualizando o display. Caso o ciclista esteja
-pedalando, o sistema calcula a relação entre o tempo da cadência e tempo da
-roda, atualiza o valor da marcha atual e chama a função da biblioteca que se
-encarrega de testar e trocar a marcha, se necessário.
+pedalando, na linha 6 calcula a relação entre o tempo da cadência e tempo da
+roda, e atualiza o valor da marcha engatada, usando a função $closeto$,
+linha 20, que retorna verdadeiro caso o valor da relação esteja contido no
+vetor das relações esperadas, com uma margem de tolerância. A seguir, na linha
+12, faz chamada a função da biblioteca que se encarrega de testar e trocar a
+marcha, quando necessário.
+A função para determinação da marcha engatada é originalmente parte do código da
+biblioteca, porém algum problema não diagnosticado impedia que a chamada a esta
+função retornasse o valor correto.
 
+O terceiro destaque, 
 
 \subsubsection{Resultados}
 
 De forma geral o sistema alcançou, neste esquema de simulação, o resultado
 satisfatório, reagindo de maneira esperada aos estímulos que foi projetado.
-
 
 \subsection{Teste de Bancada}
 
