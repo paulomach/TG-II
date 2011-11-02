@@ -53,11 +53,11 @@ const int debugLevel = 2; // Set debug verbosity in serial
 
 const int TOTAL_GEARS=6;
 const int TOLERANCE=5;
-const float validratios[TOTAL_GEARS]={ 1.6428, 1.9166, 2.2999, 2.5555, 2.875, 3.2857 };
+const float validratios[TOTAL_GEARS]={1.0769, 1.2174, 1.4, 1.6471, 1.8667, 2.1538};
 
 // Variables
 unsigned int wspeed, state=1;
-int gear=1;
+int gear=6;
 float K=1.00;
 
 float ratio;
@@ -114,11 +114,11 @@ void update_lcd() {
  */
 void update_serial() {
   if (debugLevel == 2) {
-    Serial.print ( "Velocidade: " );    Serial.print ( wspeed ); Serial.println (" kmph");
+    //Serial.print ( "Velocidade: " );    Serial.print ( wspeed ); Serial.println (" kmph");
     Serial.print ( "Marcha: " );        Serial.println ( gear );
     Serial.print ( "Tempo roda: " );    Serial.print ( wtime ); Serial.println ( " ms" );
     Serial.print ( "Tempo cadencia: " );Serial.print ( ctime ); Serial.println ( " ms" );
-    Serial.print ("K: ");               Serial.println (K);     Serial.println ("");
+    //Serial.print ("K: ");               Serial.println (K);     Serial.println ("");
   }
 }
 
@@ -126,16 +126,16 @@ void update_serial() {
  * Main loop - state machine
  */
 void loop() {
+  ratio=float(ctime)/wtime;
+  for (int i=0;i<6;i++) {
+      if (closeto(ratio,validratios[i],TOLERANCE)) {
+          gear = i+1;
+      }
+  }
+  
   // check if coasting
-  if (( ctime < CADENCE_MIN ) || ( ctime != 0)) {
+  if (( ctime < CADENCE_MIN ) && ( ctime != 0)) {
     // if not act over transmission
-    //gear=trocador.get_gear ( ctime, wtime );
-    ratio=float(ctime)/wtime;
-    for (int i=0;i<6;i++) {
-        if (closeto(ratio,validratios[i],TOLERANCE)) {
-            gear = i+1;
-        }
-    }
     trocador.set_gear ( motor, gear, ctime, wtime, K );
   }
   /*
@@ -157,14 +157,12 @@ void loop() {
    * Button 0 read, k--
    */
   if ( digitalRead ( b0Pin ) == HIGH ) {
-    Serial.print ( "B0" );
-    Serial.println ( " " );
     K=K-0.01;
     if ( K <= 0.5 ) {
       K = 0.5;
     }
   }
-  delay ( 400 );
+  delay ( 600 );
   reset_timers();
 }
 

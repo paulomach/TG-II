@@ -39,35 +39,17 @@ const int TOTAL_PATH=180;
 const int TOTAL_GEARS=6;
 const int STEP=TOTAL_PATH/TOTAL_GEARS;
 const int TOLERANCE=0.05;
-const float validratios[TOTAL_GEARS]={ 1.6428, 1.9166, 2.2999, 2.5555, 2.875, 3.2857 };
+const float validratios[TOTAL_GEARS]={1.0769, 1.2174, 1.4, 1.6471, 1.8667, 2.1538};
 
 // Time limits (milliseconds)
-// 30RPM - 2000ms
-const int CADENCE_MIN=3000;
+
+const int CADENCE_MIN=1600;
 // 90RPM - 667ms
-const int CADENCE_MAX=100;
+const int CADENCE_MAX=667;
 
 // Offset in the derailleur moviment to engage next gear
-const float UP_OFFSET=1.3;
-const float DOWN_OFFSET=1.3;
-
-/*
- * Debounce time for reed switch.
- * This approach limits wheel speed
- * to V = pi*D*3.6*1000/T (T stands for
- * period in milliseconds
- */ 
-const int DEBOUNCE=70;// 84 kmph
-
-
-/*
- * Time variables for speed reading:
- * c_t - cadence time
- * w_t - wheel time
- */
-unsigned long c_t1, c_t2, w_t1, w_t2;
-
-
+const float UP_OFFSET=0.9;
+const float DOWN_OFFSET=1.1;
 
 /********* Constructors implementation ************/
 RearWheel::RearWheel ( float _diameter ) {
@@ -101,13 +83,15 @@ boolean closeto2(float param, float reference, float tolerance) {
       ( param <= (reference*(1.00+tolerance)) ));
 }
 
+/*
+ * Return the current gear based on known
+ * gear ratios and revoltion times
+ * TODO: Discover why this dont work
+ *      inside the library
+ */
 int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
     float ratio;
-
-    // * Find out the right relations
-    // * [beyond TG] configurable ratios
     ratio=float(c_t)/w_t;
-    Serial.println(ratio);
     for (int i=0;i<TOTAL_GEARS;i++) {
         if (closeto2(ratio,validratios[i],TOLERANCE)) {
             return(i+1);
@@ -121,19 +105,27 @@ int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
  * position
  */
 void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t, float K ) {
-    if ( ( c_t < CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
-        motor.write (int( STEP* ( gear + 1 ) *UP_OFFSET ));
-        //while ( gear == this->get_gear ( c_t, w_t ) ) {
-        //Serial.print("Subindo marcha...");
-        delay(1000);
-        //}
-        motor.write ( STEP* ( gear + 1 ) );
-    } else if ( ( c_t > CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
-        motor.write (int( STEP* ( gear - 1 ) *DOWN_OFFSET ));
-        //while ( gear == this->get_gear ( c_t, w_t ) ) {
-          //Serial.print("Descendo marcha...");
-        delay(1000);
-        //}
-        motor.write ( STEP* ( gear - 1 ) );
+    int cur_position = motor.read();
+    int target_positon = round(STEP*gear);
+    // make sure that derailleur is at expected position
+    if (cur_position != target_positon) {
+        motor.write(target_positon);
+    }
+    else {
+        if ( ( c_t > CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
+            // Hold position a little lower for a little time
+            motor.write (round( STEP* ( gear - 2 ) *UP_OFFSET ));
+            Serial.println("Mais torque!");
+            delay(700);
+            // and then leave in best position
+            motor.write ( STEP* ( gear - 2 ) );
+        } else if ( ( c_t < CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
+            // Hold position a little higher for a little time
+            motor.write (round( STEP* ( gear + 2 ) *DOWN_OFFSET ));
+            Serial.println("Mais velocidade...");
+            delay(700);
+            // and then leave in best position
+            motor.write ( STEP* ( gear + 2 ) );
+        }
     }
 }
