@@ -563,7 +563,7 @@ descrita a seguir.
   \item[Velocidade além do limite superior para a relação:] compara leitura de
   velocidade da roda traseira com o calculo do limite superior de velocidade
   para a marcha.
-  \item[Velocidade além do limite inferior para a relação:] compara leitura de
+  \item[Velocidade abaixo do limite inferior para a relação:] compara leitura de
   velocidade da roda traseira com o calculo do limite inferior de velocidade
   para a marcha.
   \item[Próxima coroa disponível:] checa se a coroa atual engrenada é a última
@@ -627,12 +627,15 @@ figura \ref{fig:uml} a seguir.
 \end{figure}
 
 A roda traseira ($RearWheel$) possui um atributo representando o diâmetro da
-roda, e um método para calcular a velocidade linear, além do construtor. O
-\textit{derailleur} possui dois métodos, para obter a marcha engatada
-($get\_gear$), e outro para selecionar uma nova marcha ($set\_gear$).
+roda, e um método para calcular a velocidade linear, além do método construtor.
+O \textit{derailleur} possui dois métodos, um para obter a marcha engatada
+($get\_gear$), e outro para selecionar uma nova marcha ($set\_gear$). Utiliza o
+construtor padrão, pois não há configurações especiais.
 
-O código integral é mostrado nas seções \ref{code:api}, \ref{code:impl} e
-\ref{code:main}. Os detalhes da implementação estão descritos na seção
+O código integral está nos Anexos, nas seções \ref{code:api}, \ref{code:impl} e
+\ref{code:main}, que são respectivamente, API (\textit{Application Programming
+Interface}), a implementação da API e o código do programa principal que
+utiliza a API. Os detalhes da implementação estão descritos na seção
 \ref{sec:resultados} Testes e Resultados e especialmente na seção
 \ref{sec:code_detail}, pois o desenvolvimento do código foi indissociável dos
 testes.
@@ -826,7 +829,7 @@ variável $ctime$ recebe o tempo da cadência através da subtração do registr
 atual do tempo de execução com o registro anterior anterior, armazenado no
 vetor $ctimeLog$.
 
-Na linha 24, a função $reset_timers$ é usada para zerar os contadores de tempo
+Na linha 24, a função $reset\_timers$ é usada para zerar os contadores de tempo
 de cadência e roda para que, caso a interrupção não seja disparada por um tempo
 muito grande, o valor destes contadores não retornem valores absurdos.
 
@@ -874,7 +877,44 @@ A função para determinação da marcha engatada é originalmente parte do cód
 biblioteca, porém algum problema não diagnosticado impedia que a chamada a esta
 função retornasse o valor correto.
 
-O terceiro destaque, 
+O terceiro e mais importante detalhe da implementação é método de escolha e
+mudança de marcha, da classe \textit{Derailleur}. Este método recebe o objeto
+representando o servo motor, a marcha atual, os tempos de roda e cadência (i.e.
+as velocidades) e a constante K de ajuste. O trecho a seguir mostra a
+implementação.
+\begin{lstlisting}
+/*
+ * Core method of the library. responsable
+ * for choosing and setting a new gear
+ * position
+ */
+void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t,
+float K ) {
+    if ( ( c_t < CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
+        motor.write (int( STEP* ( gear + 1 ) *UP_OFFSET ));
+        //while ( gear == this->get_gear ( c_t, w_t ) ) {
+        //Serial.print("Subindo marcha...");
+        delay(400);
+        //}
+        motor.write ( STEP* ( gear + 1 ) );
+    } else if ( ( c_t > CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
+        motor.write (int( STEP* ( gear - 1 ) *DOWN_OFFSET ));
+        //while ( gear == this->get_gear ( c_t, w_t ) ) {
+          //Serial.print("Descendo marcha...");
+        delay(400);
+        //}
+        motor.write ( STEP* ( gear - 1 ) );
+    }
+}
+\end{lstlisting}
+O código da linha 8 testa a condição "Velocidade abaixo do limite inferior
+para a relação" levando em consideração o fator K de ajuste, e a condição
+"Coroa anterior disponível", como apresentado no fluxograma da figura
+\ref{fig:fluxograma1}. Da mesma forma, o código da linha 15 testa a condição
+"Velocidade além do limite superior para a relação" levando em conta o fator K
+de ajuste, e a condição "Próxima coroa disponível", também apresentado no
+fluxograma do algoritmo.
+
 
 \subsubsection{Resultados}
 
@@ -908,7 +948,8 @@ valor de torque.
 
 A primeira alternativa esbarrou em uma limitação ferramental, sendo bastante
 complicado aprofundar a ranhura (destacada na figura \ref{fig:ranhura}) da polia
-do trocador manual de forma uniforme.
+do trocador manual de forma uniforme, isto é, de forma que o raio permanecesse
+com o mesmo valor sempre.
 \begin{figure}[!h]
 \begin{center}
   \includegraphics[width=5.5in]{ranhura}
@@ -961,8 +1002,7 @@ um agente humano no controle, ou seja, um atuador capaz de produzir o torque
 necessário para a troca de marchas. O que significa ir ao mercado e pesquisar
 as opções disponíveis de servos de alto torque.
 
-Até o encerramento da escrita deste relatório, o servo encomendado não havia
-chegado. Ou seja, este trabalho não foi concluído.
+Até a entrega deste relatório, o servo encomendado não havia chegado.
 
 
 
