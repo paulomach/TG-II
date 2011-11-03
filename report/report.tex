@@ -378,7 +378,8 @@ Internet.
 
 \subsubsection{Reed Switch}
 \label{sec:reed}
-A definição e uso de elementos sensores foi um dos grandes obstáculos deste
+
+A definição e uso de elementos sensores foi um dos elementos chave deste
 projeto. Estes deveriam ser usados para a leitura de pulsos a cada revolução da
 roda e do pedivela, gerando as informações de velocidades, básica ao algoritmo
 de controle. As soluções analisadas foram:
@@ -390,7 +391,25 @@ de controle. As soluções analisadas foram:
 \end{itemize}
 Os principais critérios de escolha, que permearam o projeto desde sua concepção,
 foram simplicidade e custo. O escolhido foi o  \textit{reed switch}, que
-oferece uma enorme margem de vantagem nos critérios escolhidos.
+oferece uma enorme margem de vantagem nos critérios escolhidos, e já é a
+implementação padrão de computadores ciclísticos.
+
+Um \textit{reed switch} é uma chave normalmente aberta constituída de duas
+lâminas ferromagnéticas flexíveis, que sob influência de um campo magnético,
+fecha o contato. A figura \ref{fig:reed} apresenta o conceito é um
+\textit{reed} como os utilizados.
+
+\begin{figure}[h!]
+ \centering
+  \subfloat[Uma ampola \textit{reed} e
+partes.]{\includegraphics[width=2.5in]{reed}} \hfil
+  \subfloat[Contato fecha com
+influência de campo magnético.]{\includegraphics[width=2.5in]{reedschema}}
+  \caption{O \textit{Reed Switch}.}
+  \label{fig:reed}
+\end{figure}
+
+
 
 Um problema grave dos \textit{reed switch} é o ruído gerado na
 sua operação. Devido ao \textit{bouncing}\cite{reed} o sinal gerado precisa de
