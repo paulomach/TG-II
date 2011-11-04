@@ -114,16 +114,16 @@ void update_lcd() {
  */
 void update_serial() {
   if (debugLevel == 2) {
-    //Serial.print ( "Velocidade: " );    Serial.print ( wspeed ); Serial.println (" kmph");
+    Serial.print ( "Velocidade: " );    Serial.print ( wspeed ); Serial.println (" kmph");
     Serial.print ( "Marcha: " );        Serial.println ( gear );
     Serial.print ( "Tempo roda: " );    Serial.print ( wtime ); Serial.println ( " ms" );
     Serial.print ( "Tempo cadencia: " );Serial.print ( ctime ); Serial.println ( " ms" );
-    //Serial.print ("K: ");               Serial.println (K);     Serial.println ("");
+    Serial.print ("K: ");               Serial.println (K);     Serial.println ("");
   }
 }
 
 /*
- * Main loop - state machine
+ * Main loop
  */
 void loop() {
   ratio=float(ctime)/wtime;

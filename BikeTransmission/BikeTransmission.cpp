@@ -114,18 +114,18 @@ void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t, f
     else {
         if ( ( c_t > CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
             // Hold position a little lower for a little time
-            motor.write (round( STEP* ( gear - 2 ) *UP_OFFSET ));
+            motor.write (round( STEP* ( gear - 1 ) *UP_OFFSET ));
             Serial.println("Mais torque!");
             delay(700);
             // and then leave in best position
-            motor.write ( STEP* ( gear - 2 ) );
+            motor.write ( STEP* ( gear - 1 ) );
         } else if ( ( c_t < CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
             // Hold position a little higher for a little time
-            motor.write (round( STEP* ( gear + 2 ) *DOWN_OFFSET ));
+            motor.write (round( STEP* ( gear + 1 ) *DOWN_OFFSET ));
             Serial.println("Mais velocidade...");
             delay(700);
             // and then leave in best position
-            motor.write ( STEP* ( gear + 2 ) );
+            motor.write ( STEP* ( gear + 1 ) );
         }
     }
 }

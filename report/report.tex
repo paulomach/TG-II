@@ -192,6 +192,7 @@ mercados consumidores do mundo.
 
 
 \subsection{Premissas do projeto}
+\label{sec:premissas}
 Após o estabelecimento do tipo de solução e de alguns requisitos mínimos, as
 premissas estabelecidas para o projeto são:
 \begin{itemize*}
@@ -346,11 +347,11 @@ relação a seu comportamento elétrico. O primeiro, como todo componente induti
 são os picos de corrente a cada mudança de posição, que podem drenar toda
 corrente destinada ao controlador. O segundo complicador é o ruído, tanto gerado
 pelo servo nas escovas do motor DC, quanto captado pelo cabo de sinal -- é comum
-ver um servo "tremendo" quando em repouso, pois o cabo do sinal atua como uma
+ver um servo "tremendo" quando em repouso -- pois o cabo do sinal atua como uma
 antena. Para mitigar estes efeitos a alimentação do servo foi isolada da
 alimentação do resto do protótipo. O único cuidado adicional é manter as
-referências no mesmo potencial, ou seja, manter o terra dos dois circuitos no
-mesmo potencial.
+referências no mesmo potencial, ou seja, manter o terra do circuito de controle
+e do servo no mesmo potencial.
 
 \subsubsection{Display LCD 16x2}
 \label{sec:lcd}
@@ -526,8 +527,9 @@ utiliza o microcontrolador ATMega168, e pode ser visto na figura
 A linguagem de programação utilizada é o C/C++, sendo que o compilador
 utilizado foi o GNU Compiler Collection, o GCC\cite{gcc}. Uma das grandes
 vantagem da utilização do GCC é ser multiplataforma, além do fato de ser
-software livre. O Arduino provêm uma IDE e bibliotecas para o desenvolvimento
-de aplicações, das quais foram utilizadas no projeto as bibliotecas
+software livre. O Arduino provêm uma IDE e bibliotecas\cite{libs} para o
+desenvolvimento de aplicações, adicionais as bibliotecas C fornecidas com o
+compilador\cite{libc}, das quais foram utilizadas no projeto as bibliotecas
 \textit{Servo} e \textit{LiquidCrystal}, responsáveis pela manipulação de servo
 motores e display LCD, respectivamente.
 
@@ -681,7 +683,7 @@ ser vista em ação na figura \ref{fig:test1}.
 
 \begin{figure}[h!]
 \begin{center}
- \includegraphics[width=5.5in]{test1}
+ \includegraphics[width=4.5in]{test1}
 \end{center}
   \caption{Plataforma de testes}
   \label{fig:test1}
@@ -703,7 +705,6 @@ potenciômetro disponível se apresentou pouco amigável, se comportando mais co
 um interruptor do que como uma resistência variável.
 
 \subsubsection{Debugando o código}
-%TODO inserir detalhes do código numeração de linhas
 
 Para visualizar o funcionamento e \textit{debug} do código, apenas observar a
 saída do sistema (movimentação do servo motor) não é suficiente. A primeira
@@ -714,7 +715,7 @@ display. Um exemplo do mapeamento já foi dado na figura \ref{fig:lcd}.
 
 \begin{figure}[h!]
 \begin{center}
-  \includegraphics[width=5.5in]{lcd}
+  \includegraphics[width=4.5in]{lcd}
 \end{center}
   \caption{Esquema de configuração do display LCD}
   \label{fig:schemalcd}
@@ -754,6 +755,11 @@ trecho do código a seguir.
 ...
 \end{lstlisting}
 
+O código da linha 3 cuida da instanciação de um objeto da classe LCD, usando os
+pinos listados para a comunicação. Os comandos seguintes posicionam o cursor de
+acordo com o mapeamento para então escrever a \textit{string} ou o valor
+($lcd.setCursor$ e $lcd.print$).
+
 Ainda assim, para o \textit{debug} do sistema mais informação é necessária. A
 opção é a utilização dos recursos de comunicação serial do Arduino, que pode
 transmitir dados em formato texto pela mesma porta USB usada para carregar e
@@ -783,6 +789,12 @@ void update_serial() {
 ...
 \end{lstlisting}
 
+Na linha 3 é configurado o \textit{baud rate}, que na comunicação serial
+equivale a quantidade de bits transferida por segundo. O terminal serial
+utilizado na leitura das mensagens precisa ter o mesmo \textit{baud rate}. A
+partir da linha 8 a rotina de comunicação serial só transmite caso uma flag
+seja configurada para tal.
+
 Em qualquer parte do código pode ser adicionado um comando de impressão serial,
 contendo o valor de uma variável, uma informação textual ou ambos. Um exemplo
 dos das informações normalmente impressas na saída serial está na figura
@@ -795,9 +807,6 @@ dos das informações normalmente impressas na saída serial está na figura
   \caption{Saída serial com informação de \textit{debug}.}
   \label{fig:serial}
 \end{figure}
-
-
-
 
 
 \subsubsection{Resultados}
@@ -907,8 +916,18 @@ apresentado na figura \ref{fig:adapt1}.
 No canto esquerdo da imagem observa-se o que restou da tentativa de
 afrouxamento da mola de retorno.
 
-O sistema foi iniciado e novamente o servo não foi suficiente para ...
-%TODO: keep on here.
+O sistema foi novamente testado, configurado para inicialmente estar na sexta e
+última marcha, isto é, na marcha mais veloz e de menor torque. O comportamento
+esperado é, dada uma velocidade mínima de cadência para que o estado não seja
+considerado de \textit{coasting}, e cadência abaixo do ideal para a marcha, a
+troca para a marcha superior fosse disparada. O que de fato foi observado numa
+vã tentativa, já que novamente o torque do servo não foi suficiente para a
+movimentação.
+
+O proseguimento dos testes foi feito desacoplando o cabo do atuador e realizando
+as trocas manualmente -- para obter as relações corretas entre as marchas.
+Destes testes vieram correções e ajustes no software que é descrito na seção
+seguinte.
 
 \subsubsection{Detalhes da Implementação}
 \label{sec:code_detail}
@@ -982,19 +1001,27 @@ código do arquivo $principal.pde$:
 
 \begin{lstlisting}
 void loop() {
+  ratio=float(ctime)/wtime;
+  for (int i=0;i<6;i++) {
+      if (closeto(ratio,validratios[i],TOLERANCE)) {
+          gear = i+1;
+      }
+  }
   // check if coasting
-  if (( ctime < CADENCE_MIN ) || ( ctime != 0)) {
+  if (( ctime < CADENCE_MIN ) && ( ctime != 0)) {
     // if not act over transmission
-    //gear=trocador.get_gear ( ctime, wtime );
-    ratio=float(ctime)/wtime;
-    for (int i=0;i<6;i++) {
-        if (closeto(ratio,validratios[i],TOLERANCE)) {
-            gear = i+1;
-        }
-    }
     trocador.set_gear ( motor, gear, ctime, wtime, K );
   }
-...
+  wspeed = roda.get_lspeed ( wtime );
+  update_lcd();
+  update_serial();
+  if ( digitalRead ( b1Pin ) == HIGH ) {
+    K=K+0.01;
+    if ( K >= 1.5 ) {
+      K = 1.5;
+    }
+  }
+  ...
 }
 /*
  * Return true if param is within
@@ -1005,19 +1032,26 @@ boolean closeto(float param, float reference, float tolerance) {
       (param <= (reference*(100+tolerance)/100) ) );
 }
 \end{lstlisting}
-A execução, na linha 3, testa se o ciclista está "deslizando"
-(\textit{coasting}), ou seja, em movimento inercial sem movimentar os pedais.
-Caso não esteja, a execução segue apenas verificando os botões de configuração,
-lendo informação de velocidade, e atualizando o display. Caso o ciclista esteja
-pedalando, na linha 6 calcula a relação entre o tempo da cadência e tempo da
-roda, e atualiza o valor da marcha engatada, usando a função $closeto$,
-linha 20, que retorna verdadeiro caso o valor da relação esteja contido no
-vetor das relações esperadas, com uma margem de tolerância. A seguir, na linha
-12, faz chamada a função da biblioteca que se encarrega de testar e trocar a
-marcha, quando necessário.
-A função para determinação da marcha engatada é originalmente parte do código da
-biblioteca, porém algum problema não diagnosticado impedia que a chamada a esta
-função retornasse o valor correto.
+A execução na linha 2 e no laço $for$ que segue calcula a relação entre o tempo
+da cadência e tempo da roda, e atualiza o valor da marcha engatada, usando a
+função $closeto$, linha 28, que retorna verdadeiro caso o valor da relação
+esteja contido no vetor das relações esperadas $validratios$, com uma margem de
+tolerância. Este vetor é obtido com o \textit{script} $ratios.py$ apresentado
+na seção \ref{code:ratios} de Anexos, com base na relação de dentes de
+engrenagem da transmissão usada.A rotina para determinação da marcha engatada é
+originalmente parte do código da biblioteca, porém algum problema não
+diagnosticado impedia que a chamada a esta função retornasse o valor correto.
+
+O teste da linha 9, testa se o ciclista está "deslizando" (\textit{coasting}),
+ou seja, em movimento inercial sem movimentar os pedais. Caso não esteja, a
+execução segue apenas verificando os botões de configuração, lendo informação de
+velocidade, e atualizando o display. Caso o ciclista esteja pedalando faz
+chamada a função da biblioteca que se encarrega de testar e trocar a marcha,
+quando necessário.
+
+A configuração da constante K de ajuste dos limites de troca de marcha, feita
+através dos botões está, para apenas um botão, na linha 16 a 21. Limitou-se a
+configuração em mais ou menos 50\% do valor padrão.
 
 O terceiro e mais importante detalhe da implementação é método de escolha e
 mudança de marcha, da classe \textit{Derailleur}. Este método recebe o objeto
@@ -1032,37 +1066,59 @@ implementação.
  */
 void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t,
 float K ) {
-    if ( ( c_t < CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
-        motor.write (int( STEP* ( gear + 1 ) *UP_OFFSET ));
-        //while ( gear == this->get_gear ( c_t, w_t ) ) {
-        //Serial.print("Subindo marcha...");
-        delay(400);
-        //}
-        motor.write ( STEP* ( gear + 1 ) );
-    } else if ( ( c_t > CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
-        motor.write (int( STEP* ( gear - 1 ) *DOWN_OFFSET ));
-        //while ( gear == this->get_gear ( c_t, w_t ) ) {
-          //Serial.print("Descendo marcha...");
-        delay(400);
-        //}
-        motor.write ( STEP* ( gear - 1 ) );
+    int cur_position = motor.read();
+    int target_positon = round(STEP*gear);
+    // make sure that derailleur is at expected position
+    if (cur_position != target_positon) {
+        motor.write(target_positon);
+    }
+    else {
+        if ( ( c_t > CADENCE_MIN*K ) && ( gear != GEAR_MIN ) ) {
+            // Hold position a little lower for a little time
+            motor.write (round( STEP* ( gear - 1 ) *UP_OFFSET ));
+            Serial.println("Mais torque!");
+            delay(700);
+            // and then leave in best position
+            motor.write ( STEP* ( gear - 1 ) );
+        } else if ( ( c_t < CADENCE_MAX*K ) && ( gear != GEAR_MAX ) ) {
+            // Hold position a little higher for a little time
+            motor.write (round( STEP* ( gear + 1 ) *DOWN_OFFSET ));
+            Serial.println("Mais velocidade...");
+            delay(700);
+            // and then leave in best position
+            motor.write ( STEP* ( gear + 1 ) );
+        }
     }
 }
 \end{lstlisting}
-O código da linha 8 testa a condição "Velocidade abaixo do limite inferior
-para a relação" levando em consideração o fator K de ajuste, e a condição
-"Coroa anterior disponível", como apresentado no fluxograma da figura
-\ref{fig:fluxograma1}. Da mesma forma, o código da linha 15 testa a condição
+O método inicia, na linha 11, confirmando se a marcha atualmente engatada, vinda
+da relação de velocidades, é a mesma da posição do servo motor. Caso esteja,
+prossegue para, na linha 15 testar a condição "Velocidade abaixo do limite
+inferior para a relação" levando em consideração o fator K de ajuste, e a
+condição "Coroa anterior disponível", como apresentado no fluxograma da figura
+\ref{fig:fluxograma1}. Da mesma forma, o código da linha 22 testa a condição
 "Velocidade além do limite superior para a relação" levando em conta o fator K
 de ajuste, e a condição "Próxima coroa disponível", também apresentado no
 fluxograma do algoritmo.
 
+Nas linhas 16 a 21 e 23 a 28, executa o comando para mudança de marcha
+propriamente dito, para subida e descida respectivamente. A primeira ação
+é movimentar o \textit{derailleur} um pouco além da posição de engate, em
+seguida segurar esta posição por um curto tempo, para em seguida retornar a
+posição da nova marcha engatada. Este é um pequeno truque usado em trocadores
+manuais mais sofisticados para agilizar o engate.
+
 \subsubsection{Resultados}
 \label{sec:resultados}
+%TODO mais resultados principais
 Apesar de não ter sido possível testar o sistema em sua plenitude, a observação
 da movimentação do servo motor, livre do cabeamento, e a visualização de dados
 do programa na interface serial sugerem que, dada uma solução para as questões
 mecânicas do atuador, a proposta do projeto pode ser alcançada.
+
+Das premissas estabelecidas para o projeto (seção \ref{sec:premissas}), apenas
+a segunda delas não pode ser considerada satisfeita (Adaptabilidade ao sistema
+existente), visto que uma solução para a questão do atuador não está definida.
 
 
 \pagebreak
@@ -1078,7 +1134,7 @@ servir aos veículos automotores -- a bicicleta aparece como um agente
 transformador. Seu apelo à saúde e ecológico, baixo custo e facilidade de uso
 já a promovem ao veículo urbano do futuro, sendo que as diversas iniciativas de
 incentivo ao uso de bicicletas comunitárias e/ou públicas ao redor do mundo, e
-inclusive em nossa Universidade, estão aí para comprovar esta teoria. 
+inclusive em nossa Universidade, estão aí para embasar esta tese.
 
 Muitas extensões podem ser feitas neste projeto, visto que como uma prova de
 conceito, é uma implementação muito simplificada. A primeira adição proposta
@@ -1106,9 +1162,9 @@ em um automóvel, por vezes é interessante adiar a troca de marcha em subidas (
 
 Por fim e ao cabo, apesar da conclusão sem sucesso, a oportunidade de aplicar a
 parte mais interessante de todo o conhecimento acumulado na graduação e bater
-de frente em dificuldades da engenharia real foi bastante satisfatória.
-Ressalto que o trabalho de graduação está finalizado, e que não pode se dizer o
-mesmo para o projeto do câmbio automático para bicicletas.
+de frente em dificuldades da engenharia real foi bastante satisfatória. Ressalto
+que este relatório encerra o trabalho de graduação, porém não encerra o projeto
+do câmbio automático para bicicletas.
 
 \begin{figure}[h!]
 \begin{center}
@@ -1215,7 +1271,10 @@ Resistores 10k (6x) & R\$ 0,78\\\hline
 %%%
 %
 % bibliografia precisa ser explicitamente adicionada ao sumário:
-\addcontentsline{toc}{section}{Referências}
+\cleardoublepage
+\renewcommand*{\refname}{}
+\section{Referências}
+
 \bibliographystyle{plain}
 \bibliography{report}
 
