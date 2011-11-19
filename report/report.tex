@@ -53,25 +53,26 @@
 \section{Resumo}
 \label{sec:resumo}
 Um trabalho de graduação em Engenharia de Controle e Automação deve,
-idealmente, abranger as três grandes áreas que originam essa
+idealmente, abranger as três grandes áreas que originam a
 formação\cite{enciclo}: Engenharia Elétrica (eletrônica, processamento de
 sinais, circuitos elétricos e teoria de controle, etc); Engenharia
 Mecânica (dinâmica, modelagem de sistemas, etc); e a Computação (automação,
-controle discreto, etc). Este trabalho tenta, modestamente, resvalar por cada
+controle discreto, etc). Este trabalho tenta, modestamente, resvalar cada
 uma destas áreas e honrar a formação recebida.
 
 A ideia deste projeto surgiu das observações diárias de ciclistas e do
-uso da bicicleta, onde grande parte das pessoas não sabe utilizar de
+uso da bicicleta, onde grande parte das pessoas não utiliza de
 forma eficiente as marchas de suas bicicletas. Estas parecem ser
-complicadas (\textit{mountain bikes} simples possuem pelo menos 18 marchas) e de
-difícil manejo e configuração. Assim como em uma transmissão automotiva, maus
-hábitos no seu manejo -- esticar marchas, manter a mão apoiada sobre a alavanca,
-entre outros -- causam desgaste precoce dos componentes, esforços desnecessários
-(neste caso para ciclista) e até risco de segurança.
+complicadas (\textit{mountain bikes} simples possuem pelo menos 18 marchas), de
+difícil manejo, configuração e manutenção. Assim como em uma transmissão
+automotiva, maus hábitos na sua operação -- esticar marchas, manter a mão
+apoiada sobre a alavanca, entre outros -- causam desgaste precoce dos
+componentes, esforços desnecessários (neste caso para ciclista) e até risco de
+segurança.
 
 O benefício primordial de qualquer automação (i.e. retirar do usuário o
 controle ou parte do controle sobre o sistema que interage) é a melhora no
-fluxo do processo devido ao grande controle que tem se sobre o sistema. Os
+fluxo do processo devido ao aumento do controle sobre o sistema. Os
 resultados deste benefício são, em alto nível, o aumento da qualidade,
 repetibilidade e uniformidade, aplicação de estratégias ótimas de controle e
 simplicidade na interação com utilizador.
@@ -83,12 +84,12 @@ bicicletas convencionais. Neste primeiro trabalho foram construídas as base
 teóricas e ferramentais para a construção de um protótipo funcional: construção
 da bancada experimental; desenvolvimento da lógica; e estudo de soluções 
 existentes. Ou seja, dados os objetivos do projeto -- software de controle,
-circuito de controle, atuados mecânico e a junção destes no protótipo --
+circuito de controle, atuador mecânico e a junção destes no protótipo --
 apresenta-se o caminho percorrido até o objetivo e os resultados alcançados.
 
 O documento foi estruturado de forma a descrever o problema de engenharia, as
 alternativas consideradas, escolhas e desenvolvimento de cada parte funcional do
-protótipo final.
+protótipo final, testes e resultados.
 
 
 \pagebreak
@@ -96,15 +97,18 @@ protótipo final.
 %
 \section{Introdução}
 \label{sec:intro}
-Automação ou Controle? Esta foi a tônica no início do desenvolvimento
-deste projeto. A solução de controle é mais elegante, porém seu desenvolvimento
-é mais complexo e depende de um sinal contínuo. A automação não é tão elegante e
+A tônica no início do desenvolvimento deste projeto deu-se na escolha entre a
+solução usando controle ou usando automação. A solução de controle -- através
+do modelamento matemático do sistema físico -- é mais elegante, porém seu
+desenvolvimento é mais complexo e depende de um sinal contínuo. A automação
+-- análise dos sinais e programação de reações -- não é tão elegante e
 eficiente, porém seu desenvolvimento é mais simples e pode ser orientada a
 eventos. A resposta, seja ela qual for, passa obrigatoriamente pela análise do
 problema físico.
 
 \subsection{Análise do problema físico}
-A transmissão ciclística é tal qual mostrado na figura \ref{fig:transmissao}.
+A transmissão ciclística convencional é apresentada na figura
+\ref{fig:transmissao}.
 \begin{figure}[ht]
 \begin{center}
  \includegraphics[width=5.5in]{transmissao}
@@ -129,15 +133,15 @@ dianteiras e seis coroas no cassete, a transmissão possui 3x6=18 marchas.
 A mudança no engrenamento é realizado pelos
 \textit{derailleurs}\footnote{\textit{Derailleur} é um termo francês que pode
 ser traduzido como o ato do descarrilamento de um trem na ferrovia. O
-dispositivo ganhou esse nome devido à semelhança com o evento.}, que mediante ao
-deslocamento longitudinal ao eixo da roda força a corrente ser engrenada em
-outra coroa.
+dispositivo ganhou esse nome devido à semelhança com o evento ("descarrila" a
+corrente).}, que mediante ao deslocamento longitudinal ao eixo da roda força a
+corrente ser engrenada em outra coroa.
 
-O desenvolvimento do protótipo é tratado como uma prova de conceito, e por
-simplicidade, a atuação vai ser concentrada nos componentes da parte traseira
-da transmissão, ou seja, no \textit{derailleur}.
+No desenvolvimento do protótipo (tratado como uma prova de conceito), por
+simplicidade, a atuação foi limitada nos componentes da parte traseira
+da transmissão, ou seja, apenas no \textit{derailleur} traseiro.
 O esquema da figura \ref{fig:derailleur} apresenta a visão traseira
-do \textit{derailleur} traseiro e três exemplos de engrenamento.
+do \textit{derailleur} e três exemplos de engrenamento.
 \begin{figure}[ht]
 \begin{center}
  \includegraphics[width=4in]{derailleur}
@@ -166,8 +170,9 @@ cadência (velocidade da pedalada). Por exemplo, o sete vezes campeão do
 (picos de 100-110 RPM), enquanto que outros ciclistas de sua categoria
 dificilmente alcançam 90 RPM de
 cadência\footnote{
-www.trifuel.com/training/bike/cycling-cadence-and-pedaling-economy}.
-Ciclistas amadores possuem limites bem inferiores. Portanto, uma premissa básica
+\url{http://www.trifuel.com/training/bike/cycling-cadence-and-pedaling-economy}}
+. Ciclistas amadores possuem limites bem inferiores. Portanto, uma premissa
+básica
 do projeto é a possibilidade do ajuste sobre os limites para a troca de marcha.
 
 O resultado da análise do problema físico levou a escolha pela solução de
@@ -184,8 +189,8 @@ desenvolvimento comercial é bastante prolífico, havendo em torno de quatro ou
 cinco companhias multinacionais liderando os mercados globais de componentes e
 diversos garagistas pensando e desenvolvendo soluções.
 
-O problema que surge é como localizar documentação sobre uma solução tão
-específica? A resposta foi a utilização de duas bases de patentes:
+A maior dificuldade é como localizar documentação sobre uma solução tão
+específica. A solução foi a utilização de duas bases de patentes:
 USPTO\cite{uspto} e EPO\cite{epo}. O critério de escolha utilizado para
 selecionar apenas os dois escritórios foi o fato de constituírem os dois maiores
 mercados consumidores do mundo.
@@ -193,8 +198,8 @@ mercados consumidores do mundo.
 
 \subsection{Premissas do projeto}
 \label{sec:premissas}
-Após o estabelecimento do tipo de solução e de alguns requisitos mínimos, as
-premissas estabelecidas para o projeto são:
+Após o estabelecimento do tipo de solução e de alguns requisitos mínimos, quatro
+premissas simples foram estabelecidas para o protótipo. São:
 \begin{itemize*}
   \item Baixo custo
   \item Adaptabilidade ao sistema existente
@@ -274,7 +279,7 @@ e entradas.
   \label{fig:montagem}
 \end{figure}
 Nessa classificação são: saídas, servo motor e LCD (\textit{Liquid
-Crystal Display}; controle, MCU (\textit{MicroControler Unit}); e entradas os
+Crystal Display}); controle, MCU (\textit{MicroControler Unit}); e entradas os
 \textit{push buttons} e \textit{reed switch}. Os componentes utilizados e
 detalhes da integração são descritos a seguir.
 
@@ -284,9 +289,9 @@ O servo motor é o único atuador deste projeto, sendo responsável pela atuaç�
 sobre o cabo do \textit{derailleur} e consequente troca de marchas. Duas
 perguntas foram elaboradas para ajudar na definição de um atuador: Qual a
 forma mais simples de atuar sobre um cabo utilizando um motor rotativo? Qual
-tipo de motor é confiável de controle simples? A reposta, encontrada a partir
-do estudo realizado na primeira parte do trabalho de graduação é, uma polia
-acoplada a um servo motor.
+tipo de motor é confiável e fácil de controlar? A reposta, encontrada a partir
+do estudo realizado na primeira parte do trabalho de graduação, é o
+acoplamento de uma polia (atuador sobre cabo) a um servo motor.
 
 O raio da polia foi dimensionado de tal forma que, dado que um servo motor
 rotaciona 180\textdegree, meia circunferência da polia seja deslocamento
@@ -315,8 +320,9 @@ preterida pela adaptação de um trocador manual (figura \ref{fig:shifter}).
 \end{figure}
 
 A polia interna deste trocador possui raio de 8.5 mm, o que por um lado aumenta
-o intervalo de marchas disponível e a velocidade da troca, por outro aumenta o
-requisito de torque no eixo. A figura \ref{fig:atuador} mostram a sequência da
+o intervalo de marchas disponível e a velocidade da troca (dada velocidade de
+rotação constante do servo), por outro aumenta o requisito de torque no eixo. A
+figura \ref{fig:atuador} mostram a sequência da
 adaptação.
 \begin{figure}[h!]
  \centering
@@ -347,8 +353,8 @@ relação a seu comportamento elétrico. O primeiro, como todo componente induti
 são os picos de corrente a cada mudança de posição, que podem drenar toda
 corrente destinada ao controlador. O segundo complicador é o ruído, tanto gerado
 pelo servo nas escovas do motor DC, quanto captado pelo cabo de sinal -- é comum
-ver um servo "tremendo" quando em repouso -- pois o cabo do sinal atua como uma
-antena. Para mitigar estes efeitos a alimentação do servo foi isolada da
+ver um servo "tremendo" quando em repouso -- pois o cabo do sinal PWM atua como
+uma antena. Para mitigar estes efeitos a alimentação do servo foi isolada da
 alimentação do resto do protótipo. O único cuidado adicional é manter as
 referências no mesmo potencial, ou seja, manter o terra do circuito de controle
 e do servo no mesmo potencial.
@@ -384,12 +390,12 @@ A definição e uso de elementos sensores foi um dos elementos chave deste
 projeto. Estes deveriam ser usados para a leitura de pulsos a cada revolução da
 roda e do pedivela, gerando as informações de velocidades, básica ao algoritmo
 de controle. As soluções analisadas foram:
-\begin{itemize}
+\begin{itemize*}
  \item Sensor capacitivo
  \item Sensor indutivo
  \item \textit{Reed switch}
  \item Sensor de efeito HALL
-\end{itemize}
+\end{itemize*}
 Os principais critérios de escolha, que permearam o projeto desde sua concepção,
 foram simplicidade e custo. O escolhido foi o  \textit{reed switch}, que
 oferece uma enorme margem de vantagem nos critérios escolhidos, e já é a
@@ -419,7 +425,7 @@ um tratamento para que possa ser lido corretamente. Foi considerado realizar o
 primeira foi descartada pois as funções do programa responsáveis pelo
 cálculo de velocidade seriam rotinas de interrupção, ou seja, eles devem ter uma
 execução muito breve, caso contrário podem afetar a contagem de tempo do
-sistema. Uma função de \textit{debounce} em software envolve, inerentemente
+sistema e uma função de \textit{debounce} em software envolve, inerentemente
 algum \textit{delay}.
 
 \begin{figure}[ht]
@@ -430,7 +436,7 @@ algum \textit{delay}.
  \label{fig:lowpass}
 \end{figure}
 
-A única saída foi mesmo implementar o \textit{debounce} em hardware, utilizando
+A alternativa foi implementar o \textit{debounce} em hardware, utilizando
 um filtro passa-baixa passivo, que usa apenas um resistor e um capacitor, de
 acordo com o esquema da Figura \ref{fig:lowpass}. O ruído de um \textit{reed
 switch} comum está na faixa de 1500Hz a 2000Hz\cite{reed}. É possível estimar a
@@ -488,12 +494,12 @@ Atmel\textsuperscript{\textregistered}. O ATMega168\cite{atmega} é um
 microcontrolador de 8 bits com 16K bytes de memória de programa e clock de 20MHz
 e arquitetura RISC. O ATMega168 possui diversos periféricos dentre os quais são
 de interesse para o projeto:
-\begin{itemize}
+\begin{itemize*}
   \item 6 canais PWM
   \item 23 I/O programáveis (digitais e analógicos)
   \item Interrupção e \textit{wake-up} na borda de subida ou descida de sinal
   \item Interface serial para programação
-\end{itemize}
+\end{itemize*}
 
 A utilização direta do microcontrolador requer diversos cuidados em relação a
 sua alimentação, configuração de pinagem e recursos. Qualquer desenvolvedor de
@@ -608,15 +614,15 @@ descrita a seguir.
 \subsubsection{Estrutura do Código}
 \label{sec:implemt}
 
-A estrutura do código, dividido entre uma biblioteca onde foram modeladas
-classes para a representação do \textit{derailleur} e da roda de bicicleta. Esta
-opção se pauta em dois princípios, um técnico e outro filosófico,
-respectivamente: utilizar a característica de representação do mundo físico
-oferecida pelo programação orientada a objetos; a posterior redistribuição do
-código como software livre\footnote{Todo código fonte deste trabalho, inclusive
-este relatório, está disponível no site de hospedagem de código github
-(\url{https://github.com/paulomach/TG-II}) sob a licença GPL v3\cite{gpl}.},
-visando a expansão e melhoria do projeto.
+A estrutura do código está dividida entre uma biblioteca, onde foram modeladas
+classes para a representação do \textit{derailleur} e da roda de bicicleta, o
+um programa principal. Esta opção se pauta em dois princípios, um técnico e
+outro filosófico, respectivamente: utilizar a característica de representação do
+mundo físico oferecida pelo programação orientada a objetos; a posterior
+redistribuição do código como software livre\footnote{Todo código fonte deste
+trabalho, inclusive este relatório, está disponível no site de hospedagem de
+código github (\url{https://github.com/paulomach/TG-II}) sob a licença GPL
+v3\cite{gpl}.}, visando a expansão e melhoria do projeto.
 
 Fisicamente, os arquivos estão organizados:
 
@@ -699,10 +705,12 @@ aproximadamente 5 mm de distância.
 
 Essa montagem permitiu a geração de um sinal em uma das duas entradas do
 sistema, sendo que a segunda entrada foi gerada manualmente com outro ímã de
-neodímio. Gerar o sinal manualmente se mostrou mais conveniente, pois a mudança
-da frequência de entrada fica mais fácil de manipular, visto que o
-potenciômetro disponível se apresentou pouco amigável, se comportando mais como
-um interruptor do que como uma resistência variável.
+neodímio. As limitações desta montagem surgiram rapidamente. Gerar o sinal
+manualmente se mostrou pouco conveniente, pois é bastate difícil manter um
+intervalo regular manualmente. E visto que o potenciômetro disponível se
+apresentou pouco amigável, se comportando mais como um interruptor do que como
+uma resistência variável, não foi possível obter a variação na velocidade
+desejada.
 
 \subsubsection{Debugando o código}
 
@@ -826,8 +834,9 @@ Porém um detalhe do mais importante falhou: mesmo com uma nova marcha engatada,
 nenhum movimento foi observado no \textit{derailleur}.
 
 A conclusão é que o servo motor usado simplesmente não possui torque suficiente
-para enrolar o cabo que movimenta o \textit{derailleur}, o que é discutido a
-seguir.
+(a força calculada para a combinação motor-polia é $\frac{4.1kgf-cm}{0.85cm} =
+4.824kgf$) para enrolar o cabo que movimenta o \textit{derailleur}, o que é
+discutido a seguir.
 
 São duas fontes de resistência a este movimento, sendo a primeira o atrito do
 cabo no conduíte, e a segunda e principal, a mola de retorno do
@@ -882,7 +891,7 @@ Esta deixa de ser uma opção, e nesse sentido apenas uma completa
 reformulação do \textit{derailleur} -- talvez abandonando completamente o
 acionamento por cabo e a mola de retorno, acoplando um servo motor na sua
 construção\footnote{A fabricante japonesa Shimano possui uma série de
-\textit{derailleurs} eletrônicos de controle manual chamada Di2} -- pode vir a
+\textit{derailleurs} eletrônicos de controle manual chamada Di2} -- deve
 funcionar.
 
 \begin{figure}[h!]
@@ -1131,19 +1140,21 @@ existente), visto que uma solução para a questão do atuador não está defini
 Em tempos de aumento da preocupação com questões ambientais, emissão de
 poluentes, humanização das cidades, -- descaracterizadas e transformadas para
 servir aos veículos automotores -- a bicicleta aparece como um agente
-transformador. Seu apelo à saúde e ecológico, baixo custo e facilidade de uso
+transformador. Seu apelo ecológico e à saúde, baixo custo e facilidade de uso
 já a promovem ao veículo urbano do futuro, sendo que as diversas iniciativas de
 incentivo ao uso de bicicletas comunitárias e/ou públicas ao redor do mundo, e
-inclusive em nossa Universidade, estão aí para embasar esta tese.
+inclusive em nossa Universidade, estão aí para embasar esta tese. Neste
+contexto, um projeto que visa evoluir e facilitar o uso da bicicleta merece um
+pouco de atenção.
 
-Muitas extensões podem ser feitas neste projeto, visto que como uma prova de
-conceito, é uma implementação muito simplificada. A primeira adição proposta
-é adicionar um segundo atuador para ser capaz de manipular o
-\textit{derailleur} das coroas dianteiras, podendo utilizar toda a extensão das
-marchas disponíveis. Uma forma de incluir esse atuador no algoritmo seria
-realizar as trocas nas coroas dianteiras quando a mudança de velocidade for
-mais brusca. Isso porque a relação entre as coroas dianteiras é tipicamente
-maior quando comparadas a relação entre as coroas do cassete.
+Muitas extensões podem ser feitas neste projeto, que é uma implementação
+simplificada do conceito. A primeira adição proposta é um segundo
+atuador para ser capaz de manipular o \textit{derailleur} das coroas dianteiras,
+podendo utilizar toda a extensão das marchas disponíveis. Uma forma de incluir
+esse atuador no algoritmo seria realizar as trocas nas coroas dianteiras quando
+a mudança de velocidade for mais brusca. Isso porque a relação entre as coroas
+dianteiras é tipicamente maior quando comparadas a relação entre as coroas do
+cassete.
 
 Uma segunda sugestão é um sistema de gerenciamento de energia, com baterias e
 dínamos de roda, que seriam capazes de manter o sistema rodando apenas com a
