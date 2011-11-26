@@ -123,7 +123,7 @@
 \begin{frame}
   \frametitle{Fontes de Estudo}
   \begin{itemize}%[<+->]
-    \item Literatura Acadêmica - Insatisfatória
+    \item Literatura Acadêmica - Inexistente
     \item Revistas especializadas
     \item Base de Patentes
       \begin{enumerate}
@@ -170,12 +170,13 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
+\begin{frame}
  % fotos construção
- \begin{figure}
-   \begin{center}
-    \includegraphics[width=3.5in]{making1}
-  \end{center}
+\begin{figure}
+ \centering
+  \subfloat{\includegraphics[width=1.3in]{making2}} \hfil
+  \subfloat{\includegraphics[width=1.3in]{making1}} \hfil
+  \subfloat{\includegraphics[width=1.3in]{making3}} \hfil
  \end{figure}
 \end{frame}
 
@@ -250,7 +251,7 @@ km/h (25 m/s):
   \frametitle{Filtro RC passa-baixa, resistor \textit{pull-up}}
   \begin{center}
     \begin{figure}
-        \includegraphics[width=2.8in]{lowpass}
+      \includegraphics[width=2in]{lowpass}
     \end{figure}
   \end{center}
 \end{frame}
@@ -260,13 +261,18 @@ km/h (25 m/s):
 \begin{frame}
   \frametitle{Atuador}
   \begin{itemize}
-   \item 
+    \item Servo Futaba S3004
+    \item 4.1 kgf-cm a 6V (0.4022 Nm)
   \end{itemize}
-
+\begin{figure}[ht]
+ \begin{center}
+  \includegraphics[width=2in]{S3004}
+ \end{center}
+\end{figure}
 \end{frame}
 
 \subsection{}
-\begin{frame}[plain]
+\begin{frame}
 \begin{figure}
  \centering
   \subfloat[Partes]{\includegraphics[width=1.3in]{polia1}} \hfil
@@ -281,6 +287,25 @@ km/h (25 m/s):
 \begin{frame}
  \frametitle{Algoritmo de Controle}
 \end{frame}
+
+\begin{frame}[plain]
+  \begin{figure}
+    \begin{center}
+      \includegraphics[width=2.2in]{fluxograma1}
+    \end{center}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Organização do Código}
+  \begin{itemize}
+    \item Orientação a objetos
+    \item 
+  \end{itemize}
+
+\end{frame}
+
+
 
 \section{Testes e Resultados}
 \subsection{}
