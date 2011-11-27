@@ -297,12 +297,16 @@ km/h (25 m/s):
 \end{frame}
 
 \begin{frame}
-  \frametitle{Organização do Código}
+  \frametitle{Estrutura do Código}
   \begin{itemize}
     \item Orientação a objetos
-    \item 
+    \item Modelagem partes físicas
   \end{itemize}
-
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=2.5in]{uml}
+    \end{center}
+  \end{figure}
 \end{frame}
 
 
@@ -312,31 +316,141 @@ km/h (25 m/s):
 \begin{frame}
  \frametitle{Teste e Resultados}
 
-  \begin{itemize}
-   \item Montagem Completa
-  \end{itemize}
+Teste Preliminar
 
+  \begin{itemize}
+    \item Plataforma para geração dos sinais de entrada
+    \item Observação inicial do comportamento do sistema
+    \item Calibração dos resistores e capacitores do filtro RC
+  \end{itemize}
 \end{frame}
+
+\subsection{}
+\begin{frame}
+ \frametitle{Teste e Resultados}
+
+Teste na Bancada
+\begin{itemize}
+ \item Detalhes da implementação
+    \begin{enumerate}
+      \item Rotinas de interrupção - velocidades
+      \item Condição de \textit{coasting}
+      \item Estratégia para troca de marcha
+    \end{enumerate}
+
+\end{itemize}
+\end{frame}
+
+\subsection{}
+\begin{frame}
+ \frametitle{Problemas}
+Questão mecânica do atuador
+  \begin{itemize}
+   \item Torque motor insuficiente
+    \begin{enumerate}
+      \item Diminuir raio polia
+      \item Redimensionamento servo motor
+      \item Substituição mola de retorno
+    \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+
 
 \section{Conclusão}
 \subsection{}
 \begin{frame}
+  \frametitle{Conclusão}
+
+Premissa custo:
+
+  \newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{lc}
+	\mc{1}{c}{\textbf{Material}} & \textbf{Preço (R\$)}\\\hline
+	Movimento central & R\$ 12,00\\
+	Display LCD 16x2 & R\$ 20,00\\
+	Arduino Duemilenove & R\$ 40,00\\
+	Servo Futaba s3004 & R\$ 12,00\\
+	Ferro de solda 100W & R\$ 18,00\\
+	\textit{Reed switch} (5x) & R\$ 3,45\\
+	Resistores 10k (6x) & R\$ 0,78\\\hline
+	\textbf{Total} & \textbf{R\$ 106,23}\\\hline
+      \end{tabular}
+    \end{center}
+  \end{table}
+\end{frame}
+
+\begin{frame}
  \frametitle{Conclusão}
 
-  
+Premissa adaptabilidade:
+
+\begin{itemize}
+  \item Atuador mal dimensionado
+  \item Completa reformulação do atuador
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusão}
+Premissa configuração de parâmetros
+  \begin{itemize}
+    \item Apenas um parâmetro configurável
+    \item Outros parâmetros de interesse:
+     \begin{itemize}
+        \item Tolerância na determinação de marcha
+        \item Cadência máxima e mínima
+        \item Diâmetro da roda
+     \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusão}
+Premissa interface
+  \begin{itemize}
+   \item Funções de computadores ciclísticos:
+    \begin{enumerate}
+      \item Odômetro
+      \item Relógio
+      \item Velocidade média
+      \item ...
+    \end{enumerate}
+  \end{itemize}
 \end{frame}
 
 \subsection{}
 \begin{frame}
- \frametitle{Perguntas?}
+  \frametitle{Conclusão}
+\begin{itemize}
+ \item Extensões ao projeto
+  \begin{enumerate}
+   \item Atuador sobre \textit{derailleur dianteiro}
+    \item Gerenciamento de energia
+    \item Modificação dos parâmetros no \textit{runtime}
+    \item Memória persistente
+    \item Acelerômetro para inclinação do terreno
+    \item ...
+  \end{enumerate}
+
+\end{itemize}
+
 \end{frame}
 
 
 
+\subsection{}
+\begin{frame}
+
+\vfil
+\begin{center}
+ \Large Perguntas?
+\end{center}
 
 
-
-
-
+\end{frame}
 
 \end{document}
