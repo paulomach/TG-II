@@ -32,31 +32,27 @@
 #define BikeTransmission_h
 #endif
 
-/* RearWheel - rear wheel model
- * attributes:
- *	diameter - wheel diameter in meters
- * methods:
- *	read_wspeed_sensor - update period of wheel cycle
- *	get_lspeed - calculate and return linear speed
+/** 
+ * Rear wheel model
  */
 class RearWheel {
 public:
+ 	/// Wheel diameter in meters
     float diameter;
+	/// Constructor
     RearWheel ( float _diameter );
-    //unsigned long read_wspeed_sensor ( int w_reedPin );
+	/// Calculate and return linear speed
     int get_lspeed ( long unsigned int T );
 };
 
-/* Derailleur - derailleur model
- * attributes:
- *
- * methods:
- *	get_gear - calculate the engaged gear from cycle time ratio
- *	set_gear - decide and move derailleur to appropriate gear
+/** 
+ * Derailleur class representation
  */
 class Derailleur {
 public:
+	/// Calculate the engaged gear from cycle time ratio
     int get_gear ( unsigned long c_t, unsigned long w_t );
+ 	/// Decide and move derailleur to appropriate gear
     void set_gear ( Servo motor, int gear, long int c_t, long int w_t, float K );
 };
 

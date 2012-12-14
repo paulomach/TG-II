@@ -44,7 +44,7 @@ const float validratios[TOTAL_GEARS]={1.0769, 1.2174, 1.4, 1.6471, 1.8667, 2.153
 // Time limits (milliseconds)
 
 const int CADENCE_MIN=1600;
-// 90RPM - 667ms
+/// 90RPM - 667ms
 const int CADENCE_MAX=667;
 
 // Offset in the derailleur moviment to engage next gear
@@ -60,10 +60,10 @@ RearWheel::RearWheel ( float _diameter ) {
 /*********** Methods implementation **************/
 
 
-/*
- * Linear wheel speed:
- * V = w*r -> V = 2*pi*f*r
- * V = pi*D/T [m/ms]
+/**
+ * Linear wheel speed calculated with: \n
+ * V = w*r -> V = 2*pi*f*r \n
+ * V = pi*D/T [m/ms] \n
  * V = (3.6*1000*pi*D)/T [km/h]
  */
 int RearWheel::get_lspeed ( unsigned long T ) {
@@ -74,7 +74,7 @@ int RearWheel::get_lspeed ( unsigned long T ) {
     return( lspeed );
 }
 
-/*
+/**
  * Return true if param is within
  * tolerance [%] of reference:
  */
@@ -83,9 +83,9 @@ boolean closeto2(float param, float reference, float tolerance) {
       ( param <= (reference*(1.00+tolerance)) ));
 }
 
-/*
+/**
  * Return the current gear based on known
- * gear ratios and revoltion times
+ * gear ratios and revoltion times. \n
  * TODO: Discover why this dont work
  *      inside the library
  */
@@ -100,9 +100,7 @@ int Derailleur::get_gear ( unsigned long c_t, unsigned long w_t ) {
 }
 
 /*
- * Core method of the library. responsable
- * for choosing and setting a new gear
- * position
+ * Class core method. Choose whatever the gear should be changed. 
  */
 void Derailleur::set_gear ( Servo motor, int gear, long int c_t, long int w_t, float K ) {
     int cur_position = motor.read();
