@@ -38,6 +38,7 @@
 // Objects instatiation
 Servo motor;
 Derailleur trocador;
+// lcd(RS,ENABLE,D4,D5,D6,D7)
 LiquidCrystal lcd ( 7, 6, 5, 4, 8, 10 );
 RearWheel roda ( 0.65 );  
 

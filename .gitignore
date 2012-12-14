@@ -1,3 +1,5 @@
+#*.jpg
+#*.png
 *.aux
 *.backup
 *.bbl
@@ -9,16 +11,15 @@
 *.eps
 *.fls
 *.jpeg
-#*.jpg
 *.lof
 *.log
 *.lot
 *.make
 *.out
 *.pdf
-#*.png
 *.temp
 *.toc
 *~
 applet*
+docs
 figures
