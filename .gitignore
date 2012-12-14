@@ -1,5 +1,8 @@
 #*.jpg
 #*.png
+*.AVI
+*.JPG
+*.THM
 *.aux
 *.backup
 *.bbl
@@ -20,6 +23,8 @@
 *.temp
 *.toc
 *~
+.directory
 applet*
 docs
 figures
+originais
