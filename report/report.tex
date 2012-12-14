@@ -57,8 +57,7 @@ idealmente, abranger as três grandes áreas que originam a
 formação\cite{enciclo}: Engenharia Elétrica (eletrônica, processamento de
 sinais, circuitos elétricos e teoria de controle, etc); Engenharia
 Mecânica (dinâmica, modelagem de sistemas, etc); e a Computação (automação,
-controle discreto, etc). Este trabalho tenta, modestamente, resvalar cada
-uma destas áreas e honrar a formação recebida.
+controle discreto, etc).
 
 A ideia deste projeto surgiu das observações diárias de ciclistas e do
 uso da bicicleta, onde grande parte das pessoas não utiliza de
@@ -107,7 +106,7 @@ eventos. A resposta, seja ela qual for, passa obrigatoriamente pela análise do
 problema físico.
 
 \subsection{Análise do problema físico}
-A transmissão ciclística convencional é apresentada na figura
+A transmissão ciclística convencional é apresentada na Figura
 \ref{fig:transmissao}.
 \begin{figure}[ht]
 \begin{center}
@@ -140,7 +139,7 @@ corrente ser engrenada em outra coroa.
 No desenvolvimento do protótipo (tratado como uma prova de conceito), por
 simplicidade, a atuação foi limitada nos componentes da parte traseira
 da transmissão, ou seja, apenas no \textit{derailleur} traseiro.
-O esquema da figura \ref{fig:derailleur} apresenta a visão traseira
+O esquema da Figura \ref{fig:derailleur} apresenta a visão traseira
 do \textit{derailleur} e três exemplos de engrenamento.
 \begin{figure}[ht]
 \begin{center}
@@ -149,7 +148,7 @@ do \textit{derailleur} e três exemplos de engrenamento.
   \caption{Visão traseira de engrenamentos de um \textit{derailleur}.}
   \label{fig:derailleur}
 \end{figure}
-Na figura \ref{fig:derailleur} temos, respectivamente, engrenado uma marcha
+Na Figura \ref{fig:derailleur} temos, respectivamente, engrenado uma marcha
 lenta (alto torque e baixa velocidade), uma marcha média e uma marcha rápida
 (baixo torque e alta velocidade). O movimento da gaiola (componente do
 \textit{derailleur}) se dá pela sua estrutura de braços paralelos do
@@ -250,7 +249,7 @@ Foram diversos os problemas relativos a bancada, e surgiram no momento prévio
 aos testes, quando os componentes da transmissão foram montados. As peças
 disponíveis não eram compatíveis (corrente curta, coroa dianteira
 não casou com o corrente), o que causou novos custos e atraso nos testes.
-Superados os percalços, o resultado final é apresentado na figura
+Superados os percalços, o resultado final é apresentado na Figura
 \ref{fig:setup}. Nesta montagem estão presentes, além do sistema mecânico
 completo da bicicleta, a montagem do servo motor e os ímas acoplados ao
 pedivela e a roda.
@@ -268,7 +267,7 @@ pedivela e a roda.
 \subsection{Circuito de controle}
 \label{sec:montagem}
 O circuito de controle foi montado sobre uma placa de prototipação (protoboard)
-e seu esquema geral é apresentado na figura \ref{fig:montagem}.
+e seu esquema geral é apresentado na Figura \ref{fig:montagem}.
 Os componentes podem ser separados em três grupos funcionais: saídas, controle
 e entradas.
 \begin{figure}[ht]
@@ -307,10 +306,10 @@ uma marcha consecutiva, de tal forma que:
 \end{equation}
 Para a bancada de testes, n=6 e p=3 mm. O raio ideal para a polia é:
 \begin{equation}
- r_{polia} = \frac{\displaystyle (6-1)\times 3}{\displaystyle \pi} = 4.77~mm
+ r_{polia} = \frac{\displaystyle (6-1)\times 3}{\displaystyle \pi} = 4,77~mm
 \end{equation}
 Porém, este resultado não foi utilizado, pois a construção de uma polia foi
-preterida pela adaptação de um trocador manual (figura \ref{fig:shifter}).
+preterida pela adaptação de um trocador manual (Figura \ref{fig:shifter}).
 \begin{figure}[h!]
 \begin{center}
  \includegraphics[width=4in]{shifter}
@@ -319,10 +318,10 @@ preterida pela adaptação de um trocador manual (figura \ref{fig:shifter}).
   \label{fig:shifter}
 \end{figure}
 
-A polia interna deste trocador possui raio de 8.5 mm, o que por um lado aumenta
+A polia interna deste trocador possui raio de 8,5 mm, o que por um lado aumenta
 o intervalo de marchas disponível e a velocidade da troca (dada velocidade de
 rotação constante do servo), por outro aumenta o requisito de torque no eixo. A
-figura \ref{fig:atuador} mostram a sequência da
+Figura \ref{fig:atuador} mostram a sequência da
 adaptação.
 \begin{figure}[h!]
  \centering
@@ -335,10 +334,10 @@ adaptação.
 
 Pequenos servos RC (motores destinados ao mercado de hobbistas) são baratos,
 fáceis de encontrar, robustos e seu controle é feito por um sinal PWM. O
-servo motor escolhido foi um Futaba S3004, visto na figura \ref{fig:
+servo motor escolhido foi um Futaba S3004, visto na Figura \ref{fig:
 servo}. O S3004 possui rolamentos de esferas no eixo de saída, e torque de
-4.1kg-cm a 6 volts, o que no SI equivale a $4.1 \times 9.81 \times 10^{-2} =
-0.4022$ Nm.
+4,1kg-cm a 6 volts, o que no SI equivale a $4,1 \times 9,81 \times 10^{-2} =
+0,4022$ Nm.
 
 \begin{figure}[ht]
  \begin{center}
@@ -370,7 +369,7 @@ para mostrar as informações de velocidade imediata, a marcha engatada e o valo
 da constante de ajuste, planejadas para esta interface.
 
 O display utilizado é um JHD-162a\cite{lcd} de fabricante desconhecido e
-facilmente encontrado no mercado, visto na figura \ref{fig:lcd}.
+facilmente encontrado no mercado, visto na Figura \ref{fig:lcd}.
 \begin{figure}[ht]
 \begin{center}
  \includegraphics[width=3in]{jhd162a2}
@@ -403,7 +402,7 @@ implementação padrão de computadores ciclísticos.
 
 Um \textit{reed switch} é uma chave normalmente aberta constituída de duas
 lâminas ferromagnéticas flexíveis, que sob influência de um campo magnético,
-fecha o contato. A figura \ref{fig:reed} apresenta o conceito é um
+fecha o contato. A Figura \ref{fig:reed} apresenta o conceito é um
 \textit{reed} como os utilizados.
 
 \begin{figure}[h!]
@@ -445,11 +444,11 @@ limite de velocidade da roda ($v_{max} = 90 km/h = 25 m/s$):
 \begin{equation}
   v = \omega r = 2\pi f r \Rightarrow v_{max} = 2\pi f_{max} r
 \end{equation}
-O diâmetro da roda com pneu foi medido em d=65cm = 0.65m. Portanto, para
+O diâmetro da roda com pneu foi medido em d=65cm = 0,65m. Portanto, para
 velocidade máxima de 90 km/h:
 \begin{equation}
   f_{max} = \frac{\displaystyle v_{max}}{\displaystyle \pi d} =
-\frac{\displaystyle 25}{\displaystyle \pi 0.65} = 12.243 Hz
+\frac{\displaystyle 25}{\displaystyle \pi 0,65} = 12,243 Hz
 \end{equation}
 Tomando a frequência de corte ($f_{c}$) dada pela relação,
 \begin{equation}
@@ -479,7 +478,7 @@ preocupação em tratar o sinal, pois o funcionamento do sistema praticamente n�
 \end{figure}
 
 A única observação feita em relação a montagem dos \textit{push buttons} é a
-topologia \textit{pull-down} do resistor, mostrado na figura \ref{fig:pulldown}.
+topologia \textit{pull-down} do resistor, mostrado na Figura \ref{fig:pulldown}.
 Este dispositivo é usado para limitar a corrente que passa do $V_{cc}$ para o
 terra, e para garantir que o nível lógico seja coerente quando a chave conectada
 está inativa, ``puxando'' a corrente para o terra. Tipicamente utiliza-se valor
@@ -519,7 +518,7 @@ de selecionar automaticamente qual fonte de alimentação utilizar (USB ou fonte
 externa).
 
 O modelo de escolhido para este trabalho foi o \textit{Duemilanove}, que
-utiliza o microcontrolador ATMega168, e pode ser visto na figura
+utiliza o microcontrolador ATMega168, e pode ser visto na Figura
 \ref{fig:duemilanove}.
 % FOTO Duemilenove
 \begin{figure}[h]
@@ -543,19 +542,32 @@ motores e display LCD, respectivamente.
 %
 \subsection{Protótipo}
 \label{sec:prototipo}
-O circuito completo do projeto, conforme esquematizado na figura
-\ref{fig:montagem} é apresentado na figura \ref{fig:circuito}.
-\begin{figure}[h]
+O circuito completo do projeto, conforme esquematizado na Figura
+\ref{fig:fritzing} é apresentado na Figura \ref{fig:circuito}. Um
+componente adicional é o potenciômetro, usado para regular o contraste
+do display LCD. Destaca-se na metade superior direita da Figura
+\ref{fig:circuito} os circuitos para tratamento das entradas (dois filtros
+passa-baixa e duas montagens de resistor \textit{pull-down}), e a alimentação
+separada do servo motor para evitar a drenagem de corrente e ruído causado pelo
+mesmo (Figura \ref{fig:fritzing}).
+
+\begin{figure}
+\begin{center}
+ \includegraphics[width=4.5in]{TGII_bb}
+\end{center}
+  \caption{Esquema de montagem com protoboard}
+  \label{fig:fritzing}
+\end{figure}
+
+
+\begin{figure}[hb!]
 \begin{center}
  \includegraphics[width=4.5in]{circ_detail}
 \end{center}
   \caption{Circuito completo do Projeto}
   \label{fig:circuito}
 \end{figure}
-O único componente adicional é o potenciômetro, usado para regular o contraste
-do display LCD. Destaca-se na metade superior direita os circuitos para
-tratamento das entradas (dois filtros passa-baixa e duas montagens de resistor
-\textit{pull-down}).
+
 
 %%%
 %
@@ -564,7 +576,7 @@ tratamento das entradas (dois filtros passa-baixa e duas montagens de resistor
 \subsection{Algoritmo de controle}
 \label{sec:software}
 A lógica do programa, elaborada ainda na primeira parte deste trabalho e que se
-manteve fiel ao design original é apresentada na figura \ref{fig:fluxograma1} e
+manteve fiel ao design original é apresentada na Figura \ref{fig:fluxograma1} e
 descrita a seguir.
 
 \begin{figure}[hb!]
@@ -643,7 +655,7 @@ biblioteca do projeto é usada.
 
 A biblioteca \textit{BikeTransmission} modela basicamente duas classes que
 representam a roda e o \textit{derailleur}. Um diagrama UML das classes está na
-figura \ref{fig:uml} a seguir.
+Figura \ref{fig:uml} a seguir.
 
 \begin{figure}[h!]
 \begin{center}
@@ -685,7 +697,7 @@ utilizando baterias, pequenos motores DC, potenciômetros (para regulação da
 tensão nos motores, e logo sua velocidade), algumas peças de
 LEGO\textsuperscript{\textregistered} para a montagem, e um par de ímãs
 acoplados para o acionamento dos \textit{reed's}. A plataforma finalizada pode
-ser vista em ação na figura \ref{fig:test1}.
+ser vista em ação na Figura \ref{fig:test1}.
 
 \begin{figure}[h!]
 \begin{center}
@@ -716,10 +728,10 @@ desejada.
 
 Para visualizar o funcionamento e \textit{debug} do código, apenas observar a
 saída do sistema (movimentação do servo motor) não é suficiente. A primeira
-medida é a configuração do display LCD, mapeado como na figura
+medida é a configuração do display LCD, mapeado como na Figura
 \ref{fig:schemalcd}, contendo as informações mais básicas para a verificação do
-sistema. A numeração na figura é referente a posição de cada caractere do
-display. Um exemplo do mapeamento já foi dado na figura \ref{fig:lcd}.
+sistema. A numeração na Figura é referente a posição de cada caractere do
+display. Um exemplo do mapeamento já foi dado na Figura \ref{fig:lcd}.
 
 \begin{figure}[h!]
 \begin{center}
@@ -805,7 +817,7 @@ seja configurada para tal.
 
 Em qualquer parte do código pode ser adicionado um comando de impressão serial,
 contendo o valor de uma variável, uma informação textual ou ambos. Um exemplo
-dos das informações normalmente impressas na saída serial está na figura
+dos das informações normalmente impressas na saída serial está na Figura
 \ref{fig:serial}.
 
 \begin{figure}[h!]
@@ -827,15 +839,16 @@ foi feita a montagem na bancada para testes reais.
 
 \subsection{Teste de Bancada}
 
-A bancada da figura \ref{fig:setup} foi testada e após o primeiro
+A bancada da Figura \ref{fig:setup} foi testada e após o primeiro
 \textit{startup}, os sinais de entrada foram adquiridos corretamente, e os
 sinais de saída apresentados no display e no monitor serial estavam coerentes.
 Porém um detalhe do mais importante falhou: mesmo com uma nova marcha engatada,
 nenhum movimento foi observado no \textit{derailleur}.
 
 A conclusão é que o servo motor usado simplesmente não possui torque suficiente
-(a força calculada para a combinação motor-polia é $\frac{4.1kgf-cm}{0.85cm} =
-4.824kgf$) para enrolar o cabo que movimenta o \textit{derailleur}, o que é
+(a força calculada para a combinação motor-polia é $\frac{4,1kgf-cm}{0.85cm} =
+4,824kgf$, equivalente a 47,31N) para enrolar o cabo que movimenta o
+\textit{derailleur}, o que é
 discutido a seguir.
 
 São duas fontes de resistência a este movimento, sendo a primeira o atrito do
@@ -852,7 +865,7 @@ valor de torque.
 \end{enumerate*}
 
 A primeira alternativa esbarrou em uma limitação ferramental, sendo bastante
-complicado aprofundar a ranhura (destacada na figura \ref{fig:ranhura}) da polia
+complicado aprofundar a ranhura (destacada na Figura \ref{fig:ranhura}) da polia
 do trocador manual de forma uniforme, isto é, de forma que o raio permanecesse
 com o mesmo valor sempre.
 \begin{figure}[!h]
@@ -882,7 +895,7 @@ cabeamento, que está sujeito a mesma variação de resistência do
 
 A segunda consideração é que, decidindo por uma intervenção na mola de retorno,
 a construção da gaiola do \textit{derailleur} é projetada para não ser
-desmontável (detalhe da figura \ref{fig:derra}), com rebites e pinos
+desmontável (detalhe da Figura \ref{fig:derra}), com rebites e pinos
 fixados por interferência. Ou seja, não há uma maneira simples de reconfigurar
 este elemento, e caso houvesse, arrisca-se perder a robustez no seu
 funcionamento.
@@ -912,7 +925,7 @@ Para prosseguir com os trabalhos, a tentativa foi pegar um velho
 \textit{derailleur} e afrouxar a sua mola de retorno. Porém o acesso a mola não
 é direto, e a mola foi completamente retirada. Ainda assim, alguma força de
 retorno é necessária, então um elástico foi adaptado ao mecanismo, como
-apresentado na figura \ref{fig:adapt1}.
+apresentado na Figura \ref{fig:adapt1}.
 
 \begin{figure}[h!]
 \begin{center}
@@ -1059,7 +1072,7 @@ chamada a função da biblioteca que se encarrega de testar e trocar a marcha,
 quando necessário.
 
 A configuração da constante K de ajuste dos limites de troca de marcha, feita
-através dos botões está, para apenas um botão, na linha 16 a 21. Limitou-se a
+através dos botões está, para apenas um botão, nas linhas 16 a 21. Limitou-se a
 configuração em mais ou menos 50\% do valor padrão.
 
 O terceiro e mais importante detalhe da implementação é método de escolha e
@@ -1104,7 +1117,7 @@ O método inicia, na linha 11, confirmando se a marcha atualmente engatada, vind
 da relação de velocidades, é a mesma da posição do servo motor. Caso esteja,
 prossegue para, na linha 15 testar a condição "Velocidade abaixo do limite
 inferior para a relação" levando em consideração o fator K de ajuste, e a
-condição "Coroa anterior disponível", como apresentado no fluxograma da figura
+condição "Coroa anterior disponível", como apresentado no fluxograma da Figura
 \ref{fig:fluxograma1}. Da mesma forma, o código da linha 22 testa a condição
 "Velocidade além do limite superior para a relação" levando em conta o fator K
 de ajuste, e a condição "Próxima coroa disponível", também apresentado no
@@ -1286,7 +1299,7 @@ Resistores 10k (6x) & R\$ 0,78\\\hline
 \renewcommand*{\refname}{}
 \section{Referências}
 
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{report}
 
 \end{document}
