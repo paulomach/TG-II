@@ -9,14 +9,14 @@
 *.eps
 *.fls
 *.jpeg
-*.jpg
+#*.jpg
 *.lof
 *.log
 *.lot
 *.make
 *.out
 *.pdf
-*.png
+#*.png
 *.temp
 *.toc
 *~
