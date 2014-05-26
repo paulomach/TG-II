@@ -62,9 +62,9 @@ RearWheel::RearWheel ( float _diameter ) {
 
 /**
  * Linear wheel speed calculated with: \n
- * V = w*r -> V = 2*pi*f*r \n
- * V = pi*D/T [m/ms] \n
- * V = (3.6*1000*pi*D)/T [km/h]
+ * \f$V = \omega r = 2\pi fr \f$\n
+ * \f$V = \frac{\pi*D}{T} [m/ms] \f$\n
+ * \f$V = \frac{3.6*1000*\pi*D}{T} [km/h] \f$
  */
 int RearWheel::get_lspeed ( unsigned long T ) {
     int lspeed;
